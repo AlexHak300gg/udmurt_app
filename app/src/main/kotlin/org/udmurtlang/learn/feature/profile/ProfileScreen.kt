@@ -363,20 +363,18 @@ fun ProfileScreen(
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                GameButton(
-                    text = stringResource(R.string.stats_title),
-                    icon = Icons.Filled.BarChart,
-                    onClick = onOpenStats,
-                    modifier = Modifier.weight(1f),
-                )
-                GameButton(
-                    text = stringResource(R.string.report_title),
-                    icon = Icons.Filled.People,
-                    onClick = onOpenReport,
-                    modifier = Modifier.weight(1f),
-                )
-            }
+            GameButton(
+                text = stringResource(R.string.stats_title),
+                icon = Icons.Filled.BarChart,
+                onClick = onOpenStats,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            GameButton(
+                text = stringResource(R.string.report_title),
+                icon = Icons.Filled.People,
+                onClick = onOpenReport,
+                modifier = Modifier.fillMaxWidth(),
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 avatarPresets.forEach { avatar ->
                     Surface(
