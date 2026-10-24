@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Удмуртские переводы интерфейса; непереведённое берётся из values/strings.xml -->
+    <string name="app_name">Ӟеч-а бур-а удмурт кыл?</string>
+
+    <!-- Навигация -->
+    <string name="menu_learning">Кылзаськодъёс</string>
+    <string name="menu_games">Играсъёс</string>
+    <string name="menu_profile">Профиль</string>
+    <string name="menu_settings">Настройкасъёс</string>
+    <string name="back">Дэре</string>
+    <string name="next">Весы</string>
+    <string name="done">Ов</string>
+    <string name="cancel">Отмена</string>
+    <string name="retry">Висecs!</string>
+    <string name="close">Пӧрэм</string>
+    <string name="loading">Куалэ…</string>
+
+    <!-- Сплэш и онбординг -->
+    <string name="splash_tagline">Ӟечбур, удмурт кыл!</string>
+    <string name="onboarding_title_1">Ӧслытӟе кылзаськы</string>
+    <string name="onboarding_text_1">Чӧр кыласъёс, юртчанъёс да овозланлан кылтэ оддэкыт удмурт кылъёс тодмаськоды.</string>
+    <string name="onboarding_title_2">Играсъёс лыдӟисько</string>
+    <string name="onboarding_text_2">Куать пурӟа игра кылтэ эрӟиды: пар тодмась, кыл куатаськы, виськы кыл тодмась!</string>
+    <string name="onboarding_title_3">Мон пыртэ уг вунал</string>
+    <string name="onboarding_text_3">Интернет улын улмозы вӧтӟӧ келесэ. Кыл кулэ, конфетти да звёзды куалэм кулэ пыр.</string>
+    <string name="skip">Пӧртэм</string>
+    <string name="start">Ошмо!</string>
+    <string name="onboarding_streak">5 кулэ пыр</string>
+    <string name="auth_tab_login">Очы</string>
+    <string name="auth_tab_register">Записаш</string>
+
+    <!-- Вход -->
+    <string name="auth_title">Очытэм</string>
+    <string name="auth_subtitle">Тын прогресс сӟын кӟаны</string>
+    <string name="auth_email">E-mail</string>
+    <string name="auth_password">Пароль</string>
+    <string name="auth_name">Тын ниме?</string>
+    <string name="auth_login">Очы</string>
+    <string name="auth_register">Записатэм</string>
+    <string name="auth_guest">Игра гостенэ</string>
+    <string name="auth_forgot">Пароль пӧртэ?</string>
+    <string name="auth_forgot_cloud">Сброслан ссылка почтэ келескодэ синхронизация ошмо кылын.</string>
+    <string name="auth_forgot_local">Синхронизация ошмо кылын тодмась</string>
+    <string name="auth_switch_to_register">Аккаунт улан у? Записатэм!</string>
+    <string name="auth_switch_to_login">Аккаунт улан у? Очы!</string>
+    <string name="auth_error_email">name@mail.ru видлэ e-mail келескы</string>
+    <string name="auth_error_password">Пароль 6 знак ёнаӞеч</string>
+    <string name="auth_error_name">Ниме пузы (маленькойӵунӥч)</string>
+    <string name="auth_cloud_mode">Supabase облако ошмо</string>
+    <string name="auth_local_mode">Локальный аккаунт: токым сӟын лыдӟисько</string>
+
+    <!-- Главное меню -->
+    <string name="menu_greeting">Ӟечбур, %1$s!</string>
+    <string name="menu_explore">Кодэ пыртэм?</string>
+    <string name="menu_sub">Али кодэ пырымыз?</string>
+    <string name="menu_select">Бичалэ занятие</string>
+    <string name="menu_tiles_games">6 игра, звезда вайӝо</string>
+    <string name="menu_tiles_learning">13 тем</string>
+    <string name="menu_tiles_profile">Медаль</string>
+    <string name="word_of_day">Кыл кулэ</string>
+    <string name="streak_days">кулэ пыр</string>
+
+    <!-- Обучение -->
+    <string name="topics_title">Темасъёс</string>
+    <string name="topics_count">%1$d тем · %2$d кыл</string>
+    <string name="topic_continue">Кутсалом</string>
+    <string name="word_no">Кыл № %1$d</string>
+    <string name="topic_progress">%1$d / %2$d тодэм</string>
+    <string name="know">Мон тодэ!</string>
+    <string name="repeat">Висecs</string>
+    <string name="cards_hint">Кылас гэнёс пыртэмӟе да дэре</string>
+    <string name="topic_complete">Мон! Тема пӧртэ!</string>
+    <string name="word_translation">Тодмась</string>
+    <string name="example_label">Пример</string>
+    <string name="pronunciation">Кыллан</string>
+
+    <!-- Игры -->
+    <string name="games_title">Играсъёс</string>
+    <string name="games_hint">Куать игра: бичал да звезда вайӝо</string>
+    <string name="game_choice">Тӧдьы тодмаськы</string>
+    <string name="game_choice_sub">Кыл бичал</string>
+    <string name="game_odd">Виськы кыл тодмась</string>
+    <string name="game_odd_sub">Мар уг сярын?</string>
+    <string name="game_sorting">Сортӥсько</string>
+    <string name="game_sorting_sub">Кыл да категория</string>
+    <string name="game_memory">Пар тодмась</string>
+    <string name="game_memory_sub">Карточка пар</string>
+    <string name="game_builder">Кыл куатаськы</string>
+    <string name="game_builder_sub">Буква пумояз</string>
+    <string name="game_truefalse">Вал муӞ?</string>
+    <string name="game_tf_sub">Вал нош уг?</string>
+    <string name="round_label">Круг %1$d / %2$d</string>
+    <string name="correct_answer">Мон! Турнэ!</string>
+    <string name="almost_answer">Висecs!</string>
+    <string name="how_translate">Кырӧм лыдӟед?</string>
+    <string name="check_word">Тодмась</string>
+    <string name="memory_pairs">Пар: %1$d из %2$d</string>
+    <string name="game_finished">Игра пӧртэ!</string>
+    <string name="result_mood_3">Абсолютно точно!</string>
+    <string name="result_mood_2">Ӟеч, ошъёс улын!</string>
+    <string name="result_mood_1">Ӟеч, кутсалом!</string>
+    <string name="result_mood_0">Ошмо — вӧтӟӧ келес!</string>
+    <string name="result_score">пунт</string>
+    <string name="result_words">кыл</string>
+    <string name="result_stars">звезда</string>
+    <string name="you_learned_words">+ %1$d кыл</string>
+    <string name="your_score">Тын счёт: %1$d</string>
+    <string name="stars_award">Звёзды: %1$d</string>
+    <string name="play_again">Висecs игра</string>
+    <string name="to_menu">Меню</string>
+    <string name="sort_drag_hint">Кылтэ пурӟан корзина кын пузы</string>
+    <string name="memory_hint">Тӧз кыласъёс тодмась</string>
+    <string name="builder_hint">Букваъёс тушкын тодына мӭнэм</string>
+    <string name="true_label">Вал</string>
+    <string name="false_label">Уг</string>
+    <string name="category_label">Категория</string>
+
+    <!-- Статистика и отчёт -->
+    <string name="stats_title">Статистика</string>
+    <string name="stats_subtitle">Тэник кулэын тȏдэм</string>
+    <string name="stats_learned_fmt">%1$d кыл</string>
+    <string name="stats_learned_of">тодэм из %1$d</string>
+    <string name="stats_cap_games">игра</string>
+    <string name="stats_cap_accuracy">правий</string>
+    <string name="stats_cap_days">кулэ</string>
+    <string name="stats_cap_words">кыл</string>
+    <string name="activity_7">7 кулэ</string>
+    <string name="words_learned">Кылтэ тодэмъёс</string>
+    <string name="total_words">Вся кылтэ</string>
+    <string name="games_played">Играес пӧртэ</string>
+    <string name="accuracy">Правий</string>
+    <string name="current_streak">Тэкем серия</string>
+    <string name="best_streak">Опзьы серия</string>
+    <string name="mistake_words">Кынзэ ош кылтэ</string>
+    <string name="activity_week">Тэник кулэын активность</string>
+    <string name="total_time">Игра время куноса</string>
+    <string name="no_mistakes">Ошъёс улыны уж улэ — супер!</string>
+    <string name="report_title">Отлан отчёт</string>
+    <string name="report_intro">Тэник кулэын прогресс отлан</string>
+    <string name="report_weak_topics">Кынзэ темасъёс: висecs тодмаськы</string>
+    <string name="report_share">Отчёт пырлан</string>
+
+    <!-- Профиль -->
+    <string name="profile_title">Профиль</string>
+    <string name="profile_stat_games">игра</string>
+    <string name="logout_account">Пӧра аккаунт</string>
+    <string name="profile_name">Ниме</string>
+    <string name="profile_avatar">Аватар</string>
+    <string name="change_password">Пароль Ӟеч гоньы</string>
+    <string name="old_password">Парал пароль</string>
+    <string name="new_password">Ӻеч пароль</string>
+    <string name="save">Пидэс</string>
+    <string name="logout">Пӧра</string>
+    <string name="delete_account">Аккаунт юан</string>
+    <string name="delete_confirm">Аккаунт юады? Прогресс сӟын кӟаны.</string>
+    <string name="about_udmurt">Удмурт кылын маръёс</string>
+    <string name="facts_title">Курд сӟан маръёс</string>
+    <string name="fact_1">Удмурт кыл пермскӧ кылкучын уло, пермӧ-угор кылъёс ёна.</string>
+    <string name="fact_2">Тэнын тэник юбер человеж — 460 миян кын — кырӟаны, опзьын Удмуртиязын.</string>
+    <string name="fact_3">Удмурт алфавит кириллица выльын: ӧ, ӱ, ӵ, Ӟ, ӥ, ӆ, ӹ букваъёс гэнё улы.</string>
+    <string name="fact_4">Ӟечбур! — ӟечбур кыл, Тау! — тау кыл.</string>
+    <string name="fact_5">Удмуртия столица — Ижкар.</string>
+    <string name="fact_6">Республика держава кыл: удмурт да рус кылъёс.</string>
+    <string name="profile_error_old">Парал пароль келескы</string>
+    <string name="achievements_title">Медальъёс</string>
+    <string name="no_achievements">Пӟртын медаль — кылзаськы ошмо!</string>
+    <string name="ach_first_word">Оддэкыт кыл</string>
+    <string name="ach_streak_3">3 кулэ пыр</string>
+    <string name="ach_streak_7">Тэник кулэ пыр</string>
+    <string name="ach_topics_done">Вся темасъёс тодэм</string>
+    <string name="ach_games_10">10 игра пӧртэ</string>
+    <string name="guest_label">Гость</string>
+    <string name="cloud_badge">Облако</string>
+    <string name="local_badge">Локально</string>
+
+    <!-- Настройки -->
+    <string name="settings_title">Настройкасъёс</string>
+    <string name="setting_sound">Звук</string>
+    <string name="setting_volume">Овозлан громкость</string>
+    <string name="setting_word_notify">Кыл кулэ 9:00-ын</string>
+    <string name="setting_geolocation">Геолокация</string>
+    <string name="setting_geolocation_hint">Приветствие тӧдмаськын гын; офлайн юрӟен уг тэччи</string>
+    <string name="geo_dialog_title">Геолокация</string>
+    <string name="geo_dialog_text">Геолокация пузы — токым кушет лыдӟиськоды. Опциональной: интернет улын улмозы вӧтӟӧ келесэ.</string>
+    <string name="allow">Пузы</string>
+    <string name="geo_denied">Геолокация уг пуӟы — гаж уг, вӧтӟӧ интернет улын келесэ!</string>
+    <string name="setting_language">Кыл</string>
+    <string name="lang_russian">Русский</string>
+    <string name="lang_udmurt">Удмурт кыл</string>
+    <string name="setting_theme">Тэм</string>
+    <string name="theme_system">Авто</string>
+    <string name="theme_light">Ӟеч тэм</string>
+    <string name="theme_dark">Сьӧд тэм</string>
+    <string name="setting_about">Приложениын</string>
+    <string name="setting_version">Версия %1$s</string>
+    <string name="notifications_permission_rationale">Кыл кулэ пырлан, Android настройкасъёсын уведомление тодмаськы.</string>
+    <string name="sync_section">Синхронизация</string>
+    <string name="sync_local">Локальный режим: интернет улын, прогресс сӟын</string>
+    <string name="sync_cloud">Supabase облако ошмо</string>
+
+    <!-- Слово дня -->
+    <string name="wod_unknown">Ещё уг тодэ кыл</string>
+
+    <!-- Уведомления -->
+    <string name="notifications_channel">Кыл кулэ</string>
+    <string name="notification_word_title">Кыл кулэ — ӝунзы тодмаськы!</string>
+</resources>

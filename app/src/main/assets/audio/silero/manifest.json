@@ -1,0 +1,959 @@
+{
+  "version": 1,
+  "model": "v5_cis_base_nostress",
+  "speaker": "udm_bogdan",
+  "modelSha256": "0405777e332906f0644e08a680f7cfdc2137ea864090079c1fdd30a43c1b8761",
+  "sampleRate": 48000,
+  "format": "mono PCM16 WAV",
+  "sourceSha256": "aab0f3ee982034b4b2ee2d09c4c86b4e95fc726ea9f01cf6b636ee1eb4e6ea29",
+  "torchVersion": "2.6.0+cpu",
+  "modelUrl": "https://models.silero.ai/models/tts/ru/v5_cis_base_nostress.pt",
+  "license": "MIT (Silero CIS Base)",
+  "items": [
+    {
+      "text": "Ӟечбуресь",
+      "key": "ӟечбуресь",
+      "file": "c73a2f9df292dc1183f31defd4fdbba9d8cce0035687411de7a5e47ef2620326.wav",
+      "sha256": "9b140239006832008eb34097295b57d4aaf79376167b03558dec01772d0ebbb8",
+      "durationMs": 938,
+      "reusedPreview": true,
+      "modelText": "ӟечбуресь"
+    },
+    {
+      "text": "Умоесь",
+      "key": "умоесь",
+      "file": "5c4e85a11b61fc8a4bb8b18a22a64a6ceddfce4679e246d86ff15e5d95e41c0b.wav",
+      "sha256": "11704f2bcc86644b9526e439d10468a13145129ce143dd2ab6b0be018aa77418",
+      "durationMs": 788,
+      "reusedPreview": true,
+      "modelText": "умоесь"
+    },
+    {
+      "text": "Чырткем",
+      "key": "чырткем",
+      "file": "05670715666df8cf10ef198391b908e18b652808e116738e56385827db73e222.wav",
+      "sha256": "dfba41c4857b19632d941eff2760c0bf87cda90400ff1b85dd161934bd37dea4",
+      "durationMs": 812,
+      "reusedPreview": false,
+      "modelText": "чырткем"
+    },
+    {
+      "text": "Салам",
+      "key": "салам",
+      "file": "0f219de383c4abb5ab14047920432a919c291f9d2286ba20382fd77b9193cf0b.wav",
+      "sha256": "61fc90337f3c71fe6a10421685b73e4895740365ba810e44f22c0e9948e51bbd",
+      "durationMs": 650,
+      "reusedPreview": false,
+      "modelText": "салам"
+    },
+    {
+      "text": "Бур ӵукна",
+      "key": "бур ӵукна",
+      "file": "0af07d74fd94b00470f7294801a9ea82d493e7eaf8574d052fb880ecdbc9fa58.wav",
+      "sha256": "d1435d96000dfeb4d6defc41d6221e5bfff894ce73fcdfa68f80e492ecd298be",
+      "durationMs": 938,
+      "reusedPreview": true,
+      "modelText": "бур ӵукна"
+    },
+    {
+      "text": "Тау",
+      "key": "тау",
+      "file": "395908d48a9bf4d9522bb126920ca3c39ee52966fc5f11e2f3c6ed3070beb0b9.wav",
+      "sha256": "53d8f213440ab1fc7df01e42e054e958213d0a5f29586062024819ae41203194",
+      "durationMs": 500,
+      "reusedPreview": true,
+      "modelText": "тау"
+    },
+    {
+      "text": "Ӟеч лу",
+      "key": "ӟеч лу",
+      "file": "4801c64ccba2c9a2a0c941ceb85c23060eb724e30718c88e81efc0dc10400053.wav",
+      "sha256": "6b973b46cee050897ab21f2d6604420cdad3596bda0f55bc09d3ace45eb5fafd",
+      "durationMs": 800,
+      "reusedPreview": true,
+      "modelText": "ӟеч лу"
+    },
+    {
+      "text": "Одӥг",
+      "key": "одӥг",
+      "file": "af20763cb1e708bc0014d5696f77fc3b47c9b30230798bb90fa1f16783df75d3.wav",
+      "sha256": "0221e9917e422fe84d291fe724ddb19c08e9a6e7d398e4fba9c087a0b43efacd",
+      "durationMs": 625,
+      "reusedPreview": true,
+      "modelText": "одӥг"
+    },
+    {
+      "text": "Кык",
+      "key": "кык",
+      "file": "c0126a5508a58b8be0c688a3206795f9db6652b378251e760a92a95096e970b7.wav",
+      "sha256": "597492e7ef60bc16167f34930b94eeb3c66d38751b3da0ca89b41f937696911d",
+      "durationMs": 500,
+      "reusedPreview": false,
+      "modelText": "кык"
+    },
+    {
+      "text": "Куинь",
+      "key": "куинь",
+      "file": "de13cc8bdbdcbe8fc6ae10ed04d77f5bacfa0b5143beddf25c4d574e6092a143.wav",
+      "sha256": "4a2f7f9952edfd214d5c9f138a39db0a503faf67e04bed1a3ed4d5900bbe3e18",
+      "durationMs": 662,
+      "reusedPreview": true,
+      "modelText": "куинь"
+    },
+    {
+      "text": "Ньыль",
+      "key": "ньыль",
+      "file": "ddd77d38e238d8e1a1e21714397fb537907c23271c6740d76fc42d07c2e91b55.wav",
+      "sha256": "b7e76c69c728c8f7f6e832e3706558560281f88a74cb3ee0aeff661e93673190",
+      "durationMs": 450,
+      "reusedPreview": true,
+      "modelText": "ньыль"
+    },
+    {
+      "text": "Вить",
+      "key": "вить",
+      "file": "d4682caa400ce4bd1aa7617e158423f784c9e3daa45a48bf9dd99c711122ecea.wav",
+      "sha256": "67e772441de724997d3e5b8c9d59b9789b66c95520b36e08817172dbea6b9ded",
+      "durationMs": 575,
+      "reusedPreview": false,
+      "modelText": "вить"
+    },
+    {
+      "text": "Куать",
+      "key": "куать",
+      "file": "efcb7518ba62b81032c80612edd3b7876de6bb4149c5729e4c1feddaa43d5f03.wav",
+      "sha256": "36a69789e9a7d021a5d8a74828451204327afa79c2c08e679b9f37863f10954e",
+      "durationMs": 675,
+      "reusedPreview": false,
+      "modelText": "куать"
+    },
+    {
+      "text": "Сизьым",
+      "key": "сизьым",
+      "file": "6f2015850849423ac67d6d4af434fbfe4cdd7bdcf27b6f38e64f0de32ed342e9.wav",
+      "sha256": "423775c84b053bb6b286a99d645227ad15801b1be9e6c7cb7dfd53213b53b7a5",
+      "durationMs": 800,
+      "reusedPreview": true,
+      "modelText": "сизьым"
+    },
+    {
+      "text": "Тямыс",
+      "key": "тямыс",
+      "file": "78855b6ff82e7f0c6e8008d27be20ebe041c7ddefb6c4325f41c7d85c0b739ee.wav",
+      "sha256": "e3e28e49ec7e5657dbdefaed4c116b9089a0905ca0bc906ced89e31988196bc2",
+      "durationMs": 712,
+      "reusedPreview": false,
+      "modelText": "тямыс"
+    },
+    {
+      "text": "Укмыс",
+      "key": "укмыс",
+      "file": "ce54c71fce25a7dd15220176fb12e8c27110c21547e9a81e0e1cb7c6c296b3fe.wav",
+      "sha256": "4793a2ec1c6c4935060a36bcc01c8c604ad65bf0bf0803efb6d3442ae7bb1a82",
+      "durationMs": 750,
+      "reusedPreview": false,
+      "modelText": "укмыс"
+    },
+    {
+      "text": "Дас",
+      "key": "дас",
+      "file": "abedaf12b56fde01828c5e82225cee5c6b5b21f2e78604544633f2cfac01a5d7.wav",
+      "sha256": "76eb3ebd49e2dad961bad6ab748f1c3d5a374787ff4fa99012ed26b822744199",
+      "durationMs": 525,
+      "reusedPreview": false,
+      "modelText": "дас"
+    },
+    {
+      "text": "Гондыр",
+      "key": "гондыр",
+      "file": "6402438ecb5276fb96ce604a7e1087b1990ffc265d74de11e7de3b4c391ed56b.wav",
+      "sha256": "b296cd7dbe363653e85e51299e86dedd496220d59ab0dac510f7b3f31acbddcd",
+      "durationMs": 725,
+      "reusedPreview": false,
+      "modelText": "гондыр"
+    },
+    {
+      "text": "Кион",
+      "key": "кион",
+      "file": "cf45879f467be25c7fd9d8f978fb28be93ee9a66cd70e1c89d51a6821f4a1426.wav",
+      "sha256": "df430fe0b98b0c01dae8604697d3933a84956e4f4b2bd9b53676e61b29039857",
+      "durationMs": 675,
+      "reusedPreview": false,
+      "modelText": "кион"
+    },
+    {
+      "text": "Койык",
+      "key": "койык",
+      "file": "0e73ab4b5b69f44e3c0f2cffc5e19842d5a875e6739177a615bc2a7b8335a0a5.wav",
+      "sha256": "072e48881df7a31401f795d667d12c772c2e3087d196775a415b793af4aec752",
+      "durationMs": 675,
+      "reusedPreview": false,
+      "modelText": "койык"
+    },
+    {
+      "text": "Ӟичы",
+      "key": "ӟичы",
+      "file": "e682c580de8a0e0d0d865882256a67fe864b374b8f8419da3767e12c63b7ebd5.wav",
+      "sha256": "832ccbf2920a321f214875982464a1d47e1825a5663b3e60d23312379cdc0258",
+      "durationMs": 662,
+      "reusedPreview": true,
+      "modelText": "ӟичы"
+    },
+    {
+      "text": "Лудкеч",
+      "key": "лудкеч",
+      "file": "b34875382cdb6bf831330f71f1e014601c48abffde66840946ed58f9a5c47b09.wav",
+      "sha256": "86397a928a9e90e49a70b72691468e2b10f3cdfc36ceb92b59c43f13b217f208",
+      "durationMs": 825,
+      "reusedPreview": false,
+      "modelText": "лудкеч"
+    },
+    {
+      "text": "Коньы",
+      "key": "коньы",
+      "file": "9ee744f1191d724adeb5e25084c47a4c67bdb9fe8eae414c2e4f6f0929aaf240.wav",
+      "sha256": "8084e6348f00b7a08a9c08701e2d8fdc34c55416bded00419632ff3feaf971ba",
+      "durationMs": 575,
+      "reusedPreview": false,
+      "modelText": "коньы"
+    },
+    {
+      "text": "ӵушъял",
+      "key": "ӵушъял",
+      "file": "105ab3a470e5ab56515264ce3e0943cc4bb61a6dc16f37e7a8c9f67bdf30de1e.wav",
+      "sha256": "e3b3a28ab486dee672dc93bf6a70e3b8cec48cbe3d02ba7c724bdef3ce5e38f1",
+      "durationMs": 800,
+      "reusedPreview": true,
+      "modelText": "ӵушъял"
+    },
+    {
+      "text": "Кырпарсь",
+      "key": "кырпарсь",
+      "file": "a2d11b7acf8c98708cacd82d88437bd088189c3859d5358f6d32a64e4000b595.wav",
+      "sha256": "96bb3aa5c8b4aa09e4814ded04ac1fd00e8ccc229ce09c9268f57516f5d8d23a",
+      "durationMs": 812,
+      "reusedPreview": false,
+      "modelText": "кырпарсь"
+    },
+    {
+      "text": "Курка",
+      "key": "курка",
+      "file": "9cc5746823f4d376bda4b4f43543a797223957540a01bb419bc6d951d73822e4.wav",
+      "sha256": "9613294528bff79438a91bf7b2f3bcde3b7881c3e86585dffddbf5ca5a8a9fda",
+      "durationMs": 588,
+      "reusedPreview": false,
+      "modelText": "курка"
+    },
+    {
+      "text": "Скал",
+      "key": "скал",
+      "file": "ee0918310dd84c1373d4accb556292b95e83f8946264f75ee9beae3f5b544f3a.wav",
+      "sha256": "383d5e479a03c11400a50965fd6b419585ab31511be5a27027108ff90870fcbe",
+      "durationMs": 625,
+      "reusedPreview": false,
+      "modelText": "скал"
+    },
+    {
+      "text": "Курег",
+      "key": "курег",
+      "file": "bc46dc486f69fbfef0cfa1490254dfff33979296df3dfdfedd7efd985e818a3d.wav",
+      "sha256": "f56d9c2d4477698451ed71683a5ec1488e6aff5079fc3b638ac55999b69247f0",
+      "durationMs": 650,
+      "reusedPreview": false,
+      "modelText": "курег"
+    },
+    {
+      "text": "Вал",
+      "key": "вал",
+      "file": "a9842864b228f32bdc1ca9814c65e03a82929357fec21d3aa91fbae0ca84fed5.wav",
+      "sha256": "7be0b0aefd62213c617da4b91cc85f363ac7f4f5d3f3a1c45498576c23e31de4",
+      "durationMs": 550,
+      "reusedPreview": false,
+      "modelText": "вал"
+    },
+    {
+      "text": "Ыж",
+      "key": "ыж",
+      "file": "6742706af6a5bc357b961e588cf2cccdf12d91574ed2e784b073cbd260f45ed1.wav",
+      "sha256": "3754ca58fc921a02e55bdda5b5b390014ebbcc2783ba8452026348fb6ee25f6e",
+      "durationMs": 412,
+      "reusedPreview": false,
+      "modelText": "ыж"
+    },
+    {
+      "text": "Така",
+      "key": "така",
+      "file": "59e25541a1f4bddf78a0e7c383fd13bc6414750f4d68cdba992c94bfb25bc183.wav",
+      "sha256": "e42a72762e12ee7529d19b673b4165d9d5a99624292b533332a6604eca8e857e",
+      "durationMs": 588,
+      "reusedPreview": false,
+      "modelText": "така"
+    },
+    {
+      "text": "Ош",
+      "key": "ош",
+      "file": "3072335f8070d95356b8a4d403785c96a5ece6e176626f74e6f69a85c49a3519.wav",
+      "sha256": "ed32b0eca24e4acf5daaa2741591228fb4411d483a837a58760d1e9e025e62e3",
+      "durationMs": 412,
+      "reusedPreview": false,
+      "modelText": "ош"
+    },
+    {
+      "text": "Атас",
+      "key": "атас",
+      "file": "4e3e846d7eb5dd57e5393db3fdef02c1cda78eac79e23518d90640e98300d6f8.wav",
+      "sha256": "6433412aea6d5be44632267a0775b095409347c5ad0023be137ca8ac8f1c88f9",
+      "durationMs": 638,
+      "reusedPreview": false,
+      "modelText": "атас"
+    },
+    {
+      "text": "Парсь",
+      "key": "парсь",
+      "file": "704ed97a6d86c65240b9dc52523401abf459794ca78f5ed665f0455eb55d6b9c.wav",
+      "sha256": "24c7d6fa86710dac9b910ebe0641ff4d0e0da3e96d787ce11f4549a3543b7b8e",
+      "durationMs": 600,
+      "reusedPreview": false,
+      "modelText": "парсь"
+    },
+    {
+      "text": "Кеч",
+      "key": "кеч",
+      "file": "bf6095d46163a6687a2e9397bcf4e244bcf0515a36b0ee21cfc2b9dece0a8587.wav",
+      "sha256": "dedc6454ff9d1ecb31939c6fc3dd3e6594e6b44306734da2204c4e9e2262f361",
+      "durationMs": 500,
+      "reusedPreview": false,
+      "modelText": "кеч"
+    },
+    {
+      "text": "Пуны",
+      "key": "пуны",
+      "file": "75a8cee147298170532cfa820e35b12641523667e5abb7f4b74953a0afd4f646.wav",
+      "sha256": "d57be02d3185c2d9e763736f11fb8803dd9961024c0aebd8e85768aff1ba4de5",
+      "durationMs": 512,
+      "reusedPreview": false,
+      "modelText": "пуны"
+    },
+    {
+      "text": "Нянь",
+      "key": "нянь",
+      "file": "d0d81b7ac7f19f40c41e84128f56f1e72466c7e66cd5e3b2d007a1d604a74374.wav",
+      "sha256": "9eb3e8014ba19e2ce837b3195140d04d7e185d475dc5cc880ceceb4b94e92f55",
+      "durationMs": 588,
+      "reusedPreview": false,
+      "modelText": "нянь"
+    },
+    {
+      "text": "Йӧл",
+      "key": "йӧл",
+      "file": "1b8d7f046c85e65f8325ad23082647b152872ce2776d4177621f68166e03d8f7.wav",
+      "sha256": "4e28b50957a0078f1d3b2601fcc4bdf3165e24977f1657ac0804dc5ad1a624fc",
+      "durationMs": 575,
+      "reusedPreview": true,
+      "modelText": "йӧл"
+    },
+    {
+      "text": "Ӟук",
+      "key": "ӟук",
+      "file": "042994b92a5aed533869ff795571d9779baf0dd4af6963cc3a56c48abf09ad3f.wav",
+      "sha256": "72899a8ea7c22de3388cda507a4a3cef34ae92594cc6d82749f2fa8d2a024382",
+      "durationMs": 575,
+      "reusedPreview": false,
+      "modelText": "ӟук"
+    },
+    {
+      "text": "Пельнянь",
+      "key": "пельнянь",
+      "file": "cd9aad7c9cc36fc8ad3a746474b23cb437ac182d16cb5ed1c5b527f72b2a0525.wav",
+      "sha256": "49c1221a721194435f879765d16cc22fe49906fb1f1eafbb0bf75cdf53918641",
+      "durationMs": 788,
+      "reusedPreview": false,
+      "modelText": "пельнянь"
+    },
+    {
+      "text": "Шыд",
+      "key": "шыд",
+      "file": "44bbe4598b9ae229c2622471e9ee918379b391df029232b45e72c4c3cdcc2bcd.wav",
+      "sha256": "a5eb93b4699bcece0edce000af35f61a1d9e3b59e18ce7e00f04b78c3efc2285",
+      "durationMs": 538,
+      "reusedPreview": false,
+      "modelText": "шыд"
+    },
+    {
+      "text": "Кукей",
+      "key": "кукей",
+      "file": "4911f95cced07ddeea167fa5ead8ae7ab045c9cee9f2b722d1cc0234303126bd.wav",
+      "sha256": "371b499e45d41a7e140de4e31259b4c3cb53f7c09645ff577499a9bfc3b9ee9b",
+      "durationMs": 700,
+      "reusedPreview": false,
+      "modelText": "кукей"
+    },
+    {
+      "text": "Курегпуз",
+      "key": "курегпуз",
+      "file": "784a8859a142a21b9eedbab07638dd52b89b1fdb01ff2d6f416b626ab2b8e5aa.wav",
+      "sha256": "47aca6a526837c0021f7fa1b931fb3e1b0b4780ce3a9b6f46e233074bd6feef2",
+      "durationMs": 900,
+      "reusedPreview": false,
+      "modelText": "курегпуз"
+    },
+    {
+      "text": "Сүль",
+      "key": "сүль",
+      "file": "913998ecac9309f27318792e9a1a4b5e7225246a7d3de31206d730db39b5d4ca.wav",
+      "sha256": "fa29a11eb4d4fee51adc078aa1b9d14ee5c8151245837abe5fca87270c2c68df",
+      "durationMs": 538,
+      "reusedPreview": false,
+      "modelText": "сүль"
+    },
+    {
+      "text": "Вөй",
+      "key": "вөй",
+      "file": "959bb64e463fb75df3e0273cf0a02b8bde18e69de3ba1b249265add5f48ea753.wav",
+      "sha256": "7c2ed8c5745380606c1b21003ffaf2507a9d195a00a33465eb498e11389a78a9",
+      "durationMs": 562,
+      "reusedPreview": false,
+      "modelText": "вөй"
+    },
+    {
+      "text": "Сиён",
+      "key": "сиён",
+      "file": "b0aa1c32b66f65a6fee5c86dd5bb31341b5fd8c35cd642be6afa7e1475eaddaa.wav",
+      "sha256": "abe4ac0c6d1497aa338b556c7e174f1e38d141ecffc20c7b9f671ecd94a31450",
+      "durationMs": 688,
+      "reusedPreview": false,
+      "modelText": "сиён"
+    },
+    {
+      "text": "Табань",
+      "key": "табань",
+      "file": "22d69fdfd4fb9173a63e6cf48ce8cba6ad26ee6c295e8dc1a7b99dacc12655aa.wav",
+      "sha256": "3c9bedc664e0fddf48c7ad8fad729b52c09da7f66330b047016a12ac6abdacc8",
+      "durationMs": 638,
+      "reusedPreview": false,
+      "modelText": "табань"
+    },
+    {
+      "text": "Дэрем",
+      "key": "дэрем",
+      "file": "2fe2af1938c56d7b21de984962f7823f3a3eaa2412f36c4e8fb62d5690989f0b.wav",
+      "sha256": "de6650ed2f1fe7629983f8f7ed2ebd97a421ce322f2f215b35c5a2344898a1dd",
+      "durationMs": 650,
+      "reusedPreview": false,
+      "modelText": "дэрем"
+    },
+    {
+      "text": "Азькышет",
+      "key": "азькышет",
+      "file": "daf543e4b6f06d1d844e0d03bdffc63bba68b3381832390d46f375e7d84b5567.wav",
+      "sha256": "aa1c0cdaa8832f9168d0e96b7429f005142314491d0dbb16dc82b25c5acd245f",
+      "durationMs": 862,
+      "reusedPreview": false,
+      "modelText": "азькышет"
+    },
+    {
+      "text": "Кышет",
+      "key": "кышет",
+      "file": "251e0b9bf3c48dded34dbe4f1187a6dae2031675b70886d0f4d09add9abfa3d7.wav",
+      "sha256": "c2fa32853751dce21d7177e46a5bbb2b428b51956b95d1013d79c61601058bdb",
+      "durationMs": 675,
+      "reusedPreview": false,
+      "modelText": "кышет"
+    },
+    {
+      "text": "Анай",
+      "key": "анай",
+      "file": "656c040c221641311b82e9d9f0d7b886a3c9c60f29fd0bd3759b45b8866c095a.wav",
+      "sha256": "6425e1c7e0a8ec01f284f19bb1a969e763446977bd2262894f8c13e3fad153bb",
+      "durationMs": 638,
+      "reusedPreview": false,
+      "modelText": "анай"
+    },
+    {
+      "text": "Атай",
+      "key": "атай",
+      "file": "466437b92020c3688dcd259fb848b6c1c7feb247e5cc90fe3f2b796251209131.wav",
+      "sha256": "30522036329849397ce9db2357041a91be5dca7ff3f07a27e6d7cbeb51db8e4a",
+      "durationMs": 650,
+      "reusedPreview": false,
+      "modelText": "атай"
+    },
+    {
+      "text": "Агай",
+      "key": "агай",
+      "file": "1fe6dbeea6ae1cca34d740634389109a14d85e69f66ff38bf1c0be7820799c67.wav",
+      "sha256": "72f14d42e5cba0ce942ca88ef373ef288a4b988478a7a071f1de28badc81fbc1",
+      "durationMs": 650,
+      "reusedPreview": false,
+      "modelText": "агай"
+    },
+    {
+      "text": "Апай",
+      "key": "апай",
+      "file": "8282ec9d97e13b626d810ff45b22885ee3c9be7e5f7c6596b4cd7d1ba100a4b7.wav",
+      "sha256": "de375da633fe4d52fe27edb7ac12ecac6f88db0fc6166c824ce8b8c1bc8c2226",
+      "durationMs": 625,
+      "reusedPreview": false,
+      "modelText": "апай"
+    },
+    {
+      "text": "Атай-анай",
+      "key": "атай-анай",
+      "file": "e988dab392d405471ddfc2450bf6fd72118416b3c481996ddc4ccb2b82917607.wav",
+      "sha256": "9678cea20650ebd2242d1bb7bdd12152809e795b766e811b2f3ee97c1d058de9",
+      "durationMs": 962,
+      "reusedPreview": false,
+      "modelText": "атай-анай"
+    },
+    {
+      "text": "Песянай",
+      "key": "песянай",
+      "file": "09b278ba590bd8406dc684cda6393f330e18a893d5a3f5feed3fef4ce9f6d46a.wav",
+      "sha256": "fe63ffd7379b831533b54e394d9bee59c7693852a68f349f5a93f1a8eb658faf",
+      "durationMs": 838,
+      "reusedPreview": false,
+      "modelText": "песянай"
+    },
+    {
+      "text": "Песятай",
+      "key": "песятай",
+      "file": "c507f4d62a1fa2030c1ddd5604ecea9b3f59cff3d5dd6266aa7c888882736d3e.wav",
+      "sha256": "2d7a02cb102e83fe2e3ee116542d6fee37f2fd940bf21e267d04eda9485808db",
+      "durationMs": 825,
+      "reusedPreview": false,
+      "modelText": "песятай"
+    },
+    {
+      "text": "Кузпал",
+      "key": "кузпал",
+      "file": "4b53d775584dc3bf3f359b2aeb2038c98e858ba562e456ff50363ca631ec1576.wav",
+      "sha256": "9467526156cd7ac6ae257d48277e7b1b62ba7c320bfdede74092f147a4c04dc2",
+      "durationMs": 762,
+      "reusedPreview": false,
+      "modelText": "кузпал"
+    },
+    {
+      "text": "Кышно",
+      "key": "кышно",
+      "file": "f04decfbabfbbea03e5a99de72bfc5e46c43c54ff0c72c8ea05ee986c9864405.wav",
+      "sha256": "3030cb37667bf401e32a5604ea2990409251c4505b069fdcd7e3254d2cb92797",
+      "durationMs": 650,
+      "reusedPreview": false,
+      "modelText": "кышно"
+    },
+    {
+      "text": "Нылы",
+      "key": "нылы",
+      "file": "9d6556797189e74e7edb1161dbba111c085ec506f85454b8b1ae0939f6ed18af.wav",
+      "sha256": "8589b5ac216a6d6a33b359d70d63158518eb89fdbfc3f3c9f42102a58c391b24",
+      "durationMs": 600,
+      "reusedPreview": false,
+      "modelText": "нылы"
+    },
+    {
+      "text": "Пие",
+      "key": "пие",
+      "file": "f98d17da54752295bd5e17e0204fabe5d36189f58017ea6454bdb0d2be0ca371.wav",
+      "sha256": "c579528d58f3a27ac93dac96f685261720ac3b638896c72a3abbd50a80d11b0b",
+      "durationMs": 500,
+      "reusedPreview": false,
+      "modelText": "пие"
+    },
+    {
+      "text": "Удмуртия",
+      "key": "удмуртия",
+      "file": "c9e011dcc9e125182881d20798496694ed7da6d2d471ff89eae9ca7dffe5e479.wav",
+      "sha256": "f0b18986327b32afb6832bff8ad3874dd946aad0917a014a5b06141f0563e4c4",
+      "durationMs": 938,
+      "reusedPreview": false,
+      "modelText": "удмуртия"
+    },
+    {
+      "text": "Удмурт",
+      "key": "удмурт",
+      "file": "84e683a44c0c53b11f44ada42834f0405e254385ce71d1414ddefb63805173ff.wav",
+      "sha256": "3ed3f9fbe1e1dd7b92751c24f33320c17815b2391c75e89d21ec61b1e886d5d2",
+      "durationMs": 762,
+      "reusedPreview": false,
+      "modelText": "удмурт"
+    },
+    {
+      "text": "Озы",
+      "key": "озы",
+      "file": "44b72404cd21c3c3e7ec173d5055cbca20e6d57e8ae48e986514cac88c2b1740.wav",
+      "sha256": "bc8e7b80995c52db80a02a2fe45d1cfa10b3604daaa315df34ab220a4978c761",
+      "durationMs": 550,
+      "reusedPreview": false,
+      "modelText": "озы"
+    },
+    {
+      "text": "Пожри",
+      "key": "пожри",
+      "file": "7b7258eceef1913ad441e19fd7b9a1550f1b3604dd1ab67b51751e675aeafd51.wav",
+      "sha256": "b414dab06716782c0ec29e775c8dadf4f69e2bf78166cc7e76fde197907d132c",
+      "durationMs": 612,
+      "reusedPreview": false,
+      "modelText": "пожри"
+    },
+    {
+      "text": "Лым",
+      "key": "лым",
+      "file": "c6ad3324d9c90ad3a57926bde9f6f67703e31bd6cae28abdfe60cca146fb2cf8.wav",
+      "sha256": "782cec842ceb81f3fb32fc3e9079e87e98b126993e52499070987eb76d769ea8",
+      "durationMs": 600,
+      "reusedPreview": false,
+      "modelText": "лым"
+    },
+    {
+      "text": "Ижкар",
+      "key": "ижкар",
+      "file": "0f00d7311d2645a7a3bd7acbb82ff895756e4f607b673d99e0f258896b51a06b.wav",
+      "sha256": "e551f3c1092795529a1470a107d5787d5c0962737a3e856afd1b22a84f1e86d9",
+      "durationMs": 738,
+      "reusedPreview": false,
+      "modelText": "ижкар"
+    },
+    {
+      "text": "Кенеш",
+      "key": "кенеш",
+      "file": "45ae8312f01cd9f9a1af57489297750704979ba947e7d2a70d9b8653cd82a53a.wav",
+      "sha256": "661e3a0824af9d4e47b050e9344c29598a51f7b515d5b5c020388910946c4a92",
+      "durationMs": 675,
+      "reusedPreview": false,
+      "modelText": "кенеш"
+    },
+    {
+      "text": "Тракт",
+      "key": "тракт",
+      "file": "20dd7ecea0a5ab6a6be0a9659b28f63edf211053a5fa119fe79d95a0d8acc2d6.wav",
+      "sha256": "d7fdf61860e8cc1c8fa37ab28d60d17032f11d35d29de3247305e8f1221945c8",
+      "durationMs": 662,
+      "reusedPreview": false,
+      "modelText": "тракт"
+    },
+    {
+      "text": "Театр",
+      "key": "театр",
+      "file": "489a2d6d6f1bdf1b661aa32cef5030472669045e3913399433ff55cb14e7ca8c.wav",
+      "sha256": "749b353fec61b29674edfaf1e35a31d03a572c285c99eabd0f71c6e136666024",
+      "durationMs": 762,
+      "reusedPreview": false,
+      "modelText": "театр"
+    },
+    {
+      "text": "Музей",
+      "key": "музей",
+      "file": "e143c07fd74064bddbe9e0887e47e825cc0c9860bbd272bd30cacf5cf58ac6b7.wav",
+      "sha256": "fe9ad1e8d4cb20fcbc5bcce892a84853897a5c531a004a3ec743dea8f5035686",
+      "durationMs": 675,
+      "reusedPreview": false,
+      "modelText": "музей"
+    },
+    {
+      "text": "Орнамент",
+      "key": "орнамент",
+      "file": "99d48cc50b7bcbf98fea59632f7a2541f128324c9bd28cf9bbfb1bdb09b211c6.wav",
+      "sha256": "3e9f719b47be7117211401c53fcee2e7df98ce6fbc9c50485cb83926425500ce",
+      "durationMs": 900,
+      "reusedPreview": false,
+      "modelText": "орнамент"
+    },
+    {
+      "text": "Флаг",
+      "key": "флаг",
+      "file": "a4b57c0de7912443d0ddcc9fcfcbacbd4781395ed584155e991d5ab641e02b86.wav",
+      "sha256": "7953b195d352d99b6642cb68a43a79c7bab1e581a518e6c150407b18162fc5c2",
+      "durationMs": 600,
+      "reusedPreview": false,
+      "modelText": "флаг"
+    },
+    {
+      "text": "Герб",
+      "key": "герб",
+      "file": "6f41720f138767123a98b8477298fe0bad33587ef6bfc8973513faa9f7e6b1a6.wav",
+      "sha256": "4a9b8bc34dea4f3ba5a9c5c400638c1d96ae0a4e8b2fbf95e53ee755a20f72d5",
+      "durationMs": 675,
+      "reusedPreview": false,
+      "modelText": "герб"
+    },
+    {
+      "text": "Сугон",
+      "key": "сугон",
+      "file": "137f13f259154bc9298dff1eeaeeb946514838a49005252bad732d5fd46923f2.wav",
+      "sha256": "e734ea6b5c8b7454a690a185e211f68afc531c3a10b96c3e5412f44d908a6b97",
+      "durationMs": 688,
+      "reusedPreview": false,
+      "modelText": "сугон"
+    },
+    {
+      "text": "Кубиста",
+      "key": "кубиста",
+      "file": "6fa13eb7bad5d5f3d7e1a8c46132f636a3eabbf991055ebf4137339e61c6744a.wav",
+      "sha256": "fcf763944d260a3ae36b68e68d07c58c3b975aa2a3ff74a6b6d6abf3f61b03d2",
+      "durationMs": 738,
+      "reusedPreview": false,
+      "modelText": "кубиста"
+    },
+    {
+      "text": "Гордкушман",
+      "key": "гордкушман",
+      "file": "78ad13bc24c80579e3398845ff79b5106724ac6a31c717ce7730f63a9c3641d1.wav",
+      "sha256": "9138666f6032945572d2efd692f695d57f5ccc044bf6c0b3383dd582a9ab5a80",
+      "durationMs": 1088,
+      "reusedPreview": false,
+      "modelText": "гордкушман"
+    },
+    {
+      "text": "Кешыр",
+      "key": "кешыр",
+      "file": "b87dccd0fed2ddd8608ddc1776818420675ac0bbeda0e4c494d69a02d9b33eb6.wav",
+      "sha256": "69190c0fcec960d81074405b64f5bd823881d54f205f62209dde9c209bc0ec9e",
+      "durationMs": 688,
+      "reusedPreview": false,
+      "modelText": "кешыр"
+    },
+    {
+      "text": "Кияр",
+      "key": "кияр",
+      "file": "f4c5764c88d9fb88d34b13ca3f4b4504b6a4ca3b4ca9e0334156eb277bb8d972.wav",
+      "sha256": "d67cebcdc085b7fddbfe0c058e1b6b423f88d4ce238ff4c02edd5eac2f758aba",
+      "durationMs": 662,
+      "reusedPreview": false,
+      "modelText": "кияр"
+    },
+    {
+      "text": "Огреч",
+      "key": "огреч",
+      "file": "c308c8ede463923ee855bfa82af6d2b9be4ba0238b8eddf4e8c4ccca612a35ed.wav",
+      "sha256": "e9193723e22a6d13a10a8729aaca1c08bdbefa445380bc41792f87163d5b7d11",
+      "durationMs": 700,
+      "reusedPreview": false,
+      "modelText": "огреч"
+    },
+    {
+      "text": "Тӧдьы",
+      "key": "тӧдьы",
+      "file": "fd54962b9252d6b493f81d5383fd50bca8339f1fc130a3694277ea4fdc7556ce.wav",
+      "sha256": "10b4e618e9eb0a248a849a29731f2451877f360cce4bd376a9e08f04822a60e8",
+      "durationMs": 600,
+      "reusedPreview": true,
+      "modelText": "тӧдьы"
+    },
+    {
+      "text": "Сьӧд",
+      "key": "сьӧд",
+      "file": "4cf4db628ac0ea6eb7763f741a4f34483719528198e1a313e3a59906360c9be4.wav",
+      "sha256": "b3bd2fc6b2bc83ddbd84f1e168b17730b2ec7248a2d33632ad516afa1fc49efe",
+      "durationMs": 512,
+      "reusedPreview": true,
+      "modelText": "сьӧд"
+    },
+    {
+      "text": "Лыз",
+      "key": "лыз",
+      "file": "465d48f0411f0ef154ff8a0386740e01381550e347e1171e6e55154da94eecb4.wav",
+      "sha256": "17127b81458eefca830fbd39e4133dc989f66fe450e8a9ebddb611b9c308c95b",
+      "durationMs": 550,
+      "reusedPreview": false,
+      "modelText": "лыз"
+    },
+    {
+      "text": "ӵуж",
+      "key": "ӵуж",
+      "file": "d4cf5c92e9c3553e111da879451a1400600077aacda7686edce5b3f5e2fccb5b.wav",
+      "sha256": "5fddbe2cafa290184382d930356a45025d705b2fecc05688f67929f83c82cc54",
+      "durationMs": 525,
+      "reusedPreview": true,
+      "modelText": "ӵуж"
+    },
+    {
+      "text": "Вож",
+      "key": "вож",
+      "file": "8c35ba56975b7ad362e8fb550891bbd1e696ed3fe2ec9f11c44db5220e1b2dd8.wav",
+      "sha256": "45ca1661c198b55feacabf65e965e3f07d5363e56a4de071667c8cf76ad8be39",
+      "durationMs": 550,
+      "reusedPreview": false,
+      "modelText": "вож"
+    },
+    {
+      "text": "Льӧль",
+      "key": "льӧль",
+      "file": "f2d875a7fdd3ef0e36b4d1398f7e32538aa579208a391cf74dfc8d6a5444c0cf.wav",
+      "sha256": "2aa75928f7174d2e144a934e19288b7e3699e6a04f20984ee680363d45fe8c48",
+      "durationMs": 562,
+      "reusedPreview": false,
+      "modelText": "льӧль"
+    },
+    {
+      "text": "Горд",
+      "key": "горд",
+      "file": "f1a3450720bd89dc6fddfb73cde10c2eaad3359e3936f7f75f53e569e582a427.wav",
+      "sha256": "9cd2c1f5151e2474df9c9aaaa7c9e5f0e5c6ca91fafa695402f72834de9843e7",
+      "durationMs": 688,
+      "reusedPreview": false,
+      "modelText": "горд"
+    },
+    {
+      "text": "Шупу",
+      "key": "шупу",
+      "file": "f0b2e4c017233f49247f1d0ecc5eb03f33932d79476e0f12f047989feff75478.wav",
+      "sha256": "ddc31832fd174ac674b6dc2c61ba848d626a2cba872e0c534342a2127ac71998",
+      "durationMs": 600,
+      "reusedPreview": false,
+      "modelText": "шупу"
+    },
+    {
+      "text": "Ягмульыпу",
+      "key": "ягмульыпу",
+      "file": "cbe15c7ce23e5f8fa3faf3be7b5b672d19e4be7b94f55cf254b7e729661551f4.wav",
+      "sha256": "a05d10251a12c90cfd49afa236847e31c1f841c5f7dd98db08d5e564b0de74fc",
+      "durationMs": 1025,
+      "reusedPreview": false,
+      "modelText": "ягмульыпу"
+    },
+    {
+      "text": "Узы",
+      "key": "узы",
+      "file": "348b225467d9b5b3ae3b16fd75c8e57902acd91b5fabc30cdd3bdfc5027bb4e5.wav",
+      "sha256": "9df76d97552408cef86c5143d435fd3e317c282469e12a54b22fe31c58c2c17a",
+      "durationMs": 538,
+      "reusedPreview": false,
+      "modelText": "узы"
+    },
+    {
+      "text": "Боры",
+      "key": "боры",
+      "file": "721a3d0fa19be5f977a54437d3963ab59e83c73f5f6c3fb39a1b614d09f5993d.wav",
+      "sha256": "4182321f04d2ec69655c6723b3db9b7b2c04e0849721d39b40bcf9062e74c8dd",
+      "durationMs": 575,
+      "reusedPreview": false,
+      "modelText": "боры"
+    },
+    {
+      "text": "Нюрмульы",
+      "key": "нюрмульы",
+      "file": "6361514b602acbef8c56c879735a9c7c05e1dff46cdafbb874509117f289f05a.wav",
+      "sha256": "84ff403df1b78002ad1f85b2c1d5ec16416962b5957e19b98ca511f6d5aa46d2",
+      "durationMs": 875,
+      "reusedPreview": false,
+      "modelText": "нюрмульы"
+    },
+    {
+      "text": "Лызмульы",
+      "key": "лызмульы",
+      "file": "2499e5fa34ac4c8618dd8450780a2190c3b1af9f929d7974f76022c3b53294c6.wav",
+      "sha256": "8a89c62f7d5936a3b594bcd54bb3379f71411d940cc1509c07e520d18dc79933",
+      "durationMs": 862,
+      "reusedPreview": false,
+      "modelText": "лызмульы"
+    },
+    {
+      "text": "Мынам воже потэ",
+      "key": "мынам воже потэ",
+      "file": "b8ff49f2a3982a26317e8c9c45e71348decbda41b65bc81e3cfea5754e404ed1.wav",
+      "sha256": "e49827abe1a1c7f5ecddf1810e433d26c9ca3b714e597e81ea6ad09e3446bcc1",
+      "durationMs": 1338,
+      "reusedPreview": true,
+      "modelText": "мынам воже потэ"
+    },
+    {
+      "text": "Мон шумпотӥсько",
+      "key": "мон шумпотӥсько",
+      "file": "65bc8e6435519d699d2e16668c984aa4eae390920982d32c24a7250c678b7baf.wav",
+      "sha256": "9800debb1280479e69d0d6a64af750c52de739c92fb618ad6763dcde0bae25a4",
+      "durationMs": 1275,
+      "reusedPreview": true,
+      "modelText": "мон шумпотӥсько"
+    },
+    {
+      "text": "Мон кышкасько",
+      "key": "мон кышкасько",
+      "file": "7b5ccf5fa6014bd6ee0d1380a4b8ead4f7814c673f8b87e7b90e8f77ac0789b8.wav",
+      "sha256": "9a963bd84de0608fd5926905920501ba18cb5839f4ec0f5b8842f8d28823cbcc",
+      "durationMs": 1188,
+      "reusedPreview": false,
+      "modelText": "мон кышкасько"
+    },
+    {
+      "text": "Мон тонэ яратӥсько",
+      "key": "мон тонэ яратӥсько",
+      "file": "8fc1d2da8f77890c8338b488cb221497e9ebb410c6669a5c089d8885f99a4dd1.wav",
+      "sha256": "4b6a94bfee849f5e588f1f385086ea4b8d653908f10ce62bb801767d2111465f",
+      "durationMs": 1538,
+      "reusedPreview": true,
+      "modelText": "мон тонэ яратӥсько"
+    },
+    {
+      "text": "Ойдолэ тодматском!",
+      "key": "ойдолэ тодматском!",
+      "file": "4ea9fb32f07afa3c7dd6fab61b3bc2142645c59aaeeade08cfb24f6022a8a408.wav",
+      "sha256": "799cfb0e62d3063c84a01d706bdb3c4e562c1a7fe9c9c16f7b6e34552dc7f3f1",
+      "durationMs": 1562,
+      "reusedPreview": true,
+      "modelText": "ойдолэ тодматском"
+    },
+    {
+      "text": "Мынам нимы…",
+      "key": "мынам нимы…",
+      "file": "f8d45cab7f9094005fa0620e2664abf8242a10074af634c873fc15a7e7ceb6a0.wav",
+      "sha256": "4e09072de4477b987da908ddafef8b95998db96876168304cf70ee0480a35bcc",
+      "durationMs": 1112,
+      "reusedPreview": false,
+      "modelText": "мынам нимы…"
+    },
+    {
+      "text": "Мон уг валаськы",
+      "key": "мон уг валаськы",
+      "file": "ec63cbaadc15a34721c5432aac0c55cb85f906eeff25db297135686c3d4498ed.wav",
+      "sha256": "a203ef13863b02b048250e62f16fec41eea48380778df8755cd8ba768d971102",
+      "durationMs": 1212,
+      "reusedPreview": true,
+      "modelText": "мон уг валаськы"
+    },
+    {
+      "text": "Кыл",
+      "key": "кыл",
+      "file": "bef7737755e94feb11d60b4fed60d792aead9d50be22897e782bd4b76beefd2a.wav",
+      "sha256": "7eb7b7c8a4e7ae9e5fe2b961743476280d588314f9eef16140addc02a8da12c3",
+      "durationMs": 500,
+      "reusedPreview": false,
+      "modelText": "кыл"
+    },
+    {
+      "text": "Кылбур",
+      "key": "кылбур",
+      "file": "6f7dd44ba596bd83e27ab29db31695988acd9dc4e5a5460a8d1386fbc2eeb312.wav",
+      "sha256": "e96936884dd7d11e69a4553f9134ef7298bc9cda163e5e10a40d8a1053a221bc",
+      "durationMs": 700,
+      "reusedPreview": false,
+      "modelText": "кылбур"
+    },
+    {
+      "text": "Ним",
+      "key": "ним",
+      "file": "9cc468d0744aca6be7a09d9bff087fd85c4a9d7ec618ccf6bb1c9491269a35c1.wav",
+      "sha256": "4412bd41a88db684b224409b57f69f523a00088ae7979f015ad71da7b59c34da",
+      "durationMs": 550,
+      "reusedPreview": false,
+      "modelText": "ним"
+    },
+    {
+      "text": "Гожтаськы",
+      "key": "гожтаськы",
+      "file": "aa8a1e0ac6c247fa561a6685089143561c604f29a011b51d86500f30ac27786d.wav",
+      "sha256": "82e387c907cb2810357f792a7856a97a383de32bae5a1d04da32994f593a5ef7",
+      "durationMs": 975,
+      "reusedPreview": false,
+      "modelText": "гожтаськы"
+    },
+    {
+      "text": "Лектьы",
+      "key": "лектьы",
+      "file": "98a4ddf62f8b5f755764b5108be95c96bc2b6b0aa238062f974bb35dc031b45b.wav",
+      "sha256": "89a9ed5d82587b1afbacdab267feb0deea542de7430dc4395fea32ac469eb4c9",
+      "durationMs": 725,
+      "reusedPreview": false,
+      "modelText": "лектьы"
+    }
+  ]
+}

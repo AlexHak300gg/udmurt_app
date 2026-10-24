@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ӟеч-а бур-а удмурт кыл?</string>
+
+    <!-- Навигация -->
+    <string name="menu_learning">Обучение</string>
+    <string name="menu_games">Игры</string>
+    <string name="menu_profile">Профиль</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="back">Назад</string>
+    <string name="next">Далее</string>
+    <string name="done">Готово</string>
+    <string name="cancel">Отмена</string>
+    <string name="retry">Ещё разок!</string>
+    <string name="close">Закрыть</string>
+    <string name="loading">Загружаем…</string>
+
+    <!-- Сплэш и онбординг -->
+    <string name="splash_tagline">Здравствуй, удмуртский язык!</string>
+    <string name="onboarding_title_1">Ӧслытӟе кылзаськы</string>
+    <string name="onboarding_text_1">Крупные карточки, картинки и озвучка помогут выучить первые удмуртские слова.</string>
+    <string name="onboarding_title_2">Играсъёс лыдӟисько</string>
+    <string name="onboarding_text_2">Шесть весёлых игр закрепят слова: выбери пару, собери слово, найди лишнее!</string>
+    <string name="onboarding_title_3">Мон пыртэ уг вунал</string>
+    <string name="onboarding_text_3">Всё работает без интернета. Слово дня, конфетти и звёзды ждут каждый день.</string>
+    <string name="skip">Пропустить</string>
+    <string name="start">Начать!</string>
+    <string name="onboarding_streak">5 дней подряд</string>
+    <string name="auth_tab_login">Вход</string>
+    <string name="auth_tab_register">Регистрация</string>
+
+    <!-- Вход -->
+    <string name="auth_title">Очытэм</string>
+    <string name="auth_subtitle">Твой прогресс сохранится и вернётся</string>
+    <string name="auth_email">E-mail</string>
+    <string name="auth_password">Пароль</string>
+    <string name="auth_name">Как тебя зовут?</string>
+    <string name="auth_login">Войти</string>
+    <string name="auth_register">Зарегистрироваться</string>
+    <string name="auth_guest">Играть без регистрации</string>
+    <string name="auth_forgot">Забыли пароль?</string>
+    <string name="auth_forgot_cloud">Ссылка для сброса приходит на почту после включения синхронизации.</string>
+    <string name="auth_forgot_local">Доступно после включения синхронизации</string>
+    <string name="auth_switch_to_register">Нет аккаунта? Записаться!</string>
+    <string name="auth_switch_to_login">Уже есть аккаунт? Очы!</string>
+    <string name="auth_error_email">Нужен e-mail в формате name@mail.ru</string>
+    <string name="auth_error_password">Пароль от 6 символов</string>
+    <string name="auth_error_name">Введи имя (можно короткое)</string>
+    <string name="auth_cloud_mode">Облачный режим Supabase включён</string>
+    <string name="auth_local_mode">Локальный аккаунт: данные только на этом устройстве</string>
+
+    <!-- Главное меню -->
+    <string name="menu_greeting">Ӟечбур, %1$s!</string>
+    <string name="menu_explore">Куда пойдём?</string>
+    <string name="menu_sub">Куда пойдём сегодня?</string>
+    <string name="menu_select">Выбери занятие</string>
+    <string name="menu_tiles_games">6 игр, зарабатывай звёзды</string>
+    <string name="menu_tiles_learning">13 тем</string>
+    <string name="menu_tiles_profile">Медали</string>
+    <string name="word_of_day">Слово дня</string>
+    <string name="streak_days">дней подряд</string>
+
+    <!-- Обучение -->
+    <string name="topics_title">Темасъёс</string>
+    <string name="topics_count">%1$d тем · %2$d слов</string>
+    <string name="topic_continue">Продолжить</string>
+    <string name="word_no">Слово № %1$d</string>
+    <string name="topic_progress">Изучено %1$d из %2$d</string>
+    <string name="know">Знаю!</string>
+    <string name="repeat">Повторить</string>
+    <string name="cards_hint">Свайпни карточку вправо или влево</string>
+    <string name="topic_complete">Молодец! Тема закрыта!</string>
+    <string name="word_translation">Перевод</string>
+    <string name="example_label">Пример</string>
+    <string name="pronunciation">Произношение</string>
+
+    <!-- Игры -->
+    <string name="games_title">Играсъёс</string>
+    <string name="games_hint">Шесть игр: выбирай и зарабатывай звёзды</string>
+    <string name="game_choice">Выбери перевод</string>
+    <string name="game_choice_sub">Подбери слово</string>
+    <string name="game_odd">Найди лишнее слово</string>
+    <string name="game_odd_sub">Что не подходит?</string>
+    <string name="game_sorting">Сортировка</string>
+    <string name="game_sorting_sub">Слова и категории</string>
+    <string name="game_memory">Найди пару</string>
+    <string name="game_memory_sub">Карточки-пары</string>
+    <string name="game_builder">Собери слово</string>
+    <string name="game_builder_sub">Буквы по порядку</string>
+    <string name="game_truefalse">Правда или ложь</string>
+    <string name="game_tf_sub">Верно или нет?</string>
+    <string name="round_label">Раунд %1$d из %2$d</string>
+    <string name="correct_answer">Молодец!</string>
+    <string name="almost_answer">Почти! Ещё разок!</string>
+    <string name="how_translate">Как переводится?</string>
+    <string name="check_word">Проверить</string>
+    <string name="memory_pairs">Пар: %1$d из %2$d</string>
+    <string name="game_finished">Игра окончена!</string>
+    <string name="result_mood_3">Абсолютно точно!</string>
+    <string name="result_mood_2">Отлично, почти без ошибок!</string>
+    <string name="result_mood_1">Хорошо, продолжаем!</string>
+    <string name="result_mood_0">Ещё разок — всё получится!</string>
+    <string name="result_score">очки</string>
+    <string name="result_words">слова</string>
+    <string name="result_stars">звёзды</string>
+    <string name="you_learned_words">+ %1$d слов</string>
+    <string name="your_score">Твой счёт: %1$d</string>
+    <string name="stars_award">Звёзды: %1$d</string>
+    <string name="play_again">Играть ещё</string>
+    <string name="to_menu">В меню</string>
+    <string name="sort_drag_hint">Перетащи слова в подходящую корзину</string>
+    <string name="memory_hint">Найди одинаковые карточки</string>
+    <string name="builder_hint">Нажимай буквы по порядку</string>
+    <string name="true_label">Верно</string>
+    <string name="false_label">Не верно</string>
+    <string name="category_label">Категория</string>
+
+    <!-- Статистика и отчёт -->
+    <string name="stats_title">Статистика</string>
+    <string name="stats_subtitle">Твой прогресс за неделю</string>
+    <string name="stats_learned_fmt">%1$d слов</string>
+    <string name="stats_learned_of">выучено из %1$d</string>
+    <string name="stats_cap_games">игр</string>
+    <string name="stats_cap_accuracy">точность</string>
+    <string name="stats_cap_days">дней</string>
+    <string name="stats_cap_words">слов</string>
+    <string name="activity_7">7 дней</string>
+    <string name="words_learned">Слов изучено</string>
+    <string name="total_words">Всего слов</string>
+    <string name="games_played">Игр сыграно</string>
+    <string name="accuracy">Точность</string>
+    <string name="current_streak">Текущая серия</string>
+    <string name="best_streak">Лучшая серия</string>
+    <string name="mistake_words">Чаще всего ошибаешься</string>
+    <string name="activity_week">Активность за 7 дней</string>
+    <string name="total_time">Общее время игр</string>
+    <string name="no_mistakes">Ошибок почти нет — супер!</string>
+    <string name="report_title">Отчёт для родителей</string>
+    <string name="report_intro">Сводка прогресса за неделю</string>
+    <string name="report_weak_topics">Темы, где стоит потренироваться</string>
+    <string name="report_share">Поделиться отчётом</string>
+
+    <!-- Профиль -->
+    <string name="profile_title">Профиль</string>
+    <string name="profile_stat_games">игр</string>
+    <string name="logout_account">Выйти из аккаунта</string>
+    <string name="profile_name">Имя</string>
+    <string name="profile_avatar">Аватар</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="old_password">Старый пароль</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="save">Сохранить</string>
+    <string name="logout">Выйти</string>
+    <string name="delete_account">Удалить аккаунт</string>
+    <string name="delete_confirm">Удалить аккаунт? Прогресс останется на устройстве.</string>
+    <string name="about_udmurt">Об удмуртском языке</string>
+    <string name="facts_title">Интересные факты</string>
+    <string name="fact_1">Удмуртский язык принадлежит к пермской группе финно-угорских языков.</string>
+    <string name="fact_2">На нём говорят около 460 тысяч человек, в основном в Удмуртии.</string>
+    <string name="fact_3">Удмуртский алфавит — на основе кириллицы, в нём есть буквы ӧ, ӱ, ӵ, Ӟ, ӥ, ӆ, ӹ.</string>
+    <string name="fact_4">«Ӟечбур!» — «Здравствуй!», а «Тау!» — «Спасибо!».</string>
+    <string name="fact_5">Столица Удмуртии — Ижевск, по-удмуртски Ижкар.</string>
+    <string name="fact_6">Государственный язык республики наряду с русским.</string>
+    <string name="profile_error_old">Введи старый пароль</string>
+    <string name="achievements_title">Достижения</string>
+    <string name="no_achievements">Первые медали уже рядом — начни играть!</string>
+    <string name="ach_first_word">Первое слово</string>
+    <string name="ach_streak_3">3 дня подряд</string>
+    <string name="ach_streak_7">Неделя подряд</string>
+    <string name="ach_topics_done">Все темы изучены</string>
+    <string name="ach_games_10">10 игр сыграно</string>
+    <string name="guest_label">Гость</string>
+    <string name="cloud_badge">Облако</string>
+    <string name="local_badge">Локально</string>
+
+    <!-- Настройки -->
+    <string name="settings_title">Настройки</string>
+    <string name="setting_sound">Звук</string>
+    <string name="setting_volume">Громкость озвучки</string>
+    <string name="setting_word_notify">Слово дня в 9:00</string>
+    <string name="setting_geolocation">Геолокация</string>
+    <string name="setting_geolocation_hint">Только для локализации приветствия; офлайн не мешает</string>
+    <string name="geo_dialog_title">Геолокация</string>
+    <string name="geo_dialog_text">Разреши геолокацию — подберём приветствие под твой регион. Необязательно: всё работает и без интернета.</string>
+    <string name="allow">Разрешить</string>
+    <string name="geo_denied">Геолокация не разрешена — ничего страшного, всё работает офлайн!</string>
+    <string name="setting_language">Язык</string>
+    <string name="lang_russian">Русский</string>
+    <string name="lang_udmurt">Удмурт кыл</string>
+    <string name="setting_theme">Тема</string>
+    <string name="theme_system">Авто</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="setting_about">О приложении</string>
+    <string name="setting_version">Версия %1$s</string>
+    <string name="notifications_permission_rationale">Чтобы присылать слово дня, разреши уведомления в настройках Android.</string>
+    <string name="sync_section">Синхронизация</string>
+    <string name="sync_local">Локальный режим: без сети, прогресс на устройстве</string>
+    <string name="sync_cloud">Облачный режим Supabase активен</string>
+
+    <!-- Слово дня -->
+    <string name="wod_unknown">Ещё не знал(а) такое слово</string>
+    <string name="wod_listen">Прослушать</string>
+    <string name="wod_every_day">Новое слово каждый день в 9:00</string>
+
+    <!-- Профиль: статы -->
+    <string name="profile_stat_words">слов</string>
+    <string name="profile_stat_days">дней</string>
+
+    <!-- Уведомления -->
+    <string name="notifications_channel">Слово дня</string>
+    <string name="notification_word_title">Слово дня — выучи вместе с нами!</string>
+</resources>
