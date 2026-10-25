@@ -53,7 +53,16 @@ import org.udmurtlang.learn.core.designsystem.OrnamentBand
 import org.udmurtlang.learn.core.designsystem.StarGlyph
 import org.udmurtlang.learn.core.designsystem.StarMark
 import org.udmurtlang.learn.core.designsystem.StarPattern
+import org.udmurtlang.learn.core.designsystem.ZcInk
+import org.udmurtlang.learn.core.designsystem.ZcOrangeOnDark
+import org.udmurtlang.learn.core.designsystem.ZcPurple
+import org.udmurtlang.learn.core.designsystem.ZcPurpleOnDark
 import org.udmurtlang.learn.core.designsystem.ZcRed
+import org.udmurtlang.learn.core.designsystem.ZcRedDark
+import org.udmurtlang.learn.core.designsystem.ZcRedOnDark
+import org.udmurtlang.learn.core.designsystem.ZcTeal
+import org.udmurtlang.learn.core.designsystem.ZcTealOnDark
+import org.udmurtlang.learn.core.designsystem.ZcWhite
 import org.udmurtlang.learn.data.local.AppDataStore
 import org.udmurtlang.learn.domain.repository.AccountRepository
 import org.udmurtlang.learn.feature.navigation.Routes
@@ -112,24 +121,28 @@ fun SplashScreen(
         destination?.let(onFinished)
     }
 
+    // Брендбук: коралловый экран, белый логотип, цветной ряд орнаментов внизу.
+    // В тёмной теме фон нейтральный, логотип коралловый.
+    val bg = if (brand.isDark) MaterialTheme.colorScheme.background else ZcRed
+    val on = if (brand.isDark) MaterialTheme.colorScheme.onBackground else ZcWhite
+    val onMuted = if (brand.isDark) MaterialTheme.colorScheme.onSurfaceVariant else ZcWhite.copy(alpha = 0.85f)
+    val ornamentColors = if (brand.isDark) {
+        listOf(ZcRedOnDark, ZcTealOnDark, ZcPurpleOnDark, ZcOrangeOnDark, ZcWhite, ZcRedOnDark)
+    } else {
+        listOf(ZcWhite, ZcTeal, ZcPurple, ZcWhite, ZcInk, ZcTeal)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(bg)
             .alpha(contentAlpha),
     ) {
         StarPattern(
             modifier = Modifier.fillMaxSize(),
-            color = ZcRed,
+            color = on,
             alpha = 0.05f,
             cell = 110.dp,
-        )
-
-        OrnamentBand(
-            color = ZcRed,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 26.dp),
         )
 
         Column(
@@ -139,22 +152,17 @@ fun SplashScreen(
                 .padding(horizontal = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                StarGlyph(
-                    modifier = Modifier.size(120.dp),
-                    color = ZcRed.copy(alpha = 0.12f),
-                )
-                StarMark(
-                    color = ZcRed,
-                    size = 96.dp,
-                    modifier = Modifier.graphicsLayer {
-                        scaleX = starScale.value
-                        scaleY = starScale.value
-                        rotationZ = starRotation.value * 180f
-                    },
-                )
-            }
-            Spacer(modifier = Modifier.height(26.dp))
+            StarMark(
+                color = if (brand.isDark) ZcRedDark else ZcWhite,
+                markColor = bg,
+                size = 132.dp,
+                modifier = Modifier.graphicsLayer {
+                    scaleX = starScale.value
+                    scaleY = starScale.value
+                    rotationZ = starRotation.value * 180f
+                },
+            )
+            Spacer(modifier = Modifier.height(28.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.graphicsLayer {
@@ -164,47 +172,36 @@ fun SplashScreen(
             ) {
                 Text(
                     text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Black,
-                    letterSpacing = 0.8.sp,
-                    color = if (brand.isDark) {
-                        MaterialTheme.colorScheme.onBackground
-                    } else {
-                        ZcRed
-                    },
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = on,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = stringResource(R.string.splash_tagline),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = onMuted,
                     textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Box(modifier = Modifier.width(96.dp)) {
-                    OrnamentBand(
-                        color = ZcRed.copy(alpha = 0.7f),
-                        height = 12.dp,
-                        diamondSize = 10.dp,
-                    )
-                }
                 Spacer(modifier = Modifier.height(30.dp))
-                LoadingStars()
+                LoadingStars(color = on)
             }
         }
 
         OrnamentBand(
-            color = ZcRed,
+            colors = ornamentColors,
+            height = 40.dp,
+            diamondSize = 30.dp,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 26.dp),
+                .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
         )
     }
 }
 
 @Composable
-private fun LoadingStars() {
+private fun LoadingStars(color: androidx.compose.ui.graphics.Color = ZcRed) {
     val transition = rememberInfiniteTransition(label = "splashLoading")
     val phase by transition.animateFloat(
         initialValue = 0f,
@@ -222,7 +219,7 @@ private fun LoadingStars() {
             }
             StarGlyph(
                 size = 12.dp,
-                color = ZcRed.copy(alpha = 0.3f + 0.7f * brightness),
+                color = color.copy(alpha = 0.3f + 0.7f * brightness),
             )
         }
     }

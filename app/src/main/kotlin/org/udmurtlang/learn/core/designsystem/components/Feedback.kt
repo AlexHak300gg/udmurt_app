@@ -98,6 +98,8 @@ fun StreakBadge(
     days: Int,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    container: Color = ZcRed,
+    contentColor: Color = Color.White,
 ) {
     val shape = CircleShape
     val content: @Composable () -> Unit = {
@@ -119,18 +121,18 @@ fun StreakBadge(
             modifier = modifier,
             onClick = onClick,
             shape = shape,
-            color = ZcRed,
-            contentColor = Color.White,
-            shadowElevation = 2.dp,
+            color = container,
+            contentColor = contentColor,
+            shadowElevation = 0.dp,
             content = content,
         )
     } else {
         Surface(
             modifier = modifier,
             shape = shape,
-            color = ZcRed,
-            contentColor = Color.White,
-            shadowElevation = 2.dp,
+            color = container,
+            contentColor = contentColor,
+            shadowElevation = 0.dp,
             content = content,
         )
     }

@@ -55,13 +55,13 @@ import org.udmurtlang.learn.core.designsystem.chromeOnVividText
 import org.udmurtlang.learn.core.designsystem.onVivid
 import org.udmurtlang.learn.core.designsystem.onVividMuted
 
-// ---------- Градиенты бренда ----------
+// ---------- Заливки бренда (брендбук — плоские цвета, без градиентов) ----------
 
 object Gradients {
     val red: Brush = Brush.verticalGradient(listOf(ZcRedTop, ZcRedBottom))
     val orange: Brush = Brush.verticalGradient(listOf(ZcOrangeTop, ZcOrangeBottom))
-    val purple: Brush = Brush.verticalGradient(listOf(ZcPurple, ZcPurpleDeep))
-    val teal: Brush = Brush.verticalGradient(listOf(ZcTeal, ZcTealDeep))
+    val purple: Brush = Brush.verticalGradient(listOf(ZcPurple, ZcPurple))
+    val teal: Brush = Brush.verticalGradient(listOf(ZcTeal, ZcTeal))
 }
 
 // ---------- Хедеры страниц ----------

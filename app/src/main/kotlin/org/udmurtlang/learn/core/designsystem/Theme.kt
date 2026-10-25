@@ -96,15 +96,15 @@ private val LightColors = lightColorScheme(
 )
 
 private val DarkColors = darkColorScheme(
-    primary = ZcRed,
+    primary = ZcRedDark,
     onPrimary = ZcWhite,
     primaryContainer = DarkPrimaryContainer,
     onPrimaryContainer = DarkOnPrimaryContainer,
-    secondary = ZcTeal,
+    secondary = ZcTealDark,
     onSecondary = ZcWhite,
     secondaryContainer = DarkSecondaryContainer,
     onSecondaryContainer = DarkOnSecondaryContainer,
-    tertiary = ZcOrange,
+    tertiary = ZcOrangeDark,
     onTertiary = ZcWhite,
     tertiaryContainer = DarkTertiaryContainer,
     onTertiaryContainer = DarkOnTertiaryContainer,
@@ -123,7 +123,7 @@ private val DarkColors = darkColorScheme(
     surfaceContainerLow = ZcDarkCard,
     inverseSurface = ZcDarkInk,
     inverseOnSurface = ZcDarkBg,
-    inversePrimary = ZcRedTop,
+    inversePrimary = ZcRedOnDark,
 )
 
 @Composable

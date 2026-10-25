@@ -126,6 +126,7 @@ fun GhostButton(
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     icon: ImageVector? = null,
     enabled: Boolean = true,
+    borderColor: Color = MaterialTheme.colorScheme.outline,
 ) {
     Surface(
         onClick = onClick,
@@ -135,7 +136,7 @@ fun GhostButton(
         shape = MaterialTheme.shapes.large,
         color = containerColor,
         contentColor = contentColor,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
+        border = BorderStroke(2.dp, borderColor),
         interactionSource = remember { MutableInteractionSource() },
     ) {
         Row(

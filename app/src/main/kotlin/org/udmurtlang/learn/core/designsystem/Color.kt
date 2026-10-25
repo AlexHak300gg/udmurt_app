@@ -2,37 +2,37 @@ package org.udmurtlang.learn.core.designsystem
 
 import androidx.compose.ui.graphics.Color
 
-// ---- Фирменная палитра макета (кремовый фон, коралл, бирюза, апельсин, фиолет) ----
-val ZcCream = Color(0xFFFDF4E8)          // светлый фон страницы
+// ---- Палитра брендбука «Столетие Удмуртии»: коралл, бирюза, индиго, оранжевый, чёрный ----
+val ZcCream = Color(0xFFFFF7EC)          // светлый фон страницы
 val ZcCard = Color(0xFFFFFFFF)           // карточка на светлом
-val ZcSubtle = Color(0xFFF4EADB)         // вложенные плитки, chips
-val ZcInk = Color(0xFF251A18)            // основной тёмный текст
-val ZcMuted = Color(0xFF9A8B80)          // вторичный текст на кремовом
-val ZcHairline = Color(0xFFF0E3D2)       // тонкие линии/бордеры
-val ZcInkPill = Color(0xFF26201F)        // чёрная кнопка-таблетка
+val ZcSubtle = Color(0xFFF8ECDD)         // вложенные плитки, chips
+val ZcInk = Color(0xFF141414)            // основной тёмный текст
+val ZcMuted = Color(0xFF6E6A66)          // вторичный текст на кремовом
+val ZcHairline = Color(0xFFEADFD0)       // тонкие линии/бордеры
+val ZcInkPill = Color(0xFF141414)        // чёрная кнопка-таблетка
 
 // Тёмная тема
-val ZcDarkBg = Color(0xFF1A1114)
-val ZcDarkCard = Color(0xFF2B2126)
-val ZcDarkSubtle = Color(0xFF392E33)
-val ZcDarkInk = Color(0xFFF4ECE7)
-val ZcDarkMuted = Color(0xFFAE9FA5)
-val ZcDarkHairline = Color(0xFF443840)
+val ZcDarkBg = Color(0xFF15131B)
+val ZcDarkCard = Color(0xFF24212C)
+val ZcDarkSubtle = Color(0xFF2F2B38)
+val ZcDarkInk = Color(0xFFF4F1F8)
+val ZcDarkMuted = Color(0xFFA8A3B3)
+val ZcDarkHairline = Color(0xFF3A3642)
 
-// Яркие бутылки бренда
-val ZcRed = Color(0xFFF4574B)            // коралл — звезда, слово дня, игры
-val ZcRedTop = Color(0xFFF97A6C)         // градиент сверху
-val ZcRedBottom = Color(0xFFF0433B)      // градиент снизу
-val ZcTeal = Color(0xFF2BC3AE)           // бирюза — карточки слов
-val ZcTealDeep = Color(0xFF1BAE9A)
-val ZcOrange = Color(0xFFEF8B1C)         // апельсин — результат, профиль
-val ZcOrangeTop = Color(0xFFF7A649)
-val ZcOrangeBottom = Color(0xFFEC7E11)
-val ZcPurple = Color(0xFF6647C9)         // фиолет — меню игр, викторина
-val ZcPurpleDeep = Color(0xFF4F34AE)     // слово дня, фон викторины
-val ZcPurpleTile = Color(0xFF5B3DB8)     // тёмно-фиолетовая плитка «Собери слово»
-val ZcBerry = Color(0xFFEE5D6C)          // малиновая плитка «Правда или ложь»
-val ZcGold = Color(0xFFF7B733)           // звёзды
+// Фирменные цвета — плоские, без градиентов (Top/Bottom = основной цвет)
+val ZcRed = Color(0xFFFF4647)            // коралл — звезда, слово дня, игры
+val ZcRedTop = Color(0xFFFF4647)         // градиент сверху
+val ZcRedBottom = Color(0xFFFF4647)      // градиент снизу
+val ZcTeal = Color(0xFF00B5A3)           // бирюза — карточки слов
+val ZcTealDeep = Color(0xFF00A896)
+val ZcOrange = Color(0xFFF7821E)         // апельсин — результат, профиль
+val ZcOrangeTop = Color(0xFFF7821E)
+val ZcOrangeBottom = Color(0xFFF7821E)
+val ZcPurple = Color(0xFF4E3AB5)         // фиолет — меню игр, викторина
+val ZcPurpleDeep = Color(0xFF4E3AB5)     // слово дня, фон викторины
+val ZcPurpleTile = Color(0xFF3B2A96)     // тёмно-фиолетовая плитка «Собери слово»
+val ZcBerry = Color(0xFF1E1B24)          // чёрная плитка «Правда или ложь» (брендбук)
+val ZcGold = Color(0xFFFFC233)           // звёзды (тёплый жёлтый, виден на оранжевом)
 val ZcWhite = Color(0xFFFFFFFF)
 
 // Совместимость со старыми ссылками (использовались вне дизайн-системы)
@@ -52,11 +52,11 @@ val LightSurface = ZcCard
 val LightSurfaceVariant = ZcSubtle
 val LightOnSurface = ZcInk
 val LightOutline = ZcMuted
-val LightPrimaryContainer = Color(0xFFFFDBD5)
+val LightPrimaryContainer = Color(0xFFFFD9D9)
 val LightOnPrimaryContainer = Color(0xFF5A1A14)
-val LightSecondaryContainer = Color(0xFFCFF0EA)
+val LightSecondaryContainer = Color(0xFFCFF1ED)
 val LightOnSecondaryContainer = Color(0xFF0B5148)
-val LightTertiaryContainer = Color(0xFFFFE4C2)
+val LightTertiaryContainer = Color(0xFFFDE3CC)
 val LightOnTertiaryContainer = Color(0xFF6A3B00)
 
 val DarkBackground = ZcDarkBg
@@ -64,12 +64,23 @@ val DarkSurface = ZcDarkCard
 val DarkSurfaceVariant = ZcDarkSubtle
 val DarkOnSurface = ZcDarkInk
 val DarkOutline = ZcDarkMuted
-val DarkPrimaryContainer = Color(0xFF6B2B25)
+val DarkPrimaryContainer = Color(0xFF3B2428)
 val DarkOnPrimaryContainer = Color(0xFFFFD3CB)
-val DarkSecondaryContainer = Color(0xFF1E5B51)
+val DarkSecondaryContainer = Color(0xFF183836)
 val DarkOnSecondaryContainer = Color(0xFFC9F2EA)
-val DarkTertiaryContainer = Color(0xFF6A4406)
+val DarkTertiaryContainer = Color(0xFF3B2D1F)
 val DarkOnTertiaryContainer = Color(0xFFFFE4C2)
 
 val SuccessGreen = ZcTeal
-val ErrorSoft = Color(0xFFE2544E)
+val ErrorSoft = Color(0xFFE5484D)
+
+// Насыщенные акценты для тёмной темы (чуть темнее, чтобы не «резали» глаз)
+val ZcRedDark = Color(0xFFD63C42)
+val ZcTealDark = Color(0xFF079486)
+val ZcPurpleDark = Color(0xFF4A38B0)
+val ZcOrangeDark = Color(0xFFDE7419)
+// Цветной текст на тёмном фоне
+val ZcRedOnDark = Color(0xFFFF6B6F)
+val ZcTealOnDark = Color(0xFF2CC9B7)
+val ZcPurpleOnDark = Color(0xFF9A8BF5)
+val ZcOrangeOnDark = Color(0xFFFF9A45)

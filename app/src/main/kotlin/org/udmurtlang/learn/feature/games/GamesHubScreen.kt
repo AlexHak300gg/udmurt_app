@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -32,6 +33,8 @@ import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.StarGlyph
 import org.udmurtlang.learn.core.designsystem.ZcBerry
 import org.udmurtlang.learn.core.designsystem.ZcGold
+import org.udmurtlang.learn.core.designsystem.Ornament
+import org.udmurtlang.learn.core.designsystem.UdmOrnament
 import org.udmurtlang.learn.core.designsystem.ZcOrange
 import org.udmurtlang.learn.core.designsystem.ZcPurple
 import org.udmurtlang.learn.core.designsystem.ZcPurpleTile
@@ -85,6 +88,7 @@ fun GamesHubScreen(
         ) {
             items(entries, key = { it.type.slug }) { entry ->
                 GameCard(
+                    ornament = UdmOrnament.entries[entries.indexOf(entry) % UdmOrnament.entries.size],
                     title = stringResource(entry.titleRes),
                     caption = stringResource(entry.captionRes),
                     color = entry.color,
@@ -99,6 +103,7 @@ fun GamesHubScreen(
 
 @Composable
 private fun GameCard(
+    ornament: UdmOrnament,
     title: String,
     caption: String,
     color: Color,
@@ -108,38 +113,29 @@ private fun GameCard(
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(30.dp),
         color = Color.Transparent,
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp),
     ) {
         Box(modifier = Modifier.background(color)) {
-            if (patterned) {
-                org.udmurtlang.learn.core.designsystem.StarPattern(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.White,
-                    alpha = 0.10f,
-                    cell = 56.dp,
-                )
-            }
+            // Макет: один крупный фирменный орнамент в правом верхнем углу
+            Ornament(
+                kind = ornament,
+                color = Color.White.copy(alpha = if (patterned) 0.16f else 0.10f),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = 26.dp, y = (-20).dp)
+                    .size(104.dp),
+            )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(14.dp),
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    StarGlyph(
-                        modifier = Modifier.size(18.dp),
-                        color = Color.White.copy(alpha = 0.55f),
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    BadgeStarCount(stars = stars)
-                }
+                BadgeStarCount(stars = stars)
                 Column {
                     Text(
                         text = title,

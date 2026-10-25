@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -18,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +39,8 @@ import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.ZcRedBottom
 import org.udmurtlang.learn.core.designsystem.ZcRedTop
+import org.udmurtlang.learn.core.designsystem.Ornament
+import org.udmurtlang.learn.core.designsystem.UdmOrnament
 import org.udmurtlang.learn.core.designsystem.ZcWhite
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
 import org.udmurtlang.learn.core.designsystem.components.GameButton
@@ -95,9 +99,17 @@ fun StatsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(26.dp))
+                    .clip(RoundedCornerShape(32.dp))
                     .background(Brush.horizontalGradient(listOf(ZcRedTop, ZcRedBottom))),
             ) {
+                Ornament(
+                    kind = UdmOrnament.HEX,
+                    color = ZcWhite.copy(alpha = 0.16f),
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .offset(x = 24.dp)
+                        .size(130.dp),
+                )
                 Row(
                     modifier = Modifier.padding(18.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -149,27 +161,38 @@ fun StatsScreen(
                 )
             }
 
-            // Активность
-            Row(
+            // Активность — белая карточка, как в макете
+            Surface(
+                shape = RoundedCornerShape(28.dp),
+                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = stringResource(R.string.activity_week),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-                Text(
-                    text = stringResource(R.string.activity_7),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.activity_week),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                        Text(
+                            text = stringResource(R.string.activity_7),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    WeekBarChart(
+                        values = snapshot.weeklyActivity.map { it.correct },
+                        labels = snapshot.weeklyActivity.map { dayLabel(it.day) },
+                    )
+                }
             }
-            WeekBarChart(
-                values = snapshot.weeklyActivity.map { it.correct },
-                labels = snapshot.weeklyActivity.map { dayLabel(it.day) },
-            )
 
             // Прогресс-линия слов
             ProgressLine(

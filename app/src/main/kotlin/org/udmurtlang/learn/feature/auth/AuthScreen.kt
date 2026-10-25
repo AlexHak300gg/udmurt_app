@@ -54,6 +54,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.ZcRed
+import org.udmurtlang.learn.core.designsystem.ZigzagEdge
+import org.udmurtlang.learn.core.designsystem.UdmOrnament
+import org.udmurtlang.learn.core.designsystem.Ornament
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.offset
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.StarPattern
 import org.udmurtlang.learn.core.designsystem.ZcInkPill
@@ -99,19 +105,21 @@ fun AuthScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
                 .background(Brush.verticalGradient(listOf(ZcRedTop, ZcRedBottom))),
         ) {
-            StarPattern(
-                modifier = Modifier.matchParentSize(),
-                color = ZcWhite,
-                alpha = 0.10f,
-                cell = 56.dp,
+            Ornament(
+                kind = UdmOrnament.STAR,
+                color = ZcWhite.copy(alpha = 0.18f),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = 20.dp, y = (-10).dp)
+                    .size(110.dp),
             )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 26.dp),
+                    .statusBarsPadding()
+                    .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 26.dp),
             ) {
                 Text(
                     text = stringResource(R.string.auth_title),
@@ -126,6 +134,8 @@ fun AuthScreen(
                 )
             }
         }
+        // Рваный край шапки, как в макете
+        ZigzagEdge(color = ZcRed, tooth = 22.dp, depth = 11.dp)
 
         Column(
             modifier = Modifier
@@ -133,7 +143,7 @@ fun AuthScreen(
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Сегментация Вход / Регистрация
             Row(

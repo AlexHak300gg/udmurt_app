@@ -9,12 +9,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,7 +43,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.Ornament
+import org.udmurtlang.learn.core.designsystem.UdmOrnament
+import org.udmurtlang.learn.core.designsystem.ZcOrange
 import org.udmurtlang.learn.core.designsystem.ZcPurple
+import org.udmurtlang.learn.core.designsystem.ZcRed
+import org.udmurtlang.learn.core.designsystem.ZcTeal
 import org.udmurtlang.learn.core.designsystem.ZcPurpleDeep
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
 import org.udmurtlang.learn.core.designsystem.components.ProgressLine
@@ -108,7 +118,11 @@ fun TopicListScreen(
             items(topics, key = { it.topic.id }) { item ->
                 val isContinue = item == continueItem
                 if (!isContinue) {
-                    TopicRow(item = item, onClick = { onOpenTopic(item.topic.id) })
+                    TopicRow(
+                        item = item,
+                        accent = topicAccents[topics.indexOf(item) % topicAccents.size],
+                        onClick = { onOpenTopic(item.topic.id) },
+                    )
                 }
             }
             item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -122,14 +136,22 @@ private fun ContinueCard(item: TopicProgress, onClick: () -> Unit) {
     val progress = if (item.total == 0) 0f else item.learned.toFloat() / item.total
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(28.dp),
         color = Color.Transparent,
         modifier = Modifier.fillMaxWidth(),
     ) {
+        Box(modifier = Modifier.background(Brush.linearGradient(listOf(ZcPurple, ZcPurpleDeep)))) {
+        Ornament(
+            kind = UdmOrnament.PINWHEEL,
+            color = Color.White.copy(alpha = 0.14f),
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .offset(x = 30.dp)
+                .size(120.dp),
+        )
         Column(
             modifier = Modifier
-                .background(Brush.linearGradient(listOf(ZcPurple, ZcPurpleDeep)))
-                .padding(horizontal = 14.dp, vertical = 14.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
@@ -173,32 +195,36 @@ private fun ContinueCard(item: TopicProgress, onClick: () -> Unit) {
                 modifier = Modifier.padding(top = 12.dp),
             )
         }
+        }
     }
 }
 
-/** Обычная строка темы: белая карточка, эмодзи, прогресс справа. */
+/** Акценты строк тем по кругу, как в макете. */
+private val topicAccents = listOf(ZcRed, ZcPurple, ZcOrange, ZcTeal)
+
+/** Строка темы по макету: эмодзи в цветной плашке, название, прогресс, счётчик. */
 @Composable
-private fun TopicRow(item: TopicProgress, onClick: () -> Unit) {
+private fun TopicRow(item: TopicProgress, accent: Color, onClick: () -> Unit) {
     val progress = if (item.total == 0) 0f else item.learned.toFloat() / item.total
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 13.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Box(
                 modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(accent.copy(alpha = 0.16f)),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(item.topic.emoji, fontSize = 22.sp)
+                Text(item.topic.emoji, fontSize = 26.sp)
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -211,16 +237,39 @@ private fun TopicRow(item: TopicProgress, onClick: () -> Unit) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                ProgressLine(
+                    progress = progress,
+                    fill = accent,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
             }
             if (item.isComplete) {
-                Text("✅", fontSize = 18.sp)
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.secondary),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            } else {
+                Text(
+                    text = "${item.learned}/${item.total}",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(horizontal = 10.dp, vertical = 5.dp),
+                )
             }
-            Text(
-                text = "${item.learned}/${item.total}",
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = if (item.isComplete) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }

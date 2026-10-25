@@ -108,6 +108,13 @@ fun ResultScreen(
             )
         }
         Spacer(modifier = Modifier.weight(1f))
+        // Ряд фирменных орнаментов над кнопками, как в макете
+        OrnamentBand(
+            color = onVivid(),
+            height = 52.dp,
+            diamondSize = 40.dp,
+            modifier = Modifier.padding(top = 28.dp, bottom = 20.dp),
+        )
         GameButton(
             text = stringResource(R.string.play_again),
             onClick = { state.slug.takeIf { it.isNotBlank() }?.let(onPlayAgain) },
@@ -120,13 +127,12 @@ fun ResultScreen(
         GhostButton(
             text = stringResource(R.string.to_menu),
             onClick = onToMenu,
+            containerColor = Color.Transparent,
+            contentColor = onVivid(),
+            borderColor = onVivid(),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 22.dp),
-        )
-        OrnamentBand(
-            color = onVivid().copy(alpha = 0.85f),
-            modifier = Modifier.padding(bottom = 22.dp),
+                .padding(bottom = 24.dp),
         )
     }
     ConfettiOverlay(active = state.stars >= 2)

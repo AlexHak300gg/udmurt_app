@@ -60,6 +60,10 @@ import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.StarGlyph
 import org.udmurtlang.learn.core.designsystem.ZcGold
+import org.udmurtlang.learn.core.designsystem.ZcTeal
+import org.udmurtlang.learn.core.designsystem.ZcPurple
+import org.udmurtlang.learn.core.designsystem.ZcOrange
+import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.ZcSubtle
 import org.udmurtlang.learn.core.designsystem.ZcWhite
 import org.udmurtlang.learn.core.designsystem.components.CircleAvatar
@@ -74,7 +78,8 @@ import org.udmurtlang.learn.domain.model.StatsSnapshot
 
 private val avatarPresets = listOf("А", "Б", "В", "Г", "Д", "Е", "Ж", "З")
 
-private val goldDeep = Color(0xFFD98F1F)
+/** Цвета медалей по кругу, как в макете. */
+private val medalAccents = listOf(ZcRed, ZcOrange, ZcPurple, ZcTeal)
 
 private data class AchievementBadge(
     val slug: String,
@@ -279,6 +284,7 @@ fun ProfileScreen(
                                 icon = badge.icon,
                                 title = stringResource(badge.titleRes),
                                 unlocked = badge.slug in unlockedSlugs,
+                                accent = medalAccents[achievementCatalog.indexOf(badge) % medalAccents.size],
                             )
                         }
                     }
@@ -508,6 +514,7 @@ private fun MedalTile(
     icon: ImageVector,
     title: String,
     unlocked: Boolean,
+    accent: Color = ZcRed,
 ) {
     val scheme = MaterialTheme.colorScheme
     Surface(
@@ -520,29 +527,12 @@ private fun MedalTile(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
         ) {
+            // Макет: плоская цветная плашка с белой иконкой, закрытая — бежевая с замком
             Box(
                 modifier = Modifier
-                    .size(52.dp)
-                    .clip(CircleShape)
-                    .background(
-                        when {
-                            unlocked -> Brush.verticalGradient(
-                                listOf(ZcGold, goldDeep),
-                            )
-                            else -> Brush.verticalGradient(
-                                listOf(scheme.surfaceVariant, scheme.surfaceVariant.copy(alpha = 0.75f)),
-                            )
-                        },
-                    )
-                    .border(
-                        width = 2.dp,
-                        color = if (unlocked) {
-                            ZcWhite.copy(alpha = 0.65f)
-                        } else {
-                            scheme.outline.copy(alpha = 0.25f)
-                        },
-                        shape = CircleShape,
-                    ),
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(if (unlocked) accent else scheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
                 if (unlocked) {
@@ -550,21 +540,7 @@ private fun MedalTile(
                         imageVector = icon,
                         contentDescription = null,
                         tint = ZcWhite,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clip(CircleShape),
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(52.dp)
-                            .clip(CircleShape)
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(ZcWhite.copy(alpha = 0.25f), ZcWhite.copy(alpha = 0f)),
-                                    startY = 0f,
-                                    endY = Float.POSITIVE_INFINITY,
-                                ),
-                            ),
+                        modifier = Modifier.size(26.dp),
                     )
                 } else {
                     Icon(

@@ -35,6 +35,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.ZigzagEdge
+import org.udmurtlang.learn.core.designsystem.UdmOrnament
+import org.udmurtlang.learn.core.designsystem.Ornament
+import androidx.compose.foundation.layout.offset
 import org.udmurtlang.learn.core.designsystem.StarGlyph
 import org.udmurtlang.learn.core.designsystem.StarPattern
 import org.udmurtlang.learn.core.designsystem.ZcGold
@@ -149,23 +153,47 @@ fun OnboardingScreen(
 
 @Composable
 private fun OnboardingPage(page: Page) {
-    Box(
+    // Макет: цветная картинка сверху с орнаментами и зубчатым краем, текст — на светлом фоне
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(page.bg),
+            .background(MaterialTheme.colorScheme.background),
     ) {
-        StarPattern(modifier = Modifier.fillMaxSize(), color = ZcWhite, alpha = 0.10f)
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+                .fillMaxWidth()
+                .weight(1f)
+                .background(page.bg),
+            contentAlignment = Alignment.Center,
         ) {
+            Ornament(
+                kind = UdmOrnament.STAR,
+                color = ZcWhite.copy(alpha = 0.18f),
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .offset(x = (-30).dp, y = 40.dp)
+                    .size(130.dp),
+            )
+            Ornament(
+                kind = UdmOrnament.HEX,
+                color = ZcWhite.copy(alpha = 0.18f),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = 20.dp, y = 60.dp)
+                    .size(90.dp),
+            )
+            Ornament(
+                kind = UdmOrnament.CROSS,
+                color = ZcWhite.copy(alpha = 0.18f),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-20).dp, y = (-24).dp)
+                    .size(90.dp),
+            )
             Box(
                 modifier = Modifier
                     .size(200.dp)
-                    .clip(RoundedCornerShape(34.dp))
+                    .clip(RoundedCornerShape(36.dp))
                     .background(ZcWhite),
                 contentAlignment = Alignment.Center,
             ) {
@@ -190,49 +218,53 @@ private fun OnboardingPage(page: Page) {
                             Text(
                                 text = "(медведь)",
                                 fontSize = 14.sp,
-                                color = Color(0xFF9A8B80),
+                                color = Color(0xFF6E6A66),
                             )
                         }
                     } else {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            MiniStarTile(bg = Color(0xFFF6EADC), star = ZcOrange)
-                            MiniStarTile(bg = Color(0xFFE4E0EF), star = ZcPurpleDeep)
+                            MiniStarTile(kind = UdmOrnament.STAR, star = ZcRed)
+                            MiniStarTile(kind = UdmOrnament.CROSS, star = ZcOrange)
                         }
                         Spacer(modifier = Modifier.height(10.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            MiniStarTile(bg = Color(0xFFFCE5D8), star = ZcRed)
-                            MiniStarTile(bg = Color(0xFFF7EDD3), star = ZcGold)
+                            MiniStarTile(kind = UdmOrnament.HEX, star = ZcPurpleDeep)
+                            MiniStarTile(kind = UdmOrnament.PINWHEEL, star = ZcTeal)
                         }
                     }
                 }
             }
+        }
+        ZigzagEdge(color = page.bg, tooth = 24.dp, depth = 12.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 24.dp, top = 14.dp, bottom = 8.dp),
+        ) {
             Text(
                 text = stringResource(page.titleRes),
                 style = MaterialTheme.typography.headlineMedium,
-                color = page.onBg,
-                modifier = Modifier.padding(top = 26.dp),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
                 text = stringResource(page.textRes),
                 style = MaterialTheme.typography.bodyMedium,
-                color = page.onBg.copy(alpha = 0.82f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 8.dp),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             )
         }
     }
 }
 
 @Composable
-private fun MiniStarTile(bg: Color, star: Color) {
+private fun MiniStarTile(kind: UdmOrnament, star: Color) {
     Box(
         modifier = Modifier
             .size(54.dp)
-            .clip(CircleShape)
-            .background(bg),
+            .clip(RoundedCornerShape(16.dp))
+            .background(star.copy(alpha = 0.12f)),
         contentAlignment = Alignment.Center,
     ) {
-        StarGlyph(size = 24.dp, color = star)
+        Ornament(kind = kind, color = star, modifier = Modifier.size(30.dp))
     }
 }

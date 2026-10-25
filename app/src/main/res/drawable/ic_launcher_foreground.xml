@@ -1,50 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Талисман: белка-Чипмук в удмуртском орнаменте -->
+<!-- Логотип приложения: звезда с вертушкой из шевронов (брендбук «Столетие Удмуртии») -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-
-    <!-- Хвост -->
-    <path
-        android:fillColor="#C2410C"
-        android:pathData="M72,70 C92,66 96,40 84,26 C78,20 70,22 70,30 C70,38 78,42 80,50 C82,60 74,64 68,62 Z" />
-    <path
-        android:fillColor="#EA580C"
-        android:pathData="M74,64 C88,58 90,40 82,32 C80,44 78,54 70,60 Z" />
-    <!-- Тело -->
-    <path
-        android:fillColor="#9A3412"
-        android:pathData="M40,44 C28,54 28,78 42,86 C56,94 70,86 68,68 C66,52 56,38 40,44 Z" />
-    <!-- Голова -->
-    <path
-        android:fillColor="#EA580C"
-        android:pathData="M54,22 C68,22 76,32 74,44 C72,56 60,62 50,58 C38,54 34,40 40,30 C44,24 48,22 54,22 Z" />
-    <!-- Ушки -->
-    <path
-        android:fillColor="#C2410C"
-        android:pathData="M40,24 C36,16 42,12 46,18 Z" />
-    <path
-        android:fillColor="#C2410C"
-        android:pathData="M66,20 C70,12 76,16 72,24 Z" />
-    <!-- Мордочка -->
-    <path
-        android:fillColor="#FFEDD5"
-        android:pathData="M50,40 C58,38 66,42 64,50 C62,58 52,58 48,52 C45,47 46,42 50,40 Z" />
-    <!-- Глаза -->
-    <path
-        android:fillColor="#1C1917"
-        android:pathData="M48,34 m-2.4,0 a2.4,2.4 0 1,1 4.8,0 a2.4,2.4 0 1,1 -4.8,0" />
-    <path
-        android:fillColor="#1C1917"
-        android:pathData="M62,34 m-2.4,0 a2.4,2.4 0 1,1 4.8,0 a2.4,2.4 0 1,1 -4.8,0" />
-    <!-- Нос -->
-    <path
-        android:fillColor="#1C1917"
-        android:pathData="M54,44 m-2,0 a2,2 0 1,1 4,0 a2,2 0 1,1 -4,0" />
-    <!-- Орнаментальная полоса -->
-    <path
-        android:fillColor="#FACC15"
-        android:pathData="M30,74 l6,-6 l6,6 l-6,6 Z M42,74 l6,-6 l6,6 l-6,6 Z M54,74 l6,-6 l6,6 l-6,6 Z" />
+    <group
+        android:scaleX="0.44"
+        android:scaleY="0.44"
+        android:translateX="21"
+        android:translateY="21">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M75.5,11L88.6471,34.0373L112.824,23.1274L109.92,49.4927L135.892,54.8774L118.045,74.5L135.892,94.1226L109.92,99.5073L112.824,125.873L88.6471,114.963L75.5,138L62.3529,114.963L38.1756,125.873L41.0804,99.5073L15.1079,94.1226L32.955,74.5L15.1079,54.8774L41.0804,49.4927L38.1756,23.1274L62.3529,34.0373L75.5,11Z" />
+        <path
+            android:fillColor="#FF4647"
+            android:pathData="M89.7933,56.1867L75.5,70.48L61.2067,56.1867V41L75.5,55.2933L89.7933,41V56.1867Z" />
+        <path
+            android:fillColor="#FF4647"
+            android:pathData="M61.2067,92.8133L75.5,78.52L89.7933,92.8133L89.7933,108L75.5,93.7067L61.2067,108L61.2067,92.8133Z" />
+        <path
+            android:fillColor="#FF4647"
+            android:pathData="M93.8133,88.7933L79.52,74.5L93.8133,60.2067L109,60.2067L94.7067,74.5L109,88.7933L93.8133,88.7933Z" />
+        <path
+            android:fillColor="#FF4647"
+            android:pathData="M57.1867,60.2067L71.48,74.5L57.1867,88.7933L42,88.7933L56.2933,74.5L42,60.2067L57.1867,60.2067Z" />
+    </group>
 </vector>
