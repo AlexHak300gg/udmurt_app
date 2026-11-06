@@ -67,10 +67,9 @@ sealed interface GameRound {
 
 data class SortItem(
     val wordId: String,
-    val label: String,
+    val udm: String,
     val emoji: String,
     val categoryIndex: Int,
-    val udm: String,
 )
 
 data class MemorySide(

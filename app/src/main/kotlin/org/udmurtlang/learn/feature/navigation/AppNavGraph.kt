@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.lifecycle.compose.dropUnlessResumed
@@ -26,6 +27,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import org.udmurtlang.learn.core.designsystem.AppearanceSelection
 import org.udmurtlang.learn.core.media.WordSpeaker
 import org.udmurtlang.learn.feature.auth.AuthScreen
 import org.udmurtlang.learn.feature.learning.TopicListScreen
@@ -47,8 +49,12 @@ private const val SLIDE_MS = 260
 @Composable
 fun AppNavGraph(
     wordSpeaker: WordSpeaker,
+    onAppearanceChange: (AppearanceSelection, () -> Unit) -> Unit,
+    appearanceChanging: Boolean,
     navController: NavHostController = rememberNavController(),
 ) {
+    val changeAppearance by rememberUpdatedState(onAppearanceChange)
+    val changingAppearance by rememberUpdatedState(appearanceChanging)
     DisposableEffect(navController, wordSpeaker) {
         val listener = NavController.OnDestinationChangedListener { _, _, _ -> wordSpeaker.stop() }
         navController.addOnDestinationChangedListener(listener)
@@ -172,7 +178,11 @@ fun AppNavGraph(
             )
         }
         composable(Routes.SETTINGS) {
-            SettingsScreen(onBack = dropUnlessResumed { navController.popBackStack() })
+            SettingsScreen(
+                onBack = dropUnlessResumed { navController.popBackStack() },
+                onAppearanceChange = { selection, apply -> changeAppearance(selection, apply) },
+                appearanceChanging = changingAppearance,
+            )
         }
         composable(Routes.WORD_OF_DAY) {
             WordOfDayScreen(

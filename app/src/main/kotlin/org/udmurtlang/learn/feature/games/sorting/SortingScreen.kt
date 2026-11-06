@@ -16,10 +16,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.os.ConfigurationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
@@ -33,7 +31,6 @@ import org.udmurtlang.learn.core.designsystem.onVivid
 import org.udmurtlang.learn.feature.games.GameEffect
 import org.udmurtlang.learn.feature.games.GameScaffold
 import org.udmurtlang.learn.feature.games.GameTintSorting
-import org.udmurtlang.learn.domain.model.UiLanguage
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -75,7 +72,6 @@ fun SortingScreen(
             return@GameScaffold
         }
         val wide = currentWindowClass().isWide
-        val isUdmurt = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language == UiLanguage.UDMURT.tag
         val categoryNames = when (state.themeId) {
             "animals_plants" -> listOf(stringResource(R.string.sort_animals), stringResource(R.string.sort_plants))
             "edible" -> listOf(stringResource(R.string.sort_edible), stringResource(R.string.sort_inedible))
@@ -104,7 +100,7 @@ fun SortingScreen(
                             val placed = item.wordId in state.placedWordIds
                             if (!placed) {
                                 ChoiceTile(
-                                    label = if (isUdmurt) item.udm else item.label,
+                                    label = item.udm,
                                     modifier = Modifier.weight(1f),
                                     emoji = item.emoji,
                                     state = if (state.selectedItemIndex == index) TileState.CORRECT else TileState.NEUTRAL,
@@ -153,7 +149,7 @@ fun SortingScreen(
                                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 ) {
                                                     Text(
-                                                        text = "${item.emoji} ${if (isUdmurt) item.udm else item.label}",
+                                                        text = "${item.emoji} ${item.udm}",
                                                         style = MaterialTheme.typography.labelMedium,
                                                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                                     )

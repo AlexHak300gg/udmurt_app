@@ -1,11 +1,13 @@
 package org.udmurtlang.learn.data.notifications
 
 import android.content.Context
+import android.util.Log
+import androidx.concurrent.futures.await
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import androidx.work.await
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.CancellationException
 import org.udmurtlang.learn.domain.notifications.NotificationScheduler
 import java.time.LocalTime
 import javax.inject.Inject
@@ -22,9 +24,17 @@ class WordOfDayScheduler @Inject constructor(
             workManager.cancelUniqueWork(WordOfDayWorker.WORK_NAME).await()
             return
         }
-        val alreadyScheduled = workManager.getWorkInfosForUniqueWorkFlow(WordOfDayWorker.WORK_NAME)
-            .first()
-            .any { !it.state.isFinished && WordOfDayWorker.timeTag(time) in it.tags }
+        val alreadyScheduled = try {
+            workManager.getWorkInfosForUniqueWork(WordOfDayWorker.WORK_NAME)
+                .await()
+                .any { !it.state.isFinished && WordOfDayWorker.timeTag(time) in it.tags }
+        } catch (error: CancellationException) {
+            throw error
+        } catch (error: Exception) {
+            // A failed lookup must not prevent replacing the unique reminder.
+            Log.w("WordOfDayScheduler", "Could not read the current reminder", error)
+            false
+        }
         if (alreadyScheduled) return
 
         workManager.enqueueUniquePeriodicWork(

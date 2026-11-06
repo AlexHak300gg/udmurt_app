@@ -59,6 +59,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.BuildConfig
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.AppearanceSelection
 import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
@@ -78,6 +79,8 @@ import kotlin.math.roundToInt
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
+    onAppearanceChange: (AppearanceSelection, () -> Unit) -> Unit,
+    appearanceChanging: Boolean,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
@@ -264,8 +267,14 @@ fun SettingsScreen(
                     title = stringResource(R.string.setting_language),
                     items = langItems,
                     selectedIndex = UiLanguage.entries.indexOf(settings.uiLanguage).coerceAtLeast(0),
-                    onSelect = { index ->
-                        viewModel.onIntent(SettingsIntent.LanguageSelected(UiLanguage.entries[index]))
+                    enabled = !appearanceChanging,
+                    onSelect = { index, _ ->
+                        val language = UiLanguage.entries[index]
+                        if (language != settings.uiLanguage) {
+                            onAppearanceChange(AppearanceSelection.Language(language)) {
+                                viewModel.onIntent(SettingsIntent.LanguageSelected(language))
+                            }
+                        }
                     },
                 )
                 HorizontalDivider(color = scheme.outlineVariant)
@@ -273,8 +282,14 @@ fun SettingsScreen(
                     title = stringResource(R.string.setting_theme),
                     items = themeItems,
                     selectedIndex = ThemeMode.entries.indexOf(settings.themeMode).coerceAtLeast(0),
-                    onSelect = { index ->
-                        viewModel.onIntent(SettingsIntent.ThemeSelected(ThemeMode.entries[index]))
+                    enabled = !appearanceChanging,
+                    onSelect = { index, center ->
+                        val mode = ThemeMode.entries[index]
+                        if (mode != settings.themeMode) {
+                            onAppearanceChange(AppearanceSelection.Theme(mode, center)) {
+                                viewModel.onIntent(SettingsIntent.ThemeSelected(mode))
+                            }
+                        }
                     },
                 )
             }

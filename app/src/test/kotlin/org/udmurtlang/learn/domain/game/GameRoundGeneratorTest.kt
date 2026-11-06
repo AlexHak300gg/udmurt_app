@@ -65,6 +65,7 @@ class GameRoundGeneratorTest {
         assertTrue(round.items.any { it.categoryIndex == 0 })
         assertTrue(round.items.any { it.categoryIndex == 1 })
         assertEquals(round.items.map { it.wordId }.distinct().size, round.items.size)
+        assertTrue(round.items.all { item -> item.udm == words.single { it.id == item.wordId }.udm })
     }
 
     @Test

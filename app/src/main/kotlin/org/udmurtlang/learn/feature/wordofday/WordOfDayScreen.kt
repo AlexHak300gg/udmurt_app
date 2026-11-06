@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -16,8 +15,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,13 +37,10 @@ import org.udmurtlang.learn.core.designsystem.Ornament
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.ScrollableContent
 import org.udmurtlang.learn.core.designsystem.UdmOrnament
-import org.udmurtlang.learn.core.designsystem.ZcInk
 import org.udmurtlang.learn.core.designsystem.ZcOrange
 import org.udmurtlang.learn.core.designsystem.ZcOrangeOnDark
 import org.udmurtlang.learn.core.designsystem.ZcPurple
-import org.udmurtlang.learn.core.designsystem.ZcTeal
 import org.udmurtlang.learn.core.designsystem.brandAccent
-import org.udmurtlang.learn.core.designsystem.components.ConfettiOverlay
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
 import org.udmurtlang.learn.core.designsystem.components.GameButton
 import org.udmurtlang.learn.core.designsystem.components.ZcHeader
@@ -140,32 +134,6 @@ fun WordOfDayScreen(
                         }
                     },
                 )
-                val actionModifier = Modifier.fillMaxWidth().padding(top = 14.dp)
-                if (state.marked) {
-                    Surface(
-                        modifier = actionModifier,
-                        shape = MaterialTheme.shapes.large,
-                        color = brandAccent(ZcTeal),
-                        contentColor = ZcInk,
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(20.dp))
-                            Text(stringResource(R.string.done), style = MaterialTheme.typography.labelLarge)
-                        }
-                    }
-                } else {
-                    GameButton(
-                        text = stringResource(R.string.know),
-                        onClick = viewModel::markKnown,
-                        containerColor = onVivid(),
-                        contentColor = ZcInk,
-                        modifier = actionModifier,
-                    )
-                }
                 Text(
                     stringResource(R.string.wod_related),
                     modifier = Modifier.padding(top = 16.dp, bottom = 6.dp),
@@ -219,7 +187,6 @@ fun WordOfDayScreen(
                 }
             }
         }
-        ConfettiOverlay(active = state.marked)
     }
 }
 

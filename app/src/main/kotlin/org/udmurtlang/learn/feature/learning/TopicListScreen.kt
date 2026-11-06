@@ -41,9 +41,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.stateIn
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.Ornament
@@ -62,20 +62,16 @@ import org.udmurtlang.learn.core.designsystem.components.EmptyState
 import org.udmurtlang.learn.core.designsystem.components.ProgressLine
 import org.udmurtlang.learn.core.designsystem.components.ZcHeader
 import org.udmurtlang.learn.domain.model.TopicProgress
-import org.udmurtlang.learn.domain.usecase.GetTopicsUseCase
+import org.udmurtlang.learn.domain.usecase.ObserveTopicsUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class TopicListViewModel @Inject constructor(
-    private val getTopics: GetTopicsUseCase,
+    observeTopics: ObserveTopicsUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(emptyList<TopicProgress>())
-    val state: StateFlow<List<TopicProgress>> = _state
-
-    init {
-        viewModelScope.launch { _state.value = getTopics() }
-    }
+    val state: StateFlow<List<TopicProgress>> = observeTopics()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }
 
 @Composable

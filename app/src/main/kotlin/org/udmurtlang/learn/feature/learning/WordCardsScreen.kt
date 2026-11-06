@@ -7,10 +7,17 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -103,7 +110,7 @@ fun WordCardsScreen(
                 )
             }
             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                val cardHeight = if (!wide && !short) (maxHeight - 96.dp).coerceAtLeast(270.dp) else 0.dp
+                val cardHeight = if (!wide && !short) (maxHeight - 144.dp).coerceAtLeast(270.dp) else 0.dp
                 ScrollableContent(
                     modifier = Modifier.fillMaxSize(),
                     maxWidth = WideContentWidth,
@@ -131,6 +138,11 @@ fun WordCardsScreen(
                                     containerColor = MaterialTheme.colorScheme.inverseSurface,
                                     contentColor = MaterialTheme.colorScheme.inverseOnSurface,
                                     modifier = Modifier.padding(top = 24.dp).widthIn(max = 320.dp).fillMaxWidth(),
+                                )
+                                PreviousWordButton(
+                                    enabled = !state.answering,
+                                    onClick = { viewModel.onIntent(CardsIntent.Previous) },
+                                    modifier = Modifier.widthIn(max = 320.dp).fillMaxWidth(),
                                 )
                             }
                         }
@@ -161,33 +173,50 @@ fun WordCardsScreen(
                                     )
                                 },
                                 second = {
-                                    BoxWithConstraints(Modifier.fillMaxWidth()) {
-                                        val scheme = MaterialTheme.colorScheme
-                                        val textWidth = maxWidth / LocalDensity.current.fontScale.coerceAtLeast(1f)
-                                        FlowRow(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            maxItemsInEachRow = if (wide || textWidth < 280.dp) 1 else 2,
-                                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                                        ) {
-                                            GhostButton(
-                                                text = stringResource(R.string.not_known),
-                                                containerColor = scheme.surface,
-                                                contentColor = scheme.onSurface,
-                                                borderColor = scheme.onSurfaceVariant,
-                                                enabled = !state.answering,
-                                                onClick = { viewModel.onIntent(CardsIntent.Repeat) },
-                                                modifier = Modifier.weight(1f),
-                                            )
+                                    val scheme = MaterialTheme.colorScheme
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        if (state.reviewing) {
                                             GameButton(
-                                                text = stringResource(R.string.know),
+                                                text = stringResource(R.string.next),
                                                 containerColor = scheme.inverseSurface,
                                                 contentColor = scheme.inverseOnSurface,
-                                                enabled = !state.answering,
-                                                onClick = { viewModel.onIntent(CardsIntent.Know) },
-                                                modifier = Modifier.weight(1f),
+                                                onClick = { viewModel.onIntent(CardsIntent.Next) },
+                                                modifier = Modifier.fillMaxWidth(),
                                             )
+                                        } else {
+                                            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                                                val textWidth = maxWidth / LocalDensity.current.fontScale.coerceAtLeast(1f)
+                                                FlowRow(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    maxItemsInEachRow = if (wide || textWidth < 280.dp) 1 else 2,
+                                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                                                ) {
+                                                    GhostButton(
+                                                        text = stringResource(R.string.not_known),
+                                                        containerColor = scheme.surface,
+                                                        contentColor = scheme.onSurface,
+                                                        borderColor = scheme.onSurfaceVariant,
+                                                        enabled = !state.answering,
+                                                        onClick = { viewModel.onIntent(CardsIntent.Repeat) },
+                                                        modifier = Modifier.weight(1f),
+                                                    )
+                                                    GameButton(
+                                                        text = stringResource(R.string.know),
+                                                        containerColor = scheme.inverseSurface,
+                                                        contentColor = scheme.inverseOnSurface,
+                                                        enabled = !state.answering,
+                                                        onClick = { viewModel.onIntent(CardsIntent.Know) },
+                                                        modifier = Modifier.weight(1f),
+                                                    )
+                                                }
+                                            }
                                         }
+                                        PreviousWordButton(
+                                            enabled = state.index > 0 && !state.answering,
+                                            onClick = { viewModel.onIntent(CardsIntent.Previous) },
+                                            modifier = Modifier.fillMaxWidth(),
+                                        )
                                     }
                                 },
                             )
@@ -197,5 +226,19 @@ fun WordCardsScreen(
             }
         }
         ConfettiOverlay(active = state.finished, modifier = Modifier.matchParentSize())
+    }
+}
+
+@Composable
+private fun PreviousWordButton(enabled: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    TextButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        colors = ButtonDefaults.textButtonColors(contentColor = onVivid()),
+    ) {
+        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+        Spacer(Modifier.width(8.dp))
+        Text(stringResource(R.string.previous_word), textAlign = TextAlign.Center)
     }
 }

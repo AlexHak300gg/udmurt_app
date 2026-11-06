@@ -1,22 +1,29 @@
 package org.udmurtlang.learn.domain.usecase
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import org.udmurtlang.learn.domain.model.ProgressStatus
 import org.udmurtlang.learn.domain.model.TopicProgress
 import org.udmurtlang.learn.domain.repository.ContentRepository
 import org.udmurtlang.learn.domain.repository.ProgressRepository
 import javax.inject.Inject
 
-class GetTopicsUseCase @Inject constructor(
+class ObserveTopicsUseCase @Inject constructor(
     private val content: ContentRepository,
     private val progress: ProgressRepository,
 ) {
-    suspend operator fun invoke(): List<TopicProgress> {
+    operator fun invoke(): Flow<List<TopicProgress>> = flow {
         val topics = content.topics()
-        val known = progress.knownWordIds()
         val wordsByTopic = content.allWords().groupBy { it.topicId }
-        return topics.map { topic ->
-            val words = wordsByTopic[topic.id].orEmpty()
-            TopicProgress(topic, words.count { it.id in known }, words.size)
-        }
+        emitAll(progress.observeProgress().map { entries ->
+            val known = entries.filter { it.status == ProgressStatus.KNOWN }.mapTo(hashSetOf()) { it.wordId }
+            topics.map { topic ->
+                val words = wordsByTopic[topic.id].orEmpty()
+                TopicProgress(topic, words.count { it.id in known }, words.size)
+            }
+        })
     }
 }
 

@@ -1,6 +1,7 @@
 package org.udmurtlang.learn.data.assets
 
 import kotlinx.serialization.json.Json
+import org.udmurtlang.learn.core.media.SpeechAudioAssets
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,6 +34,16 @@ class ContentJsonTest {
         val known = slugs.toSet()
         assertTrue(dto.words.all { it.topic in known })
         assertTrue(slugs.all { slug -> dto.words.count { it.topic == slug } >= 3 })
+    }
+
+    @Test
+    fun `every word and example has a bundled recording`() {
+        val assets = File("src/main/assets")
+        val texts = loadDto().words.flatMap { word -> listOfNotNull(word.udm, word.exampleUdm) }
+        for (text in texts.filter(String::isNotBlank).distinct()) {
+            val audio = assets.resolve(SpeechAudioAssets.path(text))
+            assertTrue(audio.isFile && audio.length() > 44, "Missing WAV recording for $text")
+        }
     }
 
     @Test

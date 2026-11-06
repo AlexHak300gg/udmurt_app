@@ -29,13 +29,20 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -230,8 +237,9 @@ fun SectionChips(
     title: String,
     items: List<String>,
     selectedIndex: Int,
-    onSelect: (Int) -> Unit,
+    onSelect: (Int, Offset?) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     val scheme = MaterialTheme.colorScheme
     FlowRow(
@@ -259,10 +267,18 @@ fun SectionChips(
             ) {
                 items.forEachIndexed { index, item ->
                     val selected = index == selectedIndex
+                    var coordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
                     Surface(
                         selected = selected,
-                        onClick = { onSelect(index) },
-                        modifier = Modifier.weight(1f).fillMaxHeight().heightIn(min = 48.dp),
+                        onClick = {
+                            val center = coordinates?.takeIf { it.isAttached }?.let {
+                                it.localToWindow(Offset(it.size.width / 2f, it.size.height / 2f))
+                            }
+                            onSelect(index, center)
+                        },
+                        enabled = enabled,
+                        modifier = Modifier.weight(1f).fillMaxHeight().heightIn(min = 48.dp)
+                            .onGloballyPositioned { coordinates = it },
                         shape = RoundedCornerShape(21.dp),
                         color = if (selected) scheme.inverseSurface else Color.Transparent,
                         contentColor = if (selected) scheme.inverseOnSurface else scheme.onSurfaceVariant,

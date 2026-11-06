@@ -2,6 +2,7 @@ package org.udmurtlang.learn.core.designsystem
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.LocalContentColor
@@ -200,13 +201,16 @@ private fun animatedColors(progress: Float): ColorScheme {
 @Composable
 fun ZecheburTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    animatePalette: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val progress by animateFloatAsState(
-        targetValue = if (darkTheme) 1f else 0f,
-        animationSpec = tween(durationMillis = 280, easing = FastOutSlowInEasing),
+    val target = if (darkTheme) 1f else 0f
+    val animatedProgress by animateFloatAsState(
+        targetValue = target,
+        animationSpec = if (animatePalette) tween(durationMillis = 280, easing = FastOutSlowInEasing) else snap(),
         label = "themePalette",
     )
+    val progress = if (animatePalette) animatedProgress else target
     MaterialTheme(
         colorScheme = animatedColors(progress),
         typography = ZecheburTypography,

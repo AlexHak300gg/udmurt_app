@@ -65,6 +65,7 @@
     <string name="topics_count">%1$d тем · %2$d слов</string>
     <string name="topic_continue">Продолжить</string>
     <string name="word_no">Слово № %1$d</string>
+    <string name="previous_word">Предыдущее слово</string>
     <string name="topic_progress">Изучено %1$d из %2$d</string>
     <string name="know">Знаю!</string>
     <string name="not_known">Не знаю</string>
@@ -193,8 +194,8 @@
     <string name="allow">Разрешить</string>
     <string name="geo_denied">Геолокация не разрешена — ничего страшного, всё работает офлайн!</string>
     <string name="setting_language">Язык</string>
-    <string name="lang_russian">Русский</string>
-    <string name="lang_udmurt">Удмурт кыл</string>
+    <string name="lang_russian" translatable="false">Русский</string>
+    <string name="lang_udmurt" translatable="false">Удмурт кыл</string>
     <string name="setting_theme">Тема</string>
     <string name="theme_system">Авто</string>
     <string name="theme_light">Светлая</string>

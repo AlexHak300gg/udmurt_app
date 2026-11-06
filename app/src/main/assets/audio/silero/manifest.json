@@ -5,7 +5,7 @@
   "modelSha256": "0405777e332906f0644e08a680f7cfdc2137ea864090079c1fdd30a43c1b8761",
   "sampleRate": 48000,
   "format": "mono PCM16 WAV",
-  "sourceSha256": "aab0f3ee982034b4b2ee2d09c4c86b4e95fc726ea9f01cf6b636ee1eb4e6ea29",
+  "sourceSha256": "e9d8052a62bbc1c06bef743cc11b9c3f346e636b81eb9f9beb76ce322cab2094",
   "torchVersion": "2.6.0+cpu",
   "modelUrl": "https://models.silero.ai/models/tts/ru/v5_cis_base_nostress.pt",
   "license": "MIT (Silero CIS Base)",
@@ -954,6 +954,96 @@
       "durationMs": 725,
       "reusedPreview": false,
       "modelText": "лектьы"
+    },
+    {
+      "text": "Ӝук",
+      "key": "ӝук",
+      "file": "f55ed3899f2748db58e7310084572db2c407f5dc00f29b5932fd988af99deb8e.wav",
+      "sha256": "c6f0f7947994549db5369d8a951f7b768f251a9c8a5cf52c9a9e00ca2ed846c5",
+      "durationMs": 600,
+      "reusedPreview": false,
+      "modelText": "ӝук"
+    },
+    {
+      "text": "Сӥль",
+      "key": "сӥль",
+      "file": "80ca0c45df15b4a87b8d5c94a97cd30e5ab7f3a8147ef4587e12e90e29812997.wav",
+      "sha256": "c76af124caae52d341ba5001a36748451d738deec15f1d2e572e4a5f0feac578",
+      "durationMs": 525,
+      "reusedPreview": false,
+      "modelText": "сӥль"
+    },
+    {
+      "text": "Кар",
+      "key": "кар",
+      "file": "df59a806fa2a34f082b10f3409be739bc0974e2f551fe75e6d805d06edc678a1.wav",
+      "sha256": "d9f19dfc55e17c4702fa220baa9ffc7858eab81b2a317a4d060a0c591d63185a",
+      "durationMs": 500,
+      "reusedPreview": false,
+      "modelText": "кар"
+    },
+    {
+      "text": "Гурт",
+      "key": "гурт",
+      "file": "8f1a622f6ce9a2a073d5db7df3cd30e8fe7f135bbc15bd8995d50a61d68ccc34.wav",
+      "sha256": "5c0b945e578880521b8ea45864d369dbb8e72ebb62a076be519c720fca20ad20",
+      "durationMs": 688,
+      "reusedPreview": false,
+      "modelText": "гурт"
+    },
+    {
+      "text": "Шур",
+      "key": "шур",
+      "file": "93ac34a93db328cae1f42aed3bbeaad2960d51d50412eddc35d9206d4dd73f72.wav",
+      "sha256": "e33016f61464405a630fec0867dbac74d809a402487e64cae576fe2b3191b3aa",
+      "durationMs": 512,
+      "reusedPreview": false,
+      "modelText": "шур"
+    },
+    {
+      "text": "Урам",
+      "key": "урам",
+      "file": "e4b6d9fc5455a06b2b9c1c180f770cdb8828384013a20b871a6711ba1e376957.wav",
+      "sha256": "e4b408b4ced9fc4b2a02f2bc91282c2fe415101ef7b317f688507f22643ef760",
+      "durationMs": 575,
+      "reusedPreview": false,
+      "modelText": "урам"
+    },
+    {
+      "text": "Книга",
+      "key": "книга",
+      "file": "695b9685757ab1a5731425e4c8e0a6768093a9785faa71270c522c2c96690619.wav",
+      "sha256": "d8441c4198bd60b2e8f7bb558618a8d7f34951ba84a3dfca198d494f9b3478f6",
+      "durationMs": 612,
+      "reusedPreview": false,
+      "modelText": "книга"
+    },
+    {
+      "text": "Гожтэт",
+      "key": "гожтэт",
+      "file": "0b84ec57bdb634345157cf3506e3220ffe30e33d7e310192dc09399983634a65.wav",
+      "sha256": "961333e436273474080b85e59d25956da5878190e51b49c28d1c9a3d89d893d6",
+      "durationMs": 838,
+      "reusedPreview": false,
+      "modelText": "гожтэт"
+    },
+    {
+      "text": "Дышетскыны",
+      "key": "дышетскыны",
+      "file": "d20ee8533f66b63fbb8bb0d22a52e5ab94012193bcb8ae7f94d6990b55fb6435.wav",
+      "sha256": "4a4df932cdb50eae0fdc0efc62eb5cbc081b790cc6b73e119ef19a82d77f73ce",
+      "durationMs": 1000,
+      "reusedPreview": false,
+      "modelText": "дышетскыны"
+    },
+    {
+      "text": "Гожъяны",
+      "key": "гожъяны",
+      "file": "4c322a49b6b521e963a03579b2e80a987c926170c29a168c19edea01741269f9.wav",
+      "sha256": "10185bda2f00f7c357f52d8bb6781d1fc43dcdb0340cf9e98f8b93a2c4a3aaad",
+      "durationMs": 888,
+      "reusedPreview": false,
+      "modelText": "гожъяны"
     }
   ]
 }

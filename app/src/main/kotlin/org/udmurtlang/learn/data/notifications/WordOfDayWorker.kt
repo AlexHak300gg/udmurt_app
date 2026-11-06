@@ -1,6 +1,7 @@
 package org.udmurtlang.learn.data.notifications
 
 import android.content.Context
+import android.util.Log
 import androidx.concurrent.futures.await
 import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequestBuilder
@@ -10,6 +11,7 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import org.udmurtlang.learn.core.notifications.WordOfDayNotifier
 import org.udmurtlang.learn.domain.repository.SettingsRepository
@@ -45,10 +47,23 @@ class WordOfDayWorker(
 
         val now = ZonedDateTime.now()
         // Update this request only. An older worker cannot replace the new schedule.
-        WorkManager.getInstance(applicationContext).updateWork(request(time, id, now)).await()
+        val update = try {
+            WorkManager.getInstance(applicationContext).updateWork(request(time, id, now)).await()
+        } catch (error: CancellationException) {
+            throw error
+        } catch (_: IllegalArgumentException) {
+            return Result.success() // The old work ID may have been deleted after a time change.
+        } catch (error: Exception) {
+            Log.w("WordOfDayWorker", "Could not set the next local reminder time", error)
+            null // Keep the periodic fallback and deliver the current reminder.
+        }
+        if (update == WorkManager.UpdateResult.NOT_APPLIED) return Result.success()
         if (!now.isBefore(now.toLocalDate().atTime(time).atZone(now.zone))) {
             val word = entryPoint.wordOfDayRepository().wordOfDay().word
-            entryPoint.wordOfDayNotifier().showWordOfDay(word)
+            val latest = entryPoint.settingsRepository().settings.first()
+            if (latest.notificationsEnabled && latest.wordOfDayTime == time) {
+                entryPoint.wordOfDayNotifier().showWordOfDay(word)
+            }
         }
         return Result.success()
     }

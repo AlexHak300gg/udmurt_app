@@ -27,16 +27,20 @@ data class CardsState(
     val words: List<Word> = emptyList(),
     val statuses: Map<String, ProgressStatus> = emptyMap(),
     val index: Int = 0,
-    val finished: Boolean = false,
+    val nextUnansweredIndex: Int = 0,
     val answering: Boolean = false,
 ) {
     val current: Word? get() = words.getOrNull(index)
+    val finished: Boolean get() = words.isNotEmpty() && index >= words.size
+    val reviewing: Boolean get() = index < nextUnansweredIndex
     val knownCount: Int get() = words.count { statuses[it.id] == ProgressStatus.KNOWN }
 }
 
 sealed interface CardsIntent {
     data object Know : CardsIntent
     data object Repeat : CardsIntent
+    data object Previous : CardsIntent
+    data object Next : CardsIntent
     data class Speak(val word: Word) : CardsIntent
 }
 
@@ -77,13 +81,19 @@ class WordCardsViewModel @Inject constructor(
             is CardsIntent.Speak -> speaker.speak(intent.word.udm)
             CardsIntent.Know -> answer(correct = true)
             CardsIntent.Repeat -> answer(correct = false)
+            CardsIntent.Previous -> _state.update {
+                if (it.index > 0 && !it.answering) it.copy(index = it.index - 1) else it
+            }
+            CardsIntent.Next -> _state.update {
+                if (it.reviewing && !it.answering) it.copy(index = it.index + 1) else it
+            }
         }
     }
 
     private fun answer(correct: Boolean) {
         val state = _state.value
         val current = state.current ?: return
-        if (state.answering || state.finished) return
+        if (state.answering || state.reviewing) return
         _state.update { it.copy(answering = true) }
         viewModelScope.launch {
             try {
@@ -94,7 +104,7 @@ class WordCardsViewModel @Inject constructor(
                     markAnswer(current.id, correct = false)
                 }
                 val next = state.index + 1
-                _state.update { it.copy(index = next, finished = next >= it.words.size) }
+                _state.update { it.copy(index = next, nextUnansweredIndex = next) }
             } finally {
                 _state.update { it.copy(answering = false) }
             }

@@ -162,13 +162,16 @@ fun ConfettiOverlay(
     val palette = listOf(ZcRed, ZcTeal, ZcGold, ZcPurple, ZcOrange)
     Canvas(modifier = modifier.fillMaxSize()) {
         val piece = 14.dp.toPx()
-        repeat(28) { i ->
+        val pieceCount = 28
+        val columnWidth = size.width / pieceCount
+        val sway = minOf(18.dp.toPx(), columnWidth)
+        repeat(pieceCount) { i ->
             val seed = i * 0.618f
-            val x = ((seed * 137.5f) % 1f) * this.size.width
+            val x = (i + 0.5f) * columnWidth
             val fall = (progress + seed) % 1f
             val y = fall * this.size.height
             val angle = (fall * 720f + i * 25f) * (Math.PI / 180.0).toFloat()
-            val cx = x + sin(angle) * 18.dp.toPx()
+            val cx = x + sin(angle) * sway
             drawCircle(
                 color = palette[i % palette.size],
                 radius = piece / 2f,

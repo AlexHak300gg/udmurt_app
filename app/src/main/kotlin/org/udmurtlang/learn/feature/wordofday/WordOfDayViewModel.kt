@@ -13,12 +13,10 @@ import org.udmurtlang.learn.domain.model.WordOfDay
 import org.udmurtlang.learn.domain.model.Word
 import org.udmurtlang.learn.domain.usecase.GetTopicWordsUseCase
 import org.udmurtlang.learn.domain.usecase.GetWordOfDayUseCase
-import org.udmurtlang.learn.domain.usecase.MarkWordKnownUseCase
 import javax.inject.Inject
 
 data class WordOfDayState(
     val wod: WordOfDay? = null,
-    val marked: Boolean = false,
     val related: List<Word> = emptyList(),
 )
 
@@ -26,7 +24,6 @@ data class WordOfDayState(
 class WordOfDayViewModel @Inject constructor(
     getWordOfDay: GetWordOfDayUseCase,
     getTopicWords: GetTopicWordsUseCase,
-    private val markKnown: MarkWordKnownUseCase,
     private val speaker: WordSpeaker,
 ) : ViewModel() {
 
@@ -47,13 +44,4 @@ class WordOfDayViewModel @Inject constructor(
     }
 
     fun speakRelated(word: Word) = speaker.speak(word.udm)
-
-    fun markKnown() {
-        val wod = _state.value.wod ?: return
-        viewModelScope.launch {
-            markKnown(wod.word.id)
-            speaker.speak(wod.word.udm)
-            _state.update { it.copy(marked = true) }
-        }
-    }
 }

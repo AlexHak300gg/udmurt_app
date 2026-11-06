@@ -66,6 +66,7 @@
     <string name="topics_count">%1$d тема · %2$d кыл</string>
     <string name="topic_continue">Азьлань мынӥськы</string>
     <string name="word_no">Кыл № %1$d</string>
+    <string name="previous_word">Азьло кыл</string>
     <string name="topic_progress">Тодэм: %1$d / %2$d</string>
     <string name="know">Тодӥсько!</string>
     <string name="not_known">Уг тодӥськы</string>
@@ -192,8 +193,6 @@
     <string name="allow">Лэзёно</string>
     <string name="geo_denied">Геолокация лэзёмын ӧвӧл. Приложение ужаське.</string>
     <string name="setting_language">Кыл</string>
-    <string name="lang_russian">Зуч кыл</string>
-    <string name="lang_udmurt">Удмурт кыл</string>
     <string name="setting_theme">Тусбуёл</string>
     <string name="theme_system">Авто</string>
     <string name="theme_light">Югыт</string>

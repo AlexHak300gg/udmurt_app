@@ -1,15 +1,15 @@
 package org.udmurtlang.learn
 
 import android.app.Application
+import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.data.supabase.SyncWorker
 import org.udmurtlang.learn.domain.notifications.NotificationScheduler
+import org.udmurtlang.learn.domain.notifications.observeWordOfDaySchedule
 import org.udmurtlang.learn.domain.repository.SettingsRepository
 import javax.inject.Inject
 
@@ -31,10 +31,9 @@ class LearnApp : Application() {
         }
         // Согласовать уведомления с сохранённой настройкой
         appScope.launch {
-            settingsRepository.settings
-                .map { it.notificationsEnabled to it.wordOfDayTime }
-                .distinctUntilChanged()
-                .collect { (enabled, time) -> notificationScheduler.sync(enabled, time) }
+            notificationScheduler.observeWordOfDaySchedule(settingsRepository.settings) { error ->
+                Log.w("LearnApp", "Could not apply the Word of Day reminder settings", error)
+            }
         }
     }
 }
