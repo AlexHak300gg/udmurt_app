@@ -1,5 +1,6 @@
 package org.udmurtlang.learn
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -61,8 +63,12 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var wordSpeaker: WordSpeaker
 
+    private val widgetWordRequested = MutableStateFlow(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        widgetWordRequested.value = savedInstanceState?.getBoolean(KEY_WIDGET_WORD_REQUESTED)
+            ?: (intent.action == ACTION_OPEN_WORD_OF_DAY)
         enableEdgeToEdge()
         setContent {
             val viewModel: MainViewModel = hiltViewModel()
@@ -78,6 +84,16 @@ class MainActivity : AppCompatActivity() {
                 ThemedContent(darkTheme, systemDark, language)
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.action == ACTION_OPEN_WORD_OF_DAY) widgetWordRequested.value = true
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(KEY_WIDGET_WORD_REQUESTED, widgetWordRequested.value)
+        super.onSaveInstanceState(outState)
     }
 
     @Composable
@@ -159,8 +175,19 @@ class MainActivity : AppCompatActivity() {
                         AppViewport {
                             val navController = rememberNavController()
                             val entry by navController.currentBackStackEntryAsState()
+                            val route = entry?.destination?.route
+                            val openWordFromWidget by widgetWordRequested.collectAsStateWithLifecycle()
+                            LaunchedEffect(openWordFromWidget, route) {
+                                if (!openWordFromWidget) return@LaunchedEffect
+                                when (route) {
+                                    null, Routes.SPLASH, Routes.ONBOARDING, Routes.AUTH -> return@LaunchedEffect
+                                    Routes.WORD_OF_DAY -> Unit
+                                    else -> navController.navigate(Routes.WORD_OF_DAY) { launchSingleTop = true }
+                                }
+                                widgetWordRequested.value = false
+                            }
                             val wide = currentWindowClass().isWide
-                            val vividTop = when (entry?.destination?.route) {
+                            val vividTop = when (route) {
                                 null, Routes.SPLASH, Routes.MENU, Routes.CARDS, Routes.RESULT, Routes.WORD_OF_DAY -> true
                                 Routes.AUTH, Routes.ONBOARDING -> !wide
                                 Routes.GAME -> when (entry?.arguments?.getString("slug")) {
@@ -194,6 +221,11 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         wordSpeaker.stop()
         super.onStop()
+    }
+
+    companion object {
+        internal const val ACTION_OPEN_WORD_OF_DAY = "org.udmurtlang.learn.OPEN_WORD_OF_DAY"
+        private const val KEY_WIDGET_WORD_REQUESTED = "widgetWordRequested"
     }
 }
 

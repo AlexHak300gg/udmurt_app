@@ -44,6 +44,7 @@ class ActivityRepositoryTest {
 
     private class StreakDao(private var saved: StreakEntity?) : ActivityDao {
         override suspend fun streak() = saved
+        override fun observeStreak() = flowOf(saved)
         override suspend fun upsertStreak(entity: StreakEntity) {
             saved = entity
         }

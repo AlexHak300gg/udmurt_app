@@ -59,6 +59,7 @@
     <string name="menu_tiles_learning">13 тема</string>
     <string name="menu_tiles_profile">Медальёс</string>
     <string name="word_of_day">Нуналлэн кылэз</string>
+    <string name="widget_word_of_day">Нуналлэн кылэз но серия</string>
     <string name="streak_days">нунал ӵош</string>
 
     <!-- Обучение -->

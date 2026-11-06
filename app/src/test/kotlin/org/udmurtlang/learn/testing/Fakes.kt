@@ -66,21 +66,28 @@ class FakeProgressRepository : ProgressRepository {
         mistakes[wordId] = (mistakes[wordId] ?: 0) + if (correct) 0 else 1
     }
 
-    override suspend fun markKnown(wordId: String) { known += wordId }
+    override suspend fun markKnown(wordId: String) {
+        known += wordId
+        val entry = progress.value.firstOrNull { it.wordId == wordId } ?: UserProgress(wordId)
+        progress.value = progress.value.filterNot { it.wordId == wordId } + entry.copy(status = ProgressStatus.KNOWN)
+    }
     override suspend fun knownWordIds(): Set<String> = known
-    override suspend fun mistakesByCount(): List<String> =
-        mistakes.entries.sortedByDescending { it.value }.map { it.key }
 }
 
 class FakeActivityRepository : ActivityRepository {
     var streak = Streak(current = 2, best = 5)
     var games = 0
     var wordsLearned = 0
-    override fun observeDaily(days: Int): Flow<List<DailyActivity>> = flowOf(emptyList())
-    override suspend fun daily(days: Int): List<DailyActivity> = emptyList()
+    private val dailyActivity = MutableStateFlow(emptyList<DailyActivity>())
+    override fun observeDaily(days: Int): Flow<List<DailyActivity>> = dailyActivity
+    override suspend fun daily(days: Int): List<DailyActivity> = dailyActivity.value
+    override fun observeStreak(): Flow<Streak> = flowOf(streak)
     override suspend fun streak(): Streak = streak
     override suspend fun registerGameplayed(correct: Int, wrong: Int, durationMs: Long) { games++ }
-    override suspend fun registerWordsLearned(count: Int) { wordsLearned += count }
+    override suspend fun registerWordsLearned(count: Int) {
+        wordsLearned += count
+        dailyActivity.value = listOf(DailyActivity(day = "2026-01-15", wordsLearned = wordsLearned))
+    }
     override suspend fun touchToday() = Unit
 }
 
@@ -89,7 +96,6 @@ class FakeGameRepository : GameRepository {
     override suspend fun saveResult(result: GameResult) { saved += result }
     override fun observeResults(): Flow<List<GameResult>> = flowOf(saved)
     override suspend fun results(): List<GameResult> = saved
-    override suspend fun totalPlayTimeMs(): Long = saved.sumOf { it.durationMs }
 }
 
 class FakeAccountRepository : AccountRepository {

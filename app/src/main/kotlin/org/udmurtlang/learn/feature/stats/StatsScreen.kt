@@ -205,7 +205,7 @@ fun StatsScreen(
                         )
                     }
                     WeekBarChart(
-                        values = snapshot.weeklyActivity.map { it.correct },
+                        values = snapshot.weeklyActivity.map { it.wordsLearned + it.correct },
                         labels = snapshot.weeklyActivity.map { dayLabel(it.day) },
                     )
                 }

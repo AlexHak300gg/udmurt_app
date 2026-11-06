@@ -24,7 +24,6 @@ interface ProgressRepository {
     suspend fun markAnswer(wordId: String, correct: Boolean)
     suspend fun markKnown(wordId: String)
     suspend fun knownWordIds(): Set<String>
-    suspend fun mistakesByCount(): List<String>
 }
 
 interface GameRepository {
@@ -32,11 +31,11 @@ interface GameRepository {
     fun observeResults(): Flow<List<GameResult>>
     suspend fun results(): List<GameResult>
     suspend fun count(): Int = results().size
-    suspend fun totalPlayTimeMs(): Long
 }
 
 interface ActivityRepository {
     fun observeDaily(days: Int): Flow<List<DailyActivity>>
+    fun observeStreak(): Flow<Streak>
     suspend fun daily(days: Int): List<DailyActivity>
     suspend fun streak(): Streak
     suspend fun registerGameplayed(correct: Int, wrong: Int, durationMs: Long)

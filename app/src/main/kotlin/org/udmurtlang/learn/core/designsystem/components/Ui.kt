@@ -384,7 +384,6 @@ fun WeekBarChart(
     labels: List<String>,
     modifier: Modifier = Modifier,
 ) {
-    val brand = LocalBrand.current
     val max = (values.maxOrNull() ?: 0).coerceAtLeast(1)
     val accent = MaterialTheme.colorScheme.primary
     val bar = MaterialTheme.colorScheme.primaryContainer
@@ -402,6 +401,11 @@ fun WeekBarChart(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
+                Text(
+                    text = value.toString(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 Box(modifier = Modifier.weight(1f)) {
                     Box(
                         modifier = Modifier

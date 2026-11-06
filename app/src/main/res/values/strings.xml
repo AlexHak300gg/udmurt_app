@@ -58,6 +58,7 @@
     <string name="menu_tiles_learning">13 тем</string>
     <string name="menu_tiles_profile">Медали</string>
     <string name="word_of_day">Слово дня</string>
+    <string name="widget_word_of_day">Слово дня и серия</string>
     <string name="streak_days">дней подряд</string>
 
     <!-- Обучение -->

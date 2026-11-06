@@ -6,10 +6,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.domain.model.Achievement
 import org.udmurtlang.learn.domain.model.Profile
+import org.udmurtlang.learn.domain.model.ProgressStatus
 import org.udmurtlang.learn.domain.model.limitDisplayName
 import org.udmurtlang.learn.domain.repository.AccountRepository
 import org.udmurtlang.learn.domain.repository.ActivityRepository
@@ -75,12 +77,13 @@ class ProfileViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            val stats = ProfileSummary(
-                wordsKnown = progress.knownWordIds().size,
-                currentStreak = activity.streak().current,
-                gamesPlayed = games.count(),
-            )
-            _state.update { it.copy(stats = stats) }
+            combine(progress.observeProgress(), activity.observeStreak(), games.observeResults()) { entries, streak, results ->
+                ProfileSummary(
+                    wordsKnown = entries.count { it.status == ProgressStatus.KNOWN },
+                    currentStreak = streak.current,
+                    gamesPlayed = results.size,
+                )
+            }.collect { stats -> _state.update { it.copy(stats = stats) } }
         }
         viewModelScope.launch {
             observeAchievements().collect { unlocked ->

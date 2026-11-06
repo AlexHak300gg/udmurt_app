@@ -49,17 +49,8 @@ interface ProgressDao {
     @Query("SELECT * FROM user_progress WHERE wordId = :wordId")
     suspend fun get(wordId: String): ProgressEntity?
 
-    @Query("SELECT wordId FROM user_progress WHERE status = 'known'")
+    @Query("SELECT wordId FROM user_progress WHERE status COLLATE NOCASE = 'known'")
     suspend fun knownWordIds(): List<String>
-
-    @Query(
-        """
-        SELECT wordId FROM user_progress
-        WHERE wrongCount > 0
-        ORDER BY wrongCount DESC, lastAnswerAt DESC
-        """,
-    )
-    suspend fun mistakesByCount(): List<String>
 
     @Query("SELECT * FROM user_progress")
     suspend fun all(): List<ProgressEntity>
@@ -85,8 +76,6 @@ interface GameResultDao {
     @Query("SELECT COUNT(*) FROM game_results")
     suspend fun count(): Int
 
-    @Query("SELECT COALESCE(SUM(durationMs), 0) FROM game_results")
-    suspend fun totalDuration(): Long
 }
 
 @Dao
@@ -105,6 +94,9 @@ interface ActivityDao {
 
     @Query("SELECT * FROM streaks WHERE id = 1")
     suspend fun streak(): StreakEntity?
+
+    @Query("SELECT * FROM streaks WHERE id = 1")
+    fun observeStreak(): Flow<StreakEntity?>
 
     @Upsert
     suspend fun upsertStreak(entity: StreakEntity)

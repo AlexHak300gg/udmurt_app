@@ -3,14 +3,13 @@ package org.udmurtlang.learn.feature.stats
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import org.udmurtlang.learn.domain.model.StatsSnapshot
 import org.udmurtlang.learn.domain.repository.AccountRepository
-import org.udmurtlang.learn.domain.usecase.GetStatsUseCase
+import org.udmurtlang.learn.domain.usecase.ObserveStatsUseCase
 import javax.inject.Inject
 
 data class StatsUiState(
@@ -20,21 +19,11 @@ data class StatsUiState(
 
 @HiltViewModel
 class StatsViewModel @Inject constructor(
-    private val getStats: GetStatsUseCase,
-    private val account: AccountRepository,
+    observeStats: ObserveStatsUseCase,
+    account: AccountRepository,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(StatsUiState())
-    val state: StateFlow<StatsUiState> = _state.asStateFlow()
-
-    init {
-        refresh()
-    }
-
-    fun refresh() {
-        viewModelScope.launch {
-            val displayName = account.observeProfile().first()?.displayName.orEmpty()
-            _state.value = StatsUiState(snapshot = getStats(), displayName = displayName)
-        }
-    }
+    val state: StateFlow<StatsUiState> = combine(observeStats(), account.observeProfile()) { stats, profile ->
+        StatsUiState(snapshot = stats, displayName = profile?.displayName.orEmpty())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StatsUiState())
 }

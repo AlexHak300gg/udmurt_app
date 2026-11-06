@@ -37,8 +37,8 @@ fun GameResultEntity.toDomain() = GameResult(
 
 fun DailyActivityEntity.toDomain() = DailyActivity(day, wordsLearned, gamesPlayed, correct, wrong)
 
-fun String.toProgressStatus(): ProgressStatus = runCatching { ProgressStatus.valueOf(this) }
-    .getOrDefault(ProgressStatus.NEW)
+fun String.toProgressStatus(): ProgressStatus =
+    ProgressStatus.entries.firstOrNull { it.name.equals(this, ignoreCase = true) } ?: ProgressStatus.NEW
 
 fun String.toGameType(): GameType = GameType.entries.firstOrNull { it.slug == this } ?: GameType.CHOICE
 

@@ -42,7 +42,7 @@ class ProgressRepositoryImpl @Inject constructor(
         val status = when {
             correctCount >= KNOWN_THRESHOLD -> ProgressStatus.KNOWN.name.lowercase()
             correct -> ProgressStatus.LEARNING.name.lowercase()
-            current.status == ProgressStatus.KNOWN.name.lowercase() ->
+            current.status.toProgressStatus() == ProgressStatus.KNOWN ->
                 ProgressStatus.LEARNING.name.lowercase()
             else -> current.status
         }
@@ -74,8 +74,6 @@ class ProgressRepositoryImpl @Inject constructor(
     }
 
     override suspend fun knownWordIds(): Set<String> = dao.knownWordIds().toSet()
-
-    override suspend fun mistakesByCount(): List<String> = dao.mistakesByCount()
 
     private fun ProgressEntity.toSyncPayload(): String =
         """{"word_id":"$wordId","status":"$status","correct_count":$correctCount,"wrong_count":$wrongCount,"last_answer_at":$lastAnswerAt,"client_uuid":"$clientUuid","updated_at":$updatedAt}"""
