@@ -17,11 +17,11 @@
 
     <!-- Сплэш и онбординг -->
     <string name="splash_tagline">Здравствуй, удмуртский язык!</string>
-    <string name="onboarding_title_1">Ӧслытӟе кылзаськы</string>
+    <string name="onboarding_title_1">Учи удмуртский</string>
     <string name="onboarding_text_1">Крупные карточки, картинки и озвучка помогут выучить первые удмуртские слова.</string>
-    <string name="onboarding_title_2">Играсъёс лыдӟисько</string>
+    <string name="onboarding_title_2">Играй и запоминай</string>
     <string name="onboarding_text_2">Шесть весёлых игр закрепят слова: выбери пару, собери слово, найди лишнее!</string>
-    <string name="onboarding_title_3">Мон пыртэ уг вунал</string>
+    <string name="onboarding_title_3">Занимайся без интернета</string>
     <string name="onboarding_text_3">Всё работает без интернета. Слово дня, конфетти и звёзды ждут каждый день.</string>
     <string name="skip">Пропустить</string>
     <string name="start">Начать!</string>
@@ -30,7 +30,7 @@
     <string name="auth_tab_register">Регистрация</string>
 
     <!-- Вход -->
-    <string name="auth_title">Очытэм</string>
+    <string name="auth_title">Вход</string>
     <string name="auth_subtitle">Твой прогресс сохранится и вернётся</string>
     <string name="auth_email">E-mail</string>
     <string name="auth_password">Пароль</string>
@@ -41,8 +41,8 @@
     <string name="auth_forgot">Забыли пароль?</string>
     <string name="auth_forgot_cloud">Ссылка для сброса приходит на почту после включения синхронизации.</string>
     <string name="auth_forgot_local">Доступно после включения синхронизации</string>
-    <string name="auth_switch_to_register">Нет аккаунта? Записаться!</string>
-    <string name="auth_switch_to_login">Уже есть аккаунт? Очы!</string>
+    <string name="auth_switch_to_register">Нет аккаунта? Зарегистрируйся.</string>
+    <string name="auth_switch_to_login">Уже есть аккаунт? Войди.</string>
     <string name="auth_error_email">Нужен e-mail в формате name@mail.ru</string>
     <string name="auth_error_password">Пароль от 6 символов</string>
     <string name="auth_error_name">Введи имя (можно короткое)</string>
@@ -61,12 +61,13 @@
     <string name="streak_days">дней подряд</string>
 
     <!-- Обучение -->
-    <string name="topics_title">Темасъёс</string>
+    <string name="topics_title">Темы</string>
     <string name="topics_count">%1$d тем · %2$d слов</string>
     <string name="topic_continue">Продолжить</string>
     <string name="word_no">Слово № %1$d</string>
     <string name="topic_progress">Изучено %1$d из %2$d</string>
     <string name="know">Знаю!</string>
+    <string name="not_known">Не знаю</string>
     <string name="repeat">Повторить</string>
     <string name="cards_hint">Свайпни карточку вправо или влево</string>
     <string name="topic_complete">Молодец! Тема закрыта!</string>
@@ -75,7 +76,7 @@
     <string name="pronunciation">Произношение</string>
 
     <!-- Игры -->
-    <string name="games_title">Играсъёс</string>
+    <string name="games_title">Игры</string>
     <string name="games_hint">Шесть игр: выбирай и зарабатывай звёзды</string>
     <string name="game_choice">Выбери перевод</string>
     <string name="game_choice_sub">Подбери слово</string>
@@ -88,7 +89,7 @@
     <string name="game_builder">Собери слово</string>
     <string name="game_builder_sub">Буквы по порядку</string>
     <string name="game_truefalse">Правда или ложь</string>
-    <string name="game_tf_sub">Верно или нет?</string>
+    <string name="game_tf_sub">Слово подходит к картинке?</string>
     <string name="round_label">Раунд %1$d из %2$d</string>
     <string name="correct_answer">Молодец!</string>
     <string name="almost_answer">Почти! Ещё разок!</string>
@@ -110,11 +111,15 @@
     <string name="stars_award">Звёзды: %1$d</string>
     <string name="play_again">Играть ещё</string>
     <string name="to_menu">В меню</string>
-    <string name="sort_drag_hint">Перетащи слова в подходящую корзину</string>
-    <string name="memory_hint">Найди одинаковые карточки</string>
+    <string name="sort_drag_hint">Выбери слово, затем подходящую категорию</string>
+    <string name="sort_animals">Животные</string>
+    <string name="sort_plants">Растения</string>
+    <string name="sort_edible">Съедобное</string>
+    <string name="sort_inedible">Несъедобное</string>
+    <string name="memory_hint">Найди картинку к слову</string>
     <string name="builder_hint">Нажимай буквы по порядку</string>
     <string name="true_label">Верно</string>
-    <string name="false_label">Не верно</string>
+    <string name="false_label">Неверно</string>
     <string name="category_label">Категория</string>
 
     <!-- Статистика и отчёт -->
@@ -158,8 +163,8 @@
     <string name="about_udmurt">Об удмуртском языке</string>
     <string name="facts_title">Интересные факты</string>
     <string name="fact_1">Удмуртский язык принадлежит к пермской группе финно-угорских языков.</string>
-    <string name="fact_2">На нём говорят около 460 тысяч человек, в основном в Удмуртии.</string>
-    <string name="fact_3">Удмуртский алфавит — на основе кириллицы, в нём есть буквы ӧ, ӱ, ӵ, Ӟ, ӥ, ӆ, ӹ.</string>
+    <string name="fact_2">По переписи 2020 года около 256 тысяч жителей России указали, что владеют удмуртским языком.</string>
+    <string name="fact_3">В удмуртском алфавите 38 букв. Пять из них особые — Ӝ, Ӟ, Ӥ, Ӧ и Ӵ.</string>
     <string name="fact_4">«Ӟечбур!» — «Здравствуй!», а «Тау!» — «Спасибо!».</string>
     <string name="fact_5">Столица Удмуртии — Ижевск, по-удмуртски Ижкар.</string>
     <string name="fact_6">Государственный язык республики наряду с русским.</string>
@@ -179,7 +184,8 @@
     <string name="settings_title">Настройки</string>
     <string name="setting_sound">Звук</string>
     <string name="setting_volume">Громкость озвучки</string>
-    <string name="setting_word_notify">Слово дня в 9:00</string>
+    <string name="setting_word_notify">Уведомление «Слово дня»</string>
+    <string name="setting_word_notify_time">Время уведомления</string>
     <string name="setting_geolocation">Геолокация</string>
     <string name="setting_geolocation_hint">Только для локализации приветствия; офлайн не мешает</string>
     <string name="geo_dialog_title">Геолокация</string>
@@ -205,7 +211,7 @@
     <string name="wod_listen">Прослушать</string>
     <string name="wod_study_topic">Учить тему</string>
     <string name="wod_related">Ещё из этой темы</string>
-    <string name="wod_every_day">Новое слово каждый день в 9:00</string>
+    <string name="wod_every_day">Новое слово каждый день</string>
 
     <!-- Профиль: статы -->
     <string name="profile_stat_words">слов</string>

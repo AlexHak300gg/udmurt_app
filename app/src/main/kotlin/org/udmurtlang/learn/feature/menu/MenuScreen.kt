@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +25,7 @@ import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.SportsEsports
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +53,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.designsystem.WideContentWidth
 import org.udmurtlang.learn.core.designsystem.currentWindowClass
@@ -71,8 +72,8 @@ import org.udmurtlang.learn.core.designsystem.ZcPurple
 import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.ZcTeal
 import org.udmurtlang.learn.core.designsystem.ZcOrange
-import org.udmurtlang.learn.core.designsystem.components.SoundButton
 import org.udmurtlang.learn.core.designsystem.components.StreakBadge
+import org.udmurtlang.learn.core.designsystem.components.profileDisplayName
 import org.udmurtlang.learn.domain.model.DailyActivity
 import org.udmurtlang.learn.domain.model.Streak
 import java.time.DayOfWeek
@@ -108,69 +109,75 @@ fun MenuScreen(
 
     // Макет: коралловая шапка с зубцами, белая карточка «Слово дня» заходит на шапку
     val headerColor = if (brand.isDark) ZcRedDark else ZcRed
+    val wordOverlap = if (!wide && !short && state.wordOfDay != null) 58.dp else 0.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(-wordOverlap),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(headerColor),
-        ) {
-            Ornament(
-                kind = UdmOrnament.HEX,
-                color = Color.White.copy(alpha = 0.16f),
+        Column {
+            Box(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = 30.dp, y = (-10).dp)
-                    .size(150.dp),
-            )
-            Column(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .widthIn(max = WideContentWidth)
                     .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = if (wide) 18.dp else 64.dp),
+                    .background(headerColor),
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(
-                            R.string.menu_greeting,
-                            state.profile?.displayName ?: stringResource(R.string.guest_label),
-                        ),
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.White,
-                        modifier = Modifier.weight(1f),
-                    )
-                    StreakBadge(
-                        days = state.streak.current,
-                        container = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        onClick = {
-                            showCalendar = true
-                            viewModel.loadMonthActivity()
-                        },
+                Box(Modifier.matchParentSize(), contentAlignment = Alignment.TopEnd) {
+                    Ornament(
+                        kind = UdmOrnament.HEX,
+                        color = Color.White.copy(alpha = 0.16f),
+                        modifier = Modifier.offset(x = 30.dp, y = (-10).dp).size(150.dp),
                     )
                 }
-                Text(
-                    text = stringResource(R.string.menu_sub),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.88f),
-                    modifier = Modifier.padding(top = 2.dp),
-                )
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .widthIn(max = WideContentWidth)
+                        .fillMaxWidth()
+                        .safeContentTopPadding()
+                        .padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 18.dp + wordOverlap),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = stringResource(
+                                R.string.menu_greeting,
+                                profileDisplayName(state.profile),
+                            ),
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = Color.White,
+                            modifier = Modifier.weight(1f),
+                        )
+                        StreakBadge(
+                            days = state.streak.current,
+                            container = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            onClick = {
+                                showCalendar = true
+                                viewModel.loadMonthActivity()
+                            },
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.menu_sub),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.88f),
+                        modifier = Modifier.padding(top = 2.dp),
+                    )
+                }
             }
+            ZigzagEdge(color = headerColor, tooth = 22.dp, depth = 11.dp)
         }
-        ZigzagEdge(color = headerColor, tooth = 22.dp, depth = 11.dp)
 
         AdaptivePanes(
             modifier = Modifier
                 .widthIn(max = WideContentWidth)
-                .offset(y = if (wide) 0.dp else (-58).dp)
-                .padding(horizontal = 16.dp, vertical = if (wide) 12.dp else 0.dp),
+                .padding(horizontal = 16.dp, vertical = if (wordOverlap == 0.dp) 12.dp else 0.dp),
             sideBySide = wide,
             firstWeight = 0.85f,
             secondWeight = 1.15f,
@@ -218,11 +225,22 @@ fun MenuScreen(
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                 }
-                                SoundButton(
+                                Surface(
                                     onClick = onOpenWordOfDay,
-                                    container = MaterialTheme.colorScheme.inverseSurface,
+                                    modifier = Modifier.size(44.dp),
+                                    shape = MaterialTheme.shapes.medium,
+                                    color = MaterialTheme.colorScheme.inverseSurface,
                                     contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-                                )
+                                    shadowElevation = 2.dp,
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Menu,
+                                            contentDescription = stringResource(R.string.word_of_day),
+                                            modifier = Modifier.size(22.dp),
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -327,7 +345,6 @@ fun MenuScreen(
                 }
             },
         )
-        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 

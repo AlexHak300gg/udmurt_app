@@ -1,5 +1,6 @@
 package org.udmurtlang.learn.core.designsystem.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import org.udmurtlang.learn.core.designsystem.isShortWindow
 import androidx.compose.ui.unit.sp
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.domain.model.DEFAULT_GUEST_NAME
+import org.udmurtlang.learn.domain.model.Profile
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.OrnamentBand
 import org.udmurtlang.learn.core.designsystem.StarGlyph
@@ -434,6 +437,11 @@ fun LetterTile(
         shape = RoundedCornerShape(14.dp),
         color = bg,
         contentColor = content,
+        border = when (kind) {
+            LetterTileKind.SLOT_EMPTY, LetterTileKind.SLOT_FILLED ->
+                BorderStroke(1.dp, scheme.onSurfaceVariant.copy(alpha = 0.4f))
+            else -> null
+        },
         shadowElevation = if (kind == LetterTileKind.SLOT_FILLED) 2.dp else 0.dp,
         modifier = modifier.size(size),
     ) {
@@ -449,6 +457,14 @@ fun LetterTile(
 }
 
 // ---------- Аватар ----------
+
+@Composable
+fun profileDisplayName(profile: Profile?): String =
+    if (profile == null || profile.isGuest && profile.displayName == DEFAULT_GUEST_NAME) {
+        stringResource(R.string.guest_label)
+    } else {
+        profile.displayName
+    }
 
 @Composable
 fun CircleAvatar(

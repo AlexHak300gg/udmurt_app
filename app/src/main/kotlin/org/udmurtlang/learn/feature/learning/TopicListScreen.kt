@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -46,6 +45,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.Ornament
 import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.UdmOrnament
@@ -91,7 +91,7 @@ fun TopicListScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding(),
+            .safeContentTopPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(
@@ -185,11 +185,13 @@ private fun ContinueCard(item: TopicProgress, onClick: () -> Unit) {
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                     )
-                    Text(
-                        text = item.topic.titleRu,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.75f),
-                    )
+                    if (!item.topic.titleRu.equals(item.topic.titleUdm, ignoreCase = true)) {
+                        Text(
+                            text = item.topic.titleRu,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White.copy(alpha = 0.75f),
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
@@ -239,15 +241,17 @@ private fun TopicRow(item: TopicProgress, accent: Color, onClick: () -> Unit) {
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = item.topic.titleRu,
+                    text = item.topic.titleUdm,
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                Text(
-                    text = item.topic.titleRu,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                if (!item.topic.titleRu.equals(item.topic.titleUdm, ignoreCase = true)) {
+                    Text(
+                        text = item.topic.titleRu,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
                 ProgressLine(
                     progress = progress,
                     fill = accent,

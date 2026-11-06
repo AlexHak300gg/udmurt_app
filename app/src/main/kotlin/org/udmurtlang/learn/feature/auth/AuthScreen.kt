@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.domain.model.MAX_DISPLAY_NAME_LENGTH
 import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
@@ -63,7 +64,6 @@ import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.ZigzagEdge
 import org.udmurtlang.learn.core.designsystem.UdmOrnament
 import org.udmurtlang.learn.core.designsystem.Ornament
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.offset
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.StarPattern
@@ -100,7 +100,7 @@ fun AuthScreen(
     val wide = currentWindowClass().isWide
     ScrollableContent(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
-            .then(if (wide) Modifier.statusBarsPadding() else Modifier),
+            .then(if (wide) Modifier.safeContentTopPadding() else Modifier),
         maxWidth = WideContentWidth,
         contentPadding = PaddingValues(horizontal = if (wide) 24.dp else 0.dp),
         centerVertically = wide,
@@ -128,7 +128,7 @@ fun AuthScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .then(if (wide) Modifier else Modifier.statusBarsPadding())
+                                .then(if (wide) Modifier else Modifier.safeContentTopPadding())
                                 .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 26.dp),
                         ) {
                             Text(

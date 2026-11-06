@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.media.hasBundledSpeech
 import org.udmurtlang.learn.core.designsystem.currentWindowClass
 import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
@@ -64,6 +65,7 @@ fun OddOneOutScreen(
                 EmptyState(
                     title = stringResource(R.string.loading),
                     hint = stringResource(R.string.game_odd),
+                    tinted = true,
                 )
             }
             return@GameScaffold
@@ -107,10 +109,12 @@ fun OddOneOutScreen(
                             },
                             modifier = Modifier.weight(1f),
                         )
-                        SoundButton(
-                            onClick = { onSpeak(word.udm) },
-                            contentDescription = "${stringResource(R.string.pronunciation)} — ${word.udm}",
-                        )
+                        if (hasBundledSpeech(word.udm)) {
+                            SoundButton(
+                                onClick = { onSpeak(word.udm) },
+                                contentDescription = "${stringResource(R.string.pronunciation)} — ${word.udm}",
+                            )
+                        }
                     }
                 }
             }

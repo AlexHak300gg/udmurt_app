@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.Ornament
@@ -75,7 +75,7 @@ fun StatsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding(),
+            .safeContentTopPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(

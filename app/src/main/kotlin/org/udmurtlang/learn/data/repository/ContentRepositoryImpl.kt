@@ -5,6 +5,7 @@ import kotlinx.coroutines.sync.withLock
 import org.udmurtlang.learn.data.assets.ContentAssetLoader
 import org.udmurtlang.learn.data.assets.toTopics
 import org.udmurtlang.learn.data.assets.toWords
+import org.udmurtlang.learn.data.local.AppDataStore
 import org.udmurtlang.learn.data.local.db.ContentDao
 import org.udmurtlang.learn.data.local.db.TopicEntity
 import org.udmurtlang.learn.data.local.db.WordEntity
@@ -19,6 +20,7 @@ import javax.inject.Singleton
 class ContentRepositoryImpl @Inject constructor(
     private val contentDao: ContentDao,
     private val loader: ContentAssetLoader,
+    private val dataStore: AppDataStore,
 ) : ContentRepository {
 
     private val seedMutex = Mutex()
@@ -48,8 +50,8 @@ class ContentRepositoryImpl @Inject constructor(
         if (seeded) return
         seedMutex.withLock {
             if (seeded) return
-            if (!contentDao.hasWords()) {
-                val dto = loader.load()
+            val dto = loader.load()
+            if (dataStore.contentVersion() < dto.version || !contentDao.hasWords()) {
                 val topics = dto.toTopics().map {
                     TopicEntity(it.id, it.slug, it.titleUdm, it.titleRu, it.color.toHex(), it.emoji, it.sortOrder)
                 }
@@ -67,6 +69,7 @@ class ContentRepositoryImpl @Inject constructor(
                     )
                 }
                 contentDao.seedContent(topics, words)
+                dataStore.setContentVersion(dto.version)
             }
             seeded = true
         }

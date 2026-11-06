@@ -8,12 +8,7 @@ import org.udmurtlang.learn.domain.model.Word
 import kotlin.random.Random
 
 object UdmurtAlphabet {
-    val letters: List<String> = listOf(
-        "а", "б", "в", "г", "д", "ж", "з", "и", "й", "к",
-        "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф",
-        "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю",
-        "я", "ӧ", "ӱ", "ү", "ө", "ӵ", "ӟ", "ӥ", "ӆ", "ӹ",
-    )
+    val letters: List<String> = "абвгдеёжӝзӟиӥйклмноӧпрстуфхцчӵшщъыьэюя".map(Char::toString)
 
     fun isUdmurtLetter(letter: String): Boolean = letter in letters
 }
@@ -126,12 +121,13 @@ class GameRoundGenerator(private val random: Random) {
     }
 
     fun trueFalse(word: Word, pool: List<Word>): GameRound.TrueFalse {
-        val shouldBeWrong = random.nextBoolean() && pool.any { it.id != word.id && it.ru != word.ru }
-        if (!shouldBeWrong) {
-            return GameRound.TrueFalse(word.id, word.udm, word.ru, word.emoji, isTrue = true)
-        }
-        val other = (pool - word).filter { it.ru != word.ru }.random(random)
-        return GameRound.TrueFalse(word.id, word.udm, other.ru, word.emoji, isTrue = false)
+        val distractor = if (random.nextBoolean()) {
+            pool.filter {
+                it.id != word.id && it.emoji.isNotBlank() && it.emoji != word.emoji &&
+                    !it.ru.equals(word.ru, ignoreCase = true) && !it.udm.equals(word.udm, ignoreCase = true)
+            }.randomOrNull(random)
+        } else null
+        return GameRound.TrueFalse(word.id, word.udm, distractor?.emoji ?: word.emoji, isTrue = distractor == null)
     }
 
     fun wordOfDayIndex(total: Int, dayEpochDay: Long): Int =

@@ -10,13 +10,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.udmurtlang.learn.core.common.UiLanguageController
 import org.udmurtlang.learn.domain.model.AppSettings
 import org.udmurtlang.learn.domain.model.ThemeMode
 import org.udmurtlang.learn.domain.model.UiLanguage
-import org.udmurtlang.learn.domain.notifications.NotificationScheduler
 import org.udmurtlang.learn.domain.usecase.ObserveSettingsUseCase
 import org.udmurtlang.learn.domain.usecase.UpdateSettingsUseCase
+import java.time.LocalTime
 import javax.inject.Inject
 
 data class SettingsUiState(
@@ -28,6 +27,7 @@ sealed interface SettingsIntent {
     data class SoundToggled(val enabled: Boolean) : SettingsIntent
     data class VolumeChanged(val value: Float) : SettingsIntent
     data class NotificationsToggled(val enabled: Boolean) : SettingsIntent
+    data class WordOfDayTimeSelected(val time: LocalTime) : SettingsIntent
     data class GeolocationToggled(val enabled: Boolean) : SettingsIntent
     data class ThemeSelected(val mode: ThemeMode) : SettingsIntent
     data class LanguageSelected(val language: UiLanguage) : SettingsIntent
@@ -37,8 +37,6 @@ sealed interface SettingsIntent {
 class SettingsViewModel @Inject constructor(
     observeSettings: ObserveSettingsUseCase,
     private val updateSettings: UpdateSettingsUseCase,
-    private val notificationScheduler: NotificationScheduler,
-    private val uiLanguageController: UiLanguageController,
 ) : ViewModel() {
 
     val settings: StateFlow<AppSettings> = observeSettings()
@@ -53,18 +51,15 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.VolumeChanged -> update { it.copy(ttsVolume = intent.value.coerceIn(0f, 1f)) }
             is SettingsIntent.NotificationsToggled -> {
                 update { it.copy(notificationsEnabled = intent.enabled) }
-                notificationScheduler.sync(intent.enabled)
                 if (intent.enabled) _uiState.update { it.copy(notificationsDenied = false) }
             }
+            is SettingsIntent.WordOfDayTimeSelected -> update { it.copy(wordOfDayTime = intent.time) }
             is SettingsIntent.GeolocationToggled -> {
                 update { it.copy(geolocationEnabled = intent.enabled) }
                 _uiState.update { it.copy(geoDenied = !intent.enabled) }
             }
             is SettingsIntent.ThemeSelected -> update { it.copy(themeMode = intent.mode) }
-            is SettingsIntent.LanguageSelected -> viewModelScope.launch {
-                updateSettings { it.copy(uiLanguage = intent.language) }
-                uiLanguageController.apply(intent.language)
-            }
+            is SettingsIntent.LanguageSelected -> update { it.copy(uiLanguage = intent.language) }
         }
     }
 

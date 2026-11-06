@@ -1,10 +1,14 @@
 package org.udmurtlang.learn.domain.model
 
+import java.time.LocalTime
+
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 enum class UiLanguage(val tag: String) { RUSSIAN("ru"), UDMURT("udm") }
 
 const val MAX_DISPLAY_NAME_LENGTH = 32
+const val DEFAULT_GUEST_NAME = "Гость"
+val DefaultWordOfDayTime: LocalTime = LocalTime.of(9, 0)
 
 fun String.limitDisplayName(): String =
     if (codePointCount(0, length) <= MAX_DISPLAY_NAME_LENGTH) this
@@ -25,4 +29,5 @@ data class AppSettings(
     val geolocationEnabled: Boolean = false,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val uiLanguage: UiLanguage = UiLanguage.RUSSIAN,
+    val wordOfDayTime: LocalTime = DefaultWordOfDayTime,
 )

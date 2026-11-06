@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.ScrollableContent
@@ -80,7 +80,7 @@ fun GameScaffold(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding(),
+                .safeContentTopPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val roundText = stringResource(R.string.round_label, round.coerceAtMost(total.coerceAtLeast(1)), total)

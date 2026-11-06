@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -43,6 +42,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.studyCardColor
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
@@ -179,7 +179,7 @@ fun OnboardingScreen(
 private fun OnboardingPage(page: Page, wide: Boolean, short: Boolean) {
     if (wide || short) {
         ScrollableContent(
-            modifier = Modifier.fillMaxSize().statusBarsPadding(),
+            modifier = Modifier.fillMaxSize().safeContentTopPadding(),
             maxWidth = WideContentWidth,
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             centerVertically = true,

@@ -16,9 +16,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.ConfigurationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
@@ -32,6 +33,7 @@ import org.udmurtlang.learn.core.designsystem.onVivid
 import org.udmurtlang.learn.feature.games.GameEffect
 import org.udmurtlang.learn.feature.games.GameScaffold
 import org.udmurtlang.learn.feature.games.GameTintSorting
+import org.udmurtlang.learn.domain.model.UiLanguage
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -67,11 +69,18 @@ fun SortingScreen(
                 EmptyState(
                     title = stringResource(R.string.loading),
                     hint = stringResource(R.string.game_sorting),
+                    tinted = true,
                 )
             }
             return@GameScaffold
         }
         val wide = currentWindowClass().isWide
+        val isUdmurt = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language == UiLanguage.UDMURT.tag
+        val categoryNames = when (state.themeId) {
+            "animals_plants" -> listOf(stringResource(R.string.sort_animals), stringResource(R.string.sort_plants))
+            "edible" -> listOf(stringResource(R.string.sort_edible), stringResource(R.string.sort_inedible))
+            else -> round.categoryNames
+        }
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -95,7 +104,7 @@ fun SortingScreen(
                             val placed = item.wordId in state.placedWordIds
                             if (!placed) {
                                 ChoiceTile(
-                                    label = item.label,
+                                    label = if (isUdmurt) item.udm else item.label,
                                     modifier = Modifier.weight(1f),
                                     emoji = item.emoji,
                                     state = if (state.selectedItemIndex == index) TileState.CORRECT else TileState.NEUTRAL,
@@ -111,7 +120,7 @@ fun SortingScreen(
                 },
                 second = {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        round.categoryNames.forEachIndexed { categoryIndex, name ->
+                        categoryNames.forEachIndexed { categoryIndex, name ->
                             Surface(
                                 onClick = { viewModel.onIntent(SortingIntent.CategorySelected(categoryIndex)) },
                                 enabled = !state.locked && state.selectedItemIndex != null,
@@ -140,11 +149,11 @@ fun SortingScreen(
                                             placedHere.forEach { item ->
                                                 Surface(
                                                     shape = MaterialTheme.shapes.small,
-                                                    color = Color.White.copy(alpha = 0.9f),
-                                                    contentColor = MaterialTheme.colorScheme.onSurface,
+                                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 ) {
                                                     Text(
-                                                        text = "${item.emoji} ${item.label}",
+                                                        text = "${item.emoji} ${if (isUdmurt) item.udm else item.label}",
                                                         style = MaterialTheme.typography.labelMedium,
                                                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                                     )

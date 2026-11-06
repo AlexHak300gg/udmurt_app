@@ -42,6 +42,8 @@ import org.udmurtlang.learn.core.designsystem.ZcPurple
 import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.ZcTeal
 import org.udmurtlang.learn.core.designsystem.ZcOrange
+import org.udmurtlang.learn.core.designsystem.onVivid
+import org.udmurtlang.learn.core.designsystem.onVividMuted
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -183,7 +185,11 @@ fun EmptyState(
     title: String,
     hint: String,
     modifier: Modifier = Modifier,
+    tinted: Boolean = false,
 ) {
+    val scheme = MaterialTheme.colorScheme
+    val textColor = if (tinted) onVivid() else scheme.onBackground
+    val mutedColor = if (tinted) onVividMuted() else scheme.onSurfaceVariant
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -195,19 +201,20 @@ fun EmptyState(
         Text(
             text = stringResource(R.string.loading),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = mutedColor,
         )
-        OrnamentBand(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f))
+        OrnamentBand(color = (if (tinted) textColor else scheme.primary).copy(alpha = 0.6f))
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
+            color = textColor,
         )
         Text(
             text = hint,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = mutedColor,
         )
     }
 }

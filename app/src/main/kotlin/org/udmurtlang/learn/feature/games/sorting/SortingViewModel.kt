@@ -28,6 +28,7 @@ import kotlin.random.Random
 
 data class SortingState(
     val round: GameRound.Sorting? = null,
+    val themeId: String = "",
     val placedWordIds: Set<String> = emptySet(),
     val selectedItemIndex: Int? = null,
     val correctCount: Int = 0,
@@ -64,7 +65,7 @@ class SortingViewModel @Inject constructor(
             val allWords = content.allWords()
             val theme = SortingThemes.all.random()
             val round = generator.sorting(allWords, theme)
-            _state.update { it.copy(round = round, finished = round == null) }
+            _state.update { it.copy(round = round, themeId = theme.id, finished = round == null) }
             if (round == null) finish()
         }
     }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.designsystem.currentWindowClass
 import org.udmurtlang.learn.core.designsystem.isWide
@@ -65,7 +65,7 @@ fun ResultScreen(
     val starsLabel = stringResource(R.string.result_stars)
 
     Column(
-        modifier = Modifier.fillMaxSize().background(vividScreen(ZcOrange)).statusBarsPadding(),
+        modifier = Modifier.fillMaxSize().background(vividScreen(ZcOrange)).safeContentTopPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(

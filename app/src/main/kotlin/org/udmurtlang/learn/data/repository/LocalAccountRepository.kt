@@ -10,6 +10,7 @@ import org.udmurtlang.learn.data.account.PasswordHasher
 import org.udmurtlang.learn.data.local.AppDataStore
 import org.udmurtlang.learn.data.local.db.AccountDao
 import org.udmurtlang.learn.data.local.db.AccountEntity
+import org.udmurtlang.learn.domain.model.DEFAULT_GUEST_NAME
 import org.udmurtlang.learn.domain.model.Profile
 import org.udmurtlang.learn.domain.model.limitDisplayName
 import org.udmurtlang.learn.domain.repository.AccountRepository
@@ -70,7 +71,7 @@ class LocalAccountRepository @Inject constructor(
         val guest = AccountEntity(
             id = UUID.randomUUID().toString(),
             email = GUEST_EMAIL,
-            displayName = "Гость",
+            displayName = DEFAULT_GUEST_NAME,
             avatar = DEFAULT_AVATAR,
             isGuest = true,
             passwordHash = null,

@@ -96,14 +96,14 @@ class GameRoundGeneratorTest {
 
     @Test
     fun `true false round consistency`() {
-        val words = pool()
-        repeat(20) {
-            val round = generator.trueFalse(words.first(), words)
-            if (round.isTrue) {
-                assertEquals(words.first().ru, round.ru)
-            } else {
-                assertFalse(round.ru == words.first().ru)
-            }
+        val words = pool(3).mapIndexed { index, word -> if (index == 2) word.copy(emoji = "🍎") else word }
+        val word = words.first()
+        val rounds = List(20) { generator.trueFalse(word, words) }
+        assertTrue(rounds.any { it.isTrue })
+        assertTrue(rounds.any { !it.isTrue })
+        for (round in rounds) {
+            assertEquals(word.udm, round.udm)
+            assertEquals(if (round.isTrue) word.emoji else words.last().emoji, round.emoji)
         }
     }
 

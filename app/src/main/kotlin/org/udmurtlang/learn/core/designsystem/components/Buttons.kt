@@ -171,6 +171,7 @@ fun ChoiceTile(
     state: TileState = TileState.NEUTRAL,
     enabled: Boolean = true,
     leadingAligned: Boolean = false,
+    showCorrectIcon: Boolean = true,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -221,7 +222,7 @@ fun ChoiceTile(
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = if (leadingAligned) TextAlign.Start else TextAlign.Center,
             )
-            if (state == TileState.CORRECT) {
+            if (state == TileState.CORRECT && showCorrectIcon) {
                 Icon(
                     imageVector = Icons.Filled.Check,
                     contentDescription = null,

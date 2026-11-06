@@ -5,7 +5,8 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.data.supabase.SyncWorker
 import org.udmurtlang.learn.domain.notifications.NotificationScheduler
@@ -30,7 +31,10 @@ class LearnApp : Application() {
         }
         // Согласовать уведомления с сохранённой настройкой
         appScope.launch {
-            notificationScheduler.sync(settingsRepository.settings.first().notificationsEnabled)
+            settingsRepository.settings
+                .map { it.notificationsEnabled to it.wordOfDayTime }
+                .distinctUntilChanged()
+                .collect { (enabled, time) -> notificationScheduler.sync(enabled, time) }
         }
     }
 }

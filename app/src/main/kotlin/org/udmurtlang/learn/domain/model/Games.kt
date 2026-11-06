@@ -60,7 +60,6 @@ sealed interface GameRound {
     data class TrueFalse(
         override val wordId: String,
         val udm: String,
-        val ru: String,
         val emoji: String,
         val isTrue: Boolean,
     ) : GameRound

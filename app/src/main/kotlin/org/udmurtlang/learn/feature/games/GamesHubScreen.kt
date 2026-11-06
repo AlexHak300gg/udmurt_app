@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,12 +26,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.WideContentWidth
 import org.udmurtlang.learn.core.designsystem.WindowClass
@@ -83,7 +84,7 @@ fun GamesHubScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding(),
+            .safeContentTopPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(
@@ -95,7 +96,12 @@ fun GamesHubScreen(
         BoxWithConstraints(
             modifier = Modifier.weight(1f).widthIn(max = WideContentWidth).fillMaxWidth().padding(horizontal = 16.dp),
         ) {
-            val columns = if (window == WindowClass.EXPANDED || short && window.isWide) 3 else 2
+            val widthForText = maxWidth / LocalDensity.current.fontScale.coerceAtLeast(1f)
+            val columns = when {
+                widthForText < 280.dp -> 1
+                window == WindowClass.EXPANDED || short && window.isWide -> 3
+                else -> 2
+            }
             val rows = (entries.size + columns - 1) / columns
             val spacing = window.gridSpacing
             val bottomPadding = 16.dp

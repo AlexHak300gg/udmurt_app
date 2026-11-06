@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.media.hasBundledSpeech
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.designsystem.isShortWindow
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
@@ -172,11 +173,13 @@ fun BuilderScreen(
                             modifier = Modifier.padding(top = 2.dp),
                         )
                     }
-                    SoundButton(
-                        onClick = viewModel::speakWord,
-                        contentDescription = stringResource(R.string.pronunciation),
-                        modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
-                    )
+                    if (hasBundledSpeech(round.udm)) {
+                        SoundButton(
+                            onClick = viewModel::speakWord,
+                            contentDescription = stringResource(R.string.pronunciation),
+                            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
+                        )
+                    }
                 }
             },
             second = {

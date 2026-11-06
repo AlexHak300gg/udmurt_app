@@ -15,6 +15,6 @@ class MainViewModel @Inject constructor(
     observeSettings: ObserveSettingsUseCase,
 ) : ViewModel() {
 
-    val settings: StateFlow<AppSettings> = observeSettings()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
+    val settings: StateFlow<AppSettings?> = observeSettings()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 }

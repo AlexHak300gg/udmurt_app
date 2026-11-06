@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -13,8 +14,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.udmurtlang.learn.domain.model.AppSettings
+import org.udmurtlang.learn.domain.model.DefaultWordOfDayTime
 import org.udmurtlang.learn.domain.model.ThemeMode
 import org.udmurtlang.learn.domain.model.UiLanguage
+import java.time.LocalTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,33 +29,38 @@ class AppDataStore @Inject constructor(
 ) {
     private val store = context.appDataStore
 
-    val settings: Flow<AppSettings> = store.data.map { prefs ->
+    val settings: Flow<AppSettings> = store.data.map { it.toSettings() }
+
+    private fun Preferences.toSettings(): AppSettings =
         AppSettings(
-            soundEnabled = prefs[Keys.SOUND] ?: true,
-            ttsVolume = prefs[Keys.VOLUME] ?: 1f,
-            notificationsEnabled = prefs[Keys.NOTIFICATIONS] ?: false,
-            geolocationEnabled = prefs[Keys.GEOLOCATION] ?: false,
-            themeMode = prefs[Keys.THEME]?.let { runCatching { ThemeMode.valueOf(it) }.getOrNull() }
+            soundEnabled = this[Keys.SOUND] ?: true,
+            ttsVolume = this[Keys.VOLUME] ?: 1f,
+            notificationsEnabled = this[Keys.NOTIFICATIONS] ?: false,
+            geolocationEnabled = this[Keys.GEOLOCATION] ?: false,
+            themeMode = this[Keys.THEME]?.let { runCatching { ThemeMode.valueOf(it) }.getOrNull() }
                 ?: ThemeMode.SYSTEM,
-            uiLanguage = prefs[Keys.LANGUAGE]?.let { runCatching { UiLanguage.valueOf(it) }.getOrNull() }
+            uiLanguage = this[Keys.LANGUAGE]?.let { runCatching { UiLanguage.valueOf(it) }.getOrNull() }
                 ?: UiLanguage.RUSSIAN,
+            wordOfDayTime = this[Keys.WORD_OF_DAY_MINUTE]
+                ?.takeIf { it in 0 until 24 * 60 }
+                ?.let { LocalTime.of(it / 60, it % 60) }
+                ?: DefaultWordOfDayTime,
         )
-    }
 
     val sessionId: Flow<String?> = store.data.map { it[Keys.SESSION] }
 
     val onboardingDone: Flow<Boolean> = store.data.map { it[Keys.ONBOARDING] ?: false }
 
     suspend fun updateSettings(transform: (AppSettings) -> AppSettings) {
-        val current = settingsFirst()
-        val next = transform(current)
         store.edit { prefs ->
+            val next = transform(prefs.toSettings())
             prefs[Keys.SOUND] = next.soundEnabled
             prefs[Keys.VOLUME] = next.ttsVolume
             prefs[Keys.NOTIFICATIONS] = next.notificationsEnabled
             prefs[Keys.GEOLOCATION] = next.geolocationEnabled
             prefs[Keys.THEME] = next.themeMode.name
             prefs[Keys.LANGUAGE] = next.uiLanguage.name
+            prefs[Keys.WORD_OF_DAY_MINUTE] = next.wordOfDayTime.toSecondOfDay() / 60
         }
     }
 
@@ -66,16 +74,22 @@ class AppDataStore @Inject constructor(
         store.edit { it[Keys.ONBOARDING] = true }
     }
 
-    private suspend fun settingsFirst(): AppSettings = settings.first()
+    suspend fun contentVersion(): Int = store.data.first()[Keys.CONTENT_VERSION] ?: 0
+
+    suspend fun setContentVersion(version: Int) {
+        store.edit { it[Keys.CONTENT_VERSION] = version }
+    }
 
     private object Keys {
         val SOUND = booleanPreferencesKey("sound_enabled")
         val VOLUME = floatPreferencesKey("tts_volume")
         val NOTIFICATIONS = booleanPreferencesKey("notifications_enabled")
+        val WORD_OF_DAY_MINUTE = intPreferencesKey("word_of_day_minute")
         val GEOLOCATION = booleanPreferencesKey("geolocation_enabled")
         val THEME = stringPreferencesKey("theme_mode")
         val LANGUAGE = stringPreferencesKey("ui_language")
         val SESSION = stringPreferencesKey("session_account_id")
         val ONBOARDING = booleanPreferencesKey("onboarding_done")
+        val CONTENT_VERSION = intPreferencesKey("content_version")
     }
 }

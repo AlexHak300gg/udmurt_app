@@ -11,17 +11,19 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.media.hasBundledSpeech
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.designsystem.ScrollableContent
 import org.udmurtlang.learn.core.designsystem.WideContentWidth
@@ -39,7 +41,6 @@ import org.udmurtlang.learn.core.designsystem.components.GameButton
 import org.udmurtlang.learn.core.designsystem.components.GhostButton
 import org.udmurtlang.learn.core.designsystem.components.ProgressLine
 import org.udmurtlang.learn.core.designsystem.isShortWindow
-import org.udmurtlang.learn.core.designsystem.studyCardColor
 import org.udmurtlang.learn.core.designsystem.components.WordCard
 import org.udmurtlang.learn.core.designsystem.components.ZcHeader
 import org.udmurtlang.learn.core.media.AutoPronounce
@@ -75,7 +76,7 @@ fun WordCardsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding(),
+                .safeContentTopPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ZcHeader(
@@ -125,20 +126,20 @@ fun WordCardsScreen(
                                     textAlign = TextAlign.Center,
                                 )
                                 GameButton(
-                                    text = stringResource(R.string.back),
+                                    text = stringResource(R.string.done),
                                     onClick = onBack,
-                                    containerColor = MaterialTheme.colorScheme.surface,
-                                    contentColor = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.padding(top = 24.dp),
+                                    containerColor = MaterialTheme.colorScheme.inverseSurface,
+                                    contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                                    modifier = Modifier.padding(top = 24.dp).widthIn(max = 320.dp).fillMaxWidth(),
                                 )
                             }
-                            ConfettiOverlay(active = true)
                         }
                         word == null -> {
                             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                                 EmptyState(
                                     title = stringResource(R.string.loading),
                                     hint = stringResource(R.string.cards_hint),
+                                    tinted = true,
                                 )
                             }
                         }
@@ -150,7 +151,9 @@ fun WordCardsScreen(
                                 first = {
                                     WordCard(
                                         word = word,
-                                        onSpeak = { viewModel.onIntent(CardsIntent.Speak(word)) },
+                                        onSpeak = if (hasBundledSpeech(word.udm)) {
+                                            { viewModel.onIntent(CardsIntent.Speak(word)) }
+                                        } else null,
                                         speakLabel = stringResource(R.string.pronunciation),
                                         translationLabel = stringResource(R.string.word_translation),
                                         sideBySide = wide,
@@ -158,29 +161,33 @@ fun WordCardsScreen(
                                     )
                                 },
                                 second = {
-                                    FlowRow(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        maxItemsInEachRow = if (wide) 1 else 2,
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                                    ) {
-                                        GhostButton(
-                                            text = stringResource(R.string.repeat),
-                                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
-                                            contentColor = onVivid(),
-                                            borderColor = onVivid(),
-                                            enabled = !state.answering,
-                                            onClick = { viewModel.onIntent(CardsIntent.Repeat) },
-                                            modifier = Modifier.weight(1f),
-                                        )
-                                        GameButton(
-                                            text = stringResource(R.string.know),
-                                            containerColor = studyCardColor(),
-                                            contentColor = MaterialTheme.colorScheme.onSurface,
-                                            enabled = !state.answering,
-                                            onClick = { viewModel.onIntent(CardsIntent.Know) },
-                                            modifier = Modifier.weight(1f),
-                                        )
+                                    BoxWithConstraints(Modifier.fillMaxWidth()) {
+                                        val scheme = MaterialTheme.colorScheme
+                                        val textWidth = maxWidth / LocalDensity.current.fontScale.coerceAtLeast(1f)
+                                        FlowRow(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            maxItemsInEachRow = if (wide || textWidth < 280.dp) 1 else 2,
+                                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                                        ) {
+                                            GhostButton(
+                                                text = stringResource(R.string.not_known),
+                                                containerColor = scheme.surface,
+                                                contentColor = scheme.onSurface,
+                                                borderColor = scheme.onSurfaceVariant,
+                                                enabled = !state.answering,
+                                                onClick = { viewModel.onIntent(CardsIntent.Repeat) },
+                                                modifier = Modifier.weight(1f),
+                                            )
+                                            GameButton(
+                                                text = stringResource(R.string.know),
+                                                containerColor = scheme.inverseSurface,
+                                                contentColor = scheme.inverseOnSurface,
+                                                enabled = !state.answering,
+                                                onClick = { viewModel.onIntent(CardsIntent.Know) },
+                                                modifier = Modifier.weight(1f),
+                                            )
+                                        }
                                     }
                                 },
                             )
@@ -189,5 +196,6 @@ fun WordCardsScreen(
                 }
             }
         }
+        ConfettiOverlay(active = state.finished, modifier = Modifier.matchParentSize())
     }
 }

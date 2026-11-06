@@ -1,15 +1,24 @@
 package org.udmurtlang.learn.core.designsystem
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.luminance
 
 @Immutable
 data class ZcBrand(
@@ -41,35 +50,35 @@ private val DarkBrand = ZcBrand(
 )
 
 val LocalBrand = staticCompositionLocalOf { LightBrand }
+private val LocalDarkThemeProgress = compositionLocalOf { 0f }
 
 /** Цветной экран: в светлой теме — яркая заливка, в тёмной — нейтральный тёмный фон. */
 @Composable
 fun vividScreen(vivid: Color): Color =
-    if (LocalBrand.current.isDark) MaterialTheme.colorScheme.background else vivid
+    lerp(vivid, ZcDarkBg, LocalDarkThemeProgress.current)
 
 @Composable
-fun brandAccent(color: Color): Color = if (LocalBrand.current.isDark) {
-    when (color) {
+fun brandAccent(color: Color): Color {
+    val dark = when (color) {
         ZcRed -> ZcRedDark
         ZcTeal, ZcTealDeep -> ZcTealDark
         ZcPurple, ZcPurpleTile -> ZcPurpleDark
         ZcOrange -> ZcOrangeDark
         else -> color
     }
-} else {
-    color
+    return lerp(color, dark, LocalDarkThemeProgress.current)
 }
 
 @Composable
-fun studyCardColor(): Color = if (LocalBrand.current.isDark) ZcDarkElevated else ZcCard
+fun studyCardColor(): Color = lerp(ZcCard, ZcDarkElevated, LocalDarkThemeProgress.current)
 
 /** Текст поверх цветного экрана (светлая тема — белый, тёмная — светлый). */
 @Composable
-fun onVivid(): Color = if (LocalBrand.current.isDark) MaterialTheme.colorScheme.onBackground else Color.White
+fun onVivid(): Color = lerp(Color.White, ZcDarkInk, LocalDarkThemeProgress.current)
 
 @Composable
 fun onVividMuted(): Color =
-    if (LocalBrand.current.isDark) MaterialTheme.colorScheme.onSurfaceVariant else Color.White.copy(alpha = 0.72f)
+    lerp(Color.White.copy(alpha = 0.72f), ZcDarkMuted, LocalDarkThemeProgress.current)
 
 /** Поверх найденного фона чипы — белые в светлой, тёмно-серые в тёмной. */
 @Composable
@@ -142,18 +151,71 @@ private val DarkColors = darkColorScheme(
     inversePrimary = ZcRedOnDark,
 )
 
+private fun animatedColors(progress: Float): ColorScheme {
+    if (progress <= 0f) return LightColors
+    if (progress >= 1f) return DarkColors
+
+    fun blend(light: Color, dark: Color) = lerp(light, dark, progress)
+    fun foreground(background: Color, onLight: Color = ZcInk, onDark: Color = ZcDarkInk) =
+        if (background.luminance() > 0.18f) onLight else onDark
+
+    val base = if (progress < 0.5f) LightColors else DarkColors
+    val background = blend(LightColors.background, DarkColors.background)
+    val surface = blend(LightColors.surface, DarkColors.surface)
+    val surfaceVariant = blend(LightColors.surfaceVariant, DarkColors.surfaceVariant)
+    val primaryContainer = blend(LightColors.primaryContainer, DarkColors.primaryContainer)
+    val secondaryContainer = blend(LightColors.secondaryContainer, DarkColors.secondaryContainer)
+    val tertiaryContainer = blend(LightColors.tertiaryContainer, DarkColors.tertiaryContainer)
+    val inverseSurface = blend(LightColors.inverseSurface, DarkColors.inverseSurface)
+    val error = blend(LightColors.error, DarkColors.error)
+    return base.copy(
+        primary = blend(LightColors.primary, DarkColors.primary),
+        primaryContainer = primaryContainer,
+        onPrimaryContainer = foreground(primaryContainer, LightOnPrimaryContainer, DarkOnPrimaryContainer),
+        secondary = blend(LightColors.secondary, DarkColors.secondary),
+        secondaryContainer = secondaryContainer,
+        onSecondaryContainer = foreground(secondaryContainer, LightOnSecondaryContainer, DarkOnSecondaryContainer),
+        tertiary = blend(LightColors.tertiary, DarkColors.tertiary),
+        tertiaryContainer = tertiaryContainer,
+        onTertiaryContainer = foreground(tertiaryContainer, LightOnTertiaryContainer, DarkOnTertiaryContainer),
+        background = background,
+        onBackground = foreground(background),
+        surface = surface,
+        onSurface = foreground(surface),
+        surfaceVariant = surfaceVariant,
+        onSurfaceVariant = foreground(surfaceVariant, ZcMuted, ZcDarkMuted),
+        outline = blend(LightColors.outline, DarkColors.outline),
+        outlineVariant = blend(LightColors.outlineVariant, DarkColors.outlineVariant),
+        error = error,
+        onError = foreground(error, DarkColors.onError, LightColors.onError),
+        surfaceContainer = surface,
+        surfaceContainerHigh = surfaceVariant,
+        surfaceContainerLow = surface,
+        inverseSurface = inverseSurface,
+        inverseOnSurface = foreground(inverseSurface, DarkColors.inverseOnSurface, LightColors.inverseOnSurface),
+        inversePrimary = blend(LightColors.inversePrimary, DarkColors.inversePrimary),
+    )
+}
+
 @Composable
 fun ZecheburTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
+    val progress by animateFloatAsState(
+        targetValue = if (darkTheme) 1f else 0f,
+        animationSpec = tween(durationMillis = 280, easing = FastOutSlowInEasing),
+        label = "themePalette",
+    )
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        colorScheme = animatedColors(progress),
         typography = ZecheburTypography,
         shapes = ZecheburShapes,
     ) {
         CompositionLocalProvider(
             LocalBrand provides (if (darkTheme) DarkBrand else LightBrand),
+            LocalDarkThemeProgress provides progress,
+            LocalContentColor provides MaterialTheme.colorScheme.onBackground,
             content = content,
         )
     }

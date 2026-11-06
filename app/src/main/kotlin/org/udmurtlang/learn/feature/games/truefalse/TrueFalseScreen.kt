@@ -21,14 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.media.hasBundledSpeech
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.media.AutoPronounce
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
 import org.udmurtlang.learn.core.designsystem.components.SoundButton
 import org.udmurtlang.learn.core.designsystem.components.TileState
-import org.udmurtlang.learn.core.designsystem.chromeOnVivid
-import org.udmurtlang.learn.core.designsystem.chromeOnVividText
 import org.udmurtlang.learn.core.designsystem.onVivid
 import org.udmurtlang.learn.core.designsystem.onVividMuted
 import org.udmurtlang.learn.feature.games.GameEffect
@@ -68,6 +67,7 @@ fun TrueFalseScreen(
                 EmptyState(
                     title = stringResource(R.string.loading),
                     hint = stringResource(R.string.game_truefalse),
+                    tinted = true,
                 )
             }
             return@GameScaffold
@@ -78,6 +78,12 @@ fun TrueFalseScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    Text(
+                        text = stringResource(R.string.game_tf_sub),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = onVividMuted(),
+                        textAlign = TextAlign.Center,
+                    )
                     Text(round.emoji, fontSize = MaterialTheme.typography.displayLarge.fontSize)
                     Text(
                         text = round.udm,
@@ -85,19 +91,15 @@ fun TrueFalseScreen(
                         textAlign = TextAlign.Center,
                         color = onVivid(),
                     )
-                    SoundButton(
-                        onClick = viewModel::speakWord,
-                        contentDescription = stringResource(R.string.pronunciation),
-                        container = onVividMuted(),
-                        contentColor = onVivid(),
-                        modifier = Modifier.padding(vertical = 10.dp),
-                    )
-                    Text(
-                        text = "${stringResource(R.string.word_translation)}: ${round.ru}",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = onVivid(),
-                        textAlign = TextAlign.Center,
-                    )
+                    if (hasBundledSpeech(round.udm)) {
+                        SoundButton(
+                            onClick = viewModel::speakWord,
+                            contentDescription = stringResource(R.string.pronunciation),
+                            container = onVividMuted(),
+                            contentColor = onVivid(),
+                            modifier = Modifier.padding(vertical = 10.dp),
+                        )
+                    }
                 }
             },
             second = {
@@ -107,7 +109,7 @@ fun TrueFalseScreen(
                 ) {
                     ChoiceTile(
                         label = stringResource(R.string.true_label),
-                        emoji = "✅",
+                        showCorrectIcon = false,
                         state = when {
                             state.feedback == null -> TileState.NEUTRAL
                             round.isTrue -> TileState.CORRECT
@@ -119,7 +121,7 @@ fun TrueFalseScreen(
                     )
                     ChoiceTile(
                         label = stringResource(R.string.false_label),
-                        emoji = "❌",
+                        showCorrectIcon = false,
                         state = when {
                             state.feedback == null -> TileState.NEUTRAL
                             !round.isTrue -> TileState.CORRECT

@@ -1,7 +1,12 @@
 package org.udmurtlang.learn.data.repository
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import org.udmurtlang.learn.core.common.TimeProvider
+import org.udmurtlang.learn.core.media.SpeechAudioAssets
 import org.udmurtlang.learn.data.local.AppDataStore
 import org.udmurtlang.learn.domain.model.AppSettings
 import org.udmurtlang.learn.domain.model.WordOfDay
@@ -25,10 +30,17 @@ class SettingsRepositoryImpl @Inject constructor(
 class WordOfDayRepositoryImpl @Inject constructor(
     private val content: ContentRepository,
     private val time: TimeProvider,
+    @ApplicationContext private val context: Context,
 ) : WordOfDayRepository {
 
+    private val recordings by lazy { context.assets.list(SpeechAudioAssets.DIRECTORY).orEmpty().toSet() }
+
     override suspend fun wordOfDay(): WordOfDay {
-        val words = content.allWords().sortedBy { it.id }
+        val allWords = content.allWords().sortedBy { it.id }
+        val wordsWithAudio = withContext(Dispatchers.IO) {
+            allWords.filter { SpeechAudioAssets.path(it.udm).substringAfterLast('/') in recordings }
+        }
+        val words = wordsWithAudio.ifEmpty { allWords }
         val day = time.today()
         val index = ((day.toEpochDay() % words.size) + words.size).toInt() % words.size
         return WordOfDay(day = day.toString(), word = words[index])

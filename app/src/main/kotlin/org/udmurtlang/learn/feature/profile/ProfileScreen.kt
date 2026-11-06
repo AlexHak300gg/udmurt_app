@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -48,6 +48,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -56,9 +58,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.safeContentTopPadding
 import org.udmurtlang.learn.domain.model.MAX_DISPLAY_NAME_LENGTH
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.ScrollableContent
+import org.udmurtlang.learn.core.designsystem.currentWindowClass
+import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.ZcTeal
 import org.udmurtlang.learn.core.designsystem.ZcPurple
 import org.udmurtlang.learn.core.designsystem.ZcOrange
@@ -67,6 +72,7 @@ import org.udmurtlang.learn.core.designsystem.ZcWhite
 import org.udmurtlang.learn.core.designsystem.components.CircleAvatar
 import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.components.ZcHeader
+import org.udmurtlang.learn.core.designsystem.components.profileDisplayName
 import org.udmurtlang.learn.domain.model.AchievementSlugs
 
 /** Цвета медалей по кругу, как в макете. */
@@ -94,6 +100,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val scheme = MaterialTheme.colorScheme
 
     LaunchedEffect(state.notice) {
         if (state.notice == "logged_out" || state.notice == "deleted") onLoggedOut()
@@ -192,7 +199,7 @@ fun ProfileScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).safeContentTopPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(
@@ -205,36 +212,31 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                val name = state.profile?.displayName ?: stringResource(R.string.guest_label)
+                val name = profileDisplayName(state.profile)
                 CircleAvatar(initial = name.ifBlank { "?" }, size = 88.dp, container = brandAccent(ZcRed))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = name,
                         style = MaterialTheme.typography.titleLarge,
+                        color = scheme.onBackground,
                         modifier = Modifier.weight(1f, fill = false),
                     )
                     if (state.profile != null) {
                         IconButton(onClick = { viewModel.onIntent(ProfileIntent.EditName) }) {
-                            Icon(Icons.Filled.Edit, stringResource(R.string.profile_name), modifier = Modifier.size(18.dp))
+                            Icon(
+                                Icons.Filled.Edit,
+                                stringResource(R.string.profile_name),
+                                tint = scheme.onBackground,
+                                modifier = Modifier.size(18.dp),
+                            )
                         }
                     }
                 }
                 state.profile?.takeIf { !it.isGuest }?.let {
                     Text(it.email, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Spacer(Modifier.height(16.dp))
-                val stats = state.stats
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ProfileStatChip(stats?.wordsKnown ?: 0, stringResource(R.string.profile_stat_words), ZcPurple, Modifier.weight(1f))
-                    ProfileStatChip(stats?.gamesPlayed ?: 0, stringResource(R.string.profile_stat_games), ZcTeal, Modifier.weight(1f))
-                    ProfileStatChip(stats?.currentStreak ?: 0, stringResource(R.string.profile_stat_days), ZcOrange, Modifier.weight(1f))
-                }
             }
 
-            ProfileActionGroup {
-                ProfileAction(stringResource(R.string.stats_title), Icons.Filled.BarChart, onClick = onOpenStats)
-            }
-            Spacer(Modifier.height(18.dp))
             val unlockedSlugs = remember(state.achievements) { state.achievements.map { it.slug }.toSet() }
             Column(
                 modifier = Modifier
@@ -258,7 +260,7 @@ fun ProfileScreen(
                 }
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    maxItemsInEachRow = 4,
+                    maxItemsInEachRow = if (currentWindowClass().isWide) 6 else 4,
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
@@ -271,6 +273,21 @@ fun ProfileScreen(
                         )
                     }
                 }
+            }
+
+            Spacer(Modifier.height(18.dp))
+            val stats = state.stats
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                ProfileStatChip(stats?.wordsKnown ?: 0, stringResource(R.string.profile_stat_words), ZcPurple, Modifier.weight(1f))
+                ProfileStatChip(stats?.gamesPlayed ?: 0, stringResource(R.string.profile_stat_games), ZcTeal, Modifier.weight(1f))
+                ProfileStatChip(stats?.currentStreak ?: 0, stringResource(R.string.profile_stat_days), ZcOrange, Modifier.weight(1f))
+            }
+            Spacer(Modifier.height(8.dp))
+            ProfileActionGroup {
+                ProfileAction(stringResource(R.string.stats_title), Icons.Filled.BarChart, onClick = onOpenStats)
             }
 
             if (state.profile != null) {
@@ -306,6 +323,7 @@ private fun ProfileActionGroup(content: @Composable ColumnScope.() -> Unit) {
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         shape = RoundedCornerShape(22.dp),
         color = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
         Column(content = content)
     }
@@ -335,10 +353,10 @@ private fun ProfileAction(
                     .background(tint.copy(alpha = 0.08f)),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))
+                Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
             }
-            Text(title, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, modifier = Modifier.size(20.dp))
+            Text(title, color = tint, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
         }
     }
 }
@@ -363,6 +381,7 @@ private fun ProfileStatChip(value: Int, label: String, accent: Color, modifier: 
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
                 color = ZcWhite.copy(alpha = 0.85f),
+                textAlign = TextAlign.Center,
             )
         }
     }
@@ -383,48 +402,43 @@ private fun MedalTile(
     accent: Color = ZcRed,
 ) {
     val scheme = MaterialTheme.colorScheme
-    Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = Color.Transparent,
-        modifier = Modifier.size(width = 72.dp, height = 100.dp),
+    val labelWidth = 72.dp * LocalDensity.current.fontScale.coerceIn(1f, 1.6f)
+    Column(
+        modifier = Modifier.width(labelWidth).padding(horizontal = 2.dp, vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp),
+        // Макет: плоская цветная плашка с белой иконкой, закрытая — бежевая с замком
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(if (unlocked) brandAccent(accent) else scheme.surfaceVariant),
+            contentAlignment = Alignment.Center,
         ) {
-            // Макет: плоская цветная плашка с белой иконкой, закрытая — бежевая с замком
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(if (unlocked) brandAccent(accent) else scheme.surfaceVariant),
-                contentAlignment = Alignment.Center,
-            ) {
-                if (unlocked) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = ZcWhite,
-                        modifier = Modifier.size(26.dp),
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.Lock,
-                        contentDescription = null,
-                        tint = scheme.onSurfaceVariant,
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
+            if (unlocked) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = ZcWhite,
+                    modifier = Modifier.size(26.dp),
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.Lock,
+                    contentDescription = null,
+                    tint = scheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp),
+                )
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelSmall,
-                color = if (unlocked) scheme.onSurface else scheme.onSurfaceVariant.copy(alpha = 0.7f),
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-            )
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelSmall.copy(
+                platformStyle = PlatformTextStyle(includeFontPadding = true),
+            ),
+            color = if (unlocked) scheme.onSurface else scheme.onSurfaceVariant.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center,
+        )
     }
 }

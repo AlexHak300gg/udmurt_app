@@ -21,12 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.media.hasBundledSpeech
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.studyCardColor
 import org.udmurtlang.learn.core.designsystem.currentWindowClass
 import org.udmurtlang.learn.core.designsystem.isShortWindow
-import org.udmurtlang.learn.core.designsystem.isWide
+import org.udmurtlang.learn.core.designsystem.WindowClass
 import org.udmurtlang.learn.core.media.AutoPronounce
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
@@ -97,11 +98,12 @@ fun ChoiceGameScreen(
                 EmptyState(
                     title = stringResource(R.string.loading),
                     hint = stringResource(R.string.game_choice),
+                    tinted = true,
                 )
             }
             return@GameScaffold
         }
-        val compactAnswers = currentWindowClass().isWide && isShortWindow()
+        val compactAnswers = currentWindowClass() == WindowClass.EXPANDED && isShortWindow()
         AdaptivePanes(
             first = {
                 Column(
@@ -120,13 +122,15 @@ fun ChoiceGameScreen(
                         color = onVivid(),
                         modifier = Modifier.padding(top = 12.dp),
                     )
-                    SoundButton(
-                        onClick = viewModel::speakPrompt,
-                        contentDescription = stringResource(R.string.pronunciation),
-                        container = onVivid().copy(alpha = 0.13f),
-                        contentColor = onVivid(),
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
+                    if (hasBundledSpeech(round.promptUdm)) {
+                        SoundButton(
+                            onClick = viewModel::speakPrompt,
+                            contentDescription = stringResource(R.string.pronunciation),
+                            container = onVivid().copy(alpha = 0.13f),
+                            contentColor = onVivid(),
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                    }
                 }
             },
             second = {

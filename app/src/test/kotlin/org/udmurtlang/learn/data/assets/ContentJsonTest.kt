@@ -46,4 +46,21 @@ class ContentJsonTest {
         assertTrue(words.map { it.id }.distinct().size == words.size)
         assertTrue(words.all { w -> topics.any { it.id == w.topicId } })
     }
+
+    @Test
+    fun `corrected words use the expected spellings and meanings`() {
+        val words = loadDto().words
+        val expected = mapOf(
+            "Умоесь" to "здравствуйте",
+            "Ӝук" to "каша",
+            "Сӥль" to "мясо",
+            "Кар" to "город",
+            "Шур" to "река",
+            "Книга" to "книга",
+            "Гожъяны" to "писать",
+        )
+        for ((udm, ru) in expected) {
+            assertEquals(ru, words.single { it.udm == udm }.ru, udm)
+        }
+    }
 }
