@@ -1,19 +1,20 @@
 package org.udmurtlang.learn.core.designsystem.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -230,37 +231,49 @@ fun SectionChips(
     modifier: Modifier = Modifier,
 ) {
     val scheme = MaterialTheme.colorScheme
-    Row(
-        modifier = modifier.fillMaxWidth().heightIn(min = 58.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+    FlowRow(
+        modifier = modifier.fillMaxWidth().padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+        itemVerticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(title, style = MaterialTheme.typography.bodyMedium, color = scheme.onBackground, modifier = Modifier.weight(1f))
+        Text(
+            title,
+            style = MaterialTheme.typography.bodyMedium,
+            color = scheme.onBackground,
+            modifier = Modifier.padding(end = 8.dp),
+        )
         Surface(
-            modifier = Modifier.weight(3.2f, fill = false).widthIn(max = 254.dp),
-            shape = CircleShape,
+            shape = RoundedCornerShape(24.dp),
             color = scheme.surfaceVariant,
         ) {
-            FlowRow(
-                modifier = Modifier.selectableGroup().padding(3.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+            Row(
+                modifier = Modifier
+                    .selectableGroup()
+                    .padding(3.dp)
+                    .width(IntrinsicSize.Max)
+                    .height(IntrinsicSize.Min),
             ) {
                 items.forEachIndexed { index, item ->
                     val selected = index == selectedIndex
                     Surface(
                         selected = selected,
                         onClick = { onSelect(index) },
-                        shape = CircleShape,
+                        modifier = Modifier.weight(1f).fillMaxHeight().heightIn(min = 48.dp),
+                        shape = RoundedCornerShape(21.dp),
                         color = if (selected) scheme.inverseSurface else Color.Transparent,
                         contentColor = if (selected) scheme.inverseOnSurface else scheme.onSurfaceVariant,
-                        border = if (selected) BorderStroke(1.dp, scheme.inverseSurface) else null,
                     ) {
-                        Text(
-                            item,
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-                        )
+                        Box(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                item,
+                                style = MaterialTheme.typography.labelSmall,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
                 }
             }

@@ -245,27 +245,27 @@ fun MenuScreen(
                     Surface(
                         onClick = onOpenGames,
                         shape = RoundedCornerShape(28.dp),
-                        color = Color.Transparent,
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        color = brandAccent(ZcPurple),
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Box(
-                            modifier = Modifier.background(
-                                brandAccent(ZcPurple),
-                            ),
+                            modifier = Modifier.heightIn(min = if (short) 88.dp else 112.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
-                            Ornament(
-                                kind = UdmOrnament.PINWHEEL,
-                                color = Color.White.copy(alpha = 0.16f),
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .offset(x = 28.dp)
-                                    .size(120.dp),
-                            )
+                            Box(
+                                modifier = Modifier.matchParentSize(),
+                                contentAlignment = Alignment.CenterEnd,
+                            ) {
+                                Ornament(
+                                    kind = UdmOrnament.PINWHEEL,
+                                    color = Color.White.copy(alpha = 0.16f),
+                                    modifier = Modifier.offset(x = 28.dp).size(120.dp),
+                                )
+                            }
                             Row(
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 18.dp),
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 18.dp, vertical = 12.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 MenuGlyph(Icons.Outlined.SportsEsports)

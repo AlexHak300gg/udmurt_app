@@ -6,11 +6,11 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,6 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,11 +50,13 @@ import org.udmurtlang.learn.BuildConfig
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.ScrollableContent
+import org.udmurtlang.learn.core.designsystem.components.ProgressLine
 import org.udmurtlang.learn.core.designsystem.components.SectionChips
 import org.udmurtlang.learn.core.designsystem.components.SwitchCard
 import org.udmurtlang.learn.core.designsystem.components.ZcHeader
 import org.udmurtlang.learn.domain.model.ThemeMode
 import org.udmurtlang.learn.domain.model.UiLanguage
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,32 +135,48 @@ fun SettingsScreen(
                     onCheckedChange = { viewModel.onIntent(SettingsIntent.SoundToggled(it)) },
                 )
                 if (settings.soundEnabled) {
+                    val volumeLabel = stringResource(R.string.setting_volume)
                     Surface(
                         shape = RoundedCornerShape(18.dp),
                         color = MaterialTheme.colorScheme.surface,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp)) {
-                            Text(
-                                text = stringResource(R.string.setting_volume),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = volumeLabel,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = scheme.onSurface,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                Text(
+                                    text = "${(draftVolume * 100).roundToInt()}%",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = scheme.onSurfaceVariant,
+                                )
+                            }
                             Slider(
                                 value = draftVolume,
                                 onValueChange = { draftVolume = it },
                                 onValueChangeFinished = {
                                     viewModel.onIntent(SettingsIntent.VolumeChanged(draftVolume))
                                 },
-                                colors = SliderDefaults.colors(
-                                    activeTrackColor = scheme.primary,
-                                    inactiveTrackColor = scheme.onSurfaceVariant.copy(alpha = 0.32f),
-                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .semantics { contentDescription = volumeLabel },
                                 thumb = {
                                     Box(
-                                        Modifier.size(20.dp)
-                                            .background(scheme.primary, CircleShape)
-                                            .border(2.dp, scheme.onPrimary, CircleShape),
+                                        Modifier.size(20.dp).background(scheme.primary, CircleShape),
+                                    )
+                                },
+                                track = { slider ->
+                                    ProgressLine(
+                                        progress = slider.value,
+                                        track = scheme.onSurfaceVariant.copy(alpha = 0.32f),
                                     )
                                 },
                             )
@@ -253,7 +273,7 @@ fun SettingsScreen(
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = scheme.onSurfaceVariant,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                 )
                 Text(
                     text = stringResource(R.string.setting_version, BuildConfig.VERSION_NAME),
