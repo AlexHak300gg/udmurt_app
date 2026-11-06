@@ -3,6 +3,7 @@ package org.udmurtlang.learn.feature.games.oddoneout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.currentWindowClass
+import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
 import org.udmurtlang.learn.core.designsystem.components.SoundButton
@@ -67,8 +70,7 @@ fun OddOneOutScreen(
         }
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
@@ -77,32 +79,39 @@ fun OddOneOutScreen(
                 style = MaterialTheme.typography.bodyMedium,
                 color = onVivid(),
             )
-            round.words.forEachIndexed { index, word ->
-                val tileState = when {
-                    state.selected != null && index == round.oddIndex -> TileState.CORRECT
-                    state.selected == index -> TileState.WRONG
-                    else -> TileState.NEUTRAL
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    ChoiceTile(
-                        label = word.udm,
-                        emoji = word.emoji,
-                        state = tileState,
-                        enabled = !state.locked,
-                        onClick = {
-                            onSpeak(word.udm)
-                            viewModel.onIntent(OddOneOutIntent.Select(index))
-                        },
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                maxItemsInEachRow = if (currentWindowClass().isWide) 2 else 1,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                round.words.forEachIndexed { index, word ->
+                    val tileState = when {
+                        state.selected != null && index == round.oddIndex -> TileState.CORRECT
+                        state.selected == index -> TileState.WRONG
+                        else -> TileState.NEUTRAL
+                    }
+                    Row(
                         modifier = Modifier.weight(1f),
-                    )
-                    SoundButton(
-                        onClick = { onSpeak(word.udm) },
-                        contentDescription = "${stringResource(R.string.pronunciation)} — ${word.udm}",
-                    )
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        ChoiceTile(
+                            label = word.udm,
+                            emoji = word.emoji,
+                            state = tileState,
+                            enabled = !state.locked,
+                            onClick = {
+                                onSpeak(word.udm)
+                                viewModel.onIntent(OddOneOutIntent.Select(index))
+                            },
+                            modifier = Modifier.weight(1f),
+                        )
+                        SoundButton(
+                            onClick = { onSpeak(word.udm) },
+                            contentDescription = "${stringResource(R.string.pronunciation)} — ${word.udm}",
+                        )
+                    }
                 }
             }
         }

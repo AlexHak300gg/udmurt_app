@@ -195,8 +195,8 @@
     <string name="setting_version">Версия %1$s</string>
     <string name="notifications_permission_rationale">Чтобы присылать слово дня, разреши уведомления в настройках Android.</string>
     <string name="sync_section">Синхронизация</string>
-    <string name="sync_local">Локальный режим: без сети, прогресс на устройстве</string>
-    <string name="sync_cloud">Облачный режим Supabase активен</string>
+    <string name="sync_local">Прогресс хранится на этом устройстве</string>
+    <string name="sync_cloud">Прогресс синхронизируется с аккаунтом</string>
 
     <!-- Слово дня -->
     <string name="wod_unknown">Ещё не знал(а) такое слово</string>

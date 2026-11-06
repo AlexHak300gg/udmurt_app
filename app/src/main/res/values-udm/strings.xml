@@ -196,7 +196,7 @@
     <string name="setting_version">Версия %1$s</string>
     <string name="notifications_permission_rationale">Кыл кулэ пырлан, Android настройкасъёсын уведомление тодмаськы.</string>
     <string name="sync_section">Синхронизация</string>
-    <string name="sync_local">Локальный режим: интернет улын, прогресс сӟын</string>
+    <string name="sync_local">Прогресс та устройствоын возиське</string>
     <string name="sync_cloud">Supabase облако ошмо</string>
 
     <!-- Слово дня -->

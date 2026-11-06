@@ -53,6 +53,8 @@ class GameRepositoryImpl @Inject constructor(
 
     override suspend fun results(): List<GameResult> = dao.all().map { it.toDomain() }
 
+    override suspend fun count(): Int = dao.count()
+
     override suspend fun totalPlayTimeMs(): Long = dao.totalDuration()
 
     private companion object {
@@ -74,8 +76,13 @@ class ActivityRepositoryImpl @Inject constructor(
     override suspend fun daily(days: Int): List<DailyActivity> =
         fillDays(dao.since(sinceDay(days)).map { it.toDomain() }, days)
 
-    override suspend fun streak(): Streak =
-        dao.streak()?.let { Streak(it.current, it.best, it.lastActiveDay) } ?: Streak()
+    override suspend fun streak(): Streak {
+        val saved = dao.streak() ?: return Streak()
+        val today = time.today()
+        val active = saved.lastActiveDay == today.toString() ||
+            saved.lastActiveDay == today.minusDays(1).toString()
+        return Streak(if (active) saved.current.coerceAtLeast(0) else 0, saved.best, saved.lastActiveDay)
+    }
 
     override suspend fun registerGameplayed(correct: Int, wrong: Int, durationMs: Long) {
         val today = time.today().toString()

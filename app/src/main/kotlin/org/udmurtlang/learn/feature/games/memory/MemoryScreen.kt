@@ -5,9 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
+import org.udmurtlang.learn.core.designsystem.ScrollableContent
+import org.udmurtlang.learn.core.designsystem.isShortWindow
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.StarPattern
 import org.udmurtlang.learn.core.designsystem.ZcRed
@@ -46,6 +52,8 @@ fun MemoryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val brand = LocalBrand.current
+    val short = isShortWindow()
+    val tileHeight = if (short) 50.dp else 84.dp
 
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
@@ -60,11 +68,15 @@ fun MemoryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .statusBarsPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(
             title = stringResource(R.string.game_memory),
             onBack = onBack,
+            modifier = Modifier.widthIn(max = ReadingContentWidth)
+                .padding(top = if (short) 8.dp else 16.dp),
             trailing = {
                 RoundChip(
                     text = stringResource(R.string.memory_pairs, matchedPairs, MemoryViewModel.PAIR_COUNT),
@@ -81,65 +93,66 @@ fun MemoryScreen(
             }
             return@Column
         }
-        Text(
-            text = stringResource(R.string.memory_hint),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 2.dp),
-            textAlign = TextAlign.Center,
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ScrollableContent(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+            centerVertically = true,
         ) {
-            Column(
+            Text(
+                text = stringResource(R.string.memory_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                textAlign = TextAlign.Center,
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth().padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                round.left.forEach { side ->
-                    val matched = side.wordId in state.matchedWordIds
-                    val selected = state.selectedLeft == side
-                    val wrong = side.wordId in state.wrongWordIds
-                    MemoryTile(
-                        side = side,
-                        matched = matched,
-                        selected = selected,
-                        wrong = wrong,
-                        enabled = !state.locked && !matched,
-                        onClick = { viewModel.onIntent(MemoryIntent.SelectLeft(side)) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                    )
+                Column(
+                    modifier = Modifier
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(if (short) 6.dp else 10.dp),
+                ) {
+                    round.left.forEach { side ->
+                        val matched = side.wordId in state.matchedWordIds
+                        val selected = state.selectedLeft == side
+                        val wrong = side.wordId in state.wrongWordIds
+                        MemoryTile(
+                            side = side,
+                            matched = matched,
+                            selected = selected,
+                            wrong = wrong,
+                            enabled = !state.locked && !matched,
+                            onClick = { viewModel.onIntent(MemoryIntent.SelectLeft(side)) },
+                            modifier = Modifier
+                                .fillMaxWidth().heightIn(min = tileHeight),
+                        )
+                    }
                 }
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                round.right.forEach { side ->
-                    val matched = side.wordId in state.matchedWordIds
-                    val selected = state.selectedRight == side
-                    val wrong = side.wordId in state.wrongWordIds
-                    MemoryTile(
-                        side = side,
-                        matched = matched,
-                        selected = selected,
-                        wrong = wrong,
-                        enabled = !state.locked && !matched,
-                        onClick = { viewModel.onIntent(MemoryIntent.SelectRight(side)) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                    )
+                Column(
+                    modifier = Modifier
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(if (short) 6.dp else 10.dp),
+                ) {
+                    round.right.forEach { side ->
+                        val matched = side.wordId in state.matchedWordIds
+                        val selected = state.selectedRight == side
+                        val wrong = side.wordId in state.wrongWordIds
+                        MemoryTile(
+                            side = side,
+                            matched = matched,
+                            selected = selected,
+                            wrong = wrong,
+                            enabled = !state.locked && !matched,
+                            onClick = { viewModel.onIntent(MemoryIntent.SelectRight(side)) },
+                            modifier = Modifier
+                                .fillMaxWidth().heightIn(min = tileHeight),
+                        )
+                    }
                 }
             }
         }
@@ -170,7 +183,7 @@ private fun MemoryTile(
         contentColor = if (matched || selected) Color.White else scheme.onSurface,
         modifier = modifier,
     ) {
-        Box {
+        Box(Modifier.fillMaxWidth(), propagateMinConstraints = true) {
             if (matched && !LocalBrand.current.isDark) {
                 StarPattern(
                     modifier = Modifier.matchParentSize(),
@@ -181,7 +194,7 @@ private fun MemoryTile(
             }
             Column(
                 modifier = Modifier
-                    .matchParentSize()
+                    .align(Alignment.Center)
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,

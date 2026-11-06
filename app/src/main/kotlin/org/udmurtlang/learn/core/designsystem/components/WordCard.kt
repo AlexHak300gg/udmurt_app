@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.domain.model.Word
 
 /**
@@ -41,16 +42,17 @@ fun WordCard(
     translationLabel: String = "Перевод",
     pronunciationLabel: String = "Произношение",
     exampleLabel: String = "Пример",
+    sideBySide: Boolean = false,
 ) {
     Card(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .then(
                     if (onSpeak != null) {
                         Modifier.clickable(onClick = onSpeak)
@@ -59,42 +61,47 @@ fun WordCard(
                     }
                 ),
         ) {
-            Column(
+            AdaptivePanes(
+                sideBySide = sideBySide,
+                firstWeight = 0.55f,
+                secondWeight = 1.45f,
+                spacing = if (sideBySide) 12.dp else 4.dp,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(word.emoji, fontSize = 84.sp)
-                Text(
-                    text = word.udm,
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Black,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    text = "(${word.transcription})",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 6.dp),
-                )
-                Text(
-                    text = "($translationLabel)",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 14.dp),
-                )
-                Text(
-                    text = word.ru,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
+                    .padding(start = 20.dp, end = 20.dp, top = if (onSpeak != null) 48.dp else 20.dp, bottom = 20.dp),
+                first = { Text(word.emoji, fontSize = if (sideBySide) 62.sp else 84.sp) },
+                second = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = word.udm,
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Black,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text = "(${word.transcription})",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 6.dp),
+                        )
+                        Text(
+                            text = "($translationLabel)",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 14.dp),
+                        )
+                        Text(
+                            text = word.ru,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.ExtraBold,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                },
+            )
             if (onSpeak != null) {
                 IconButton(
                     onClick = onSpeak,

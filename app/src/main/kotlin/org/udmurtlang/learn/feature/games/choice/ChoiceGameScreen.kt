@@ -3,9 +3,11 @@ package org.udmurtlang.learn.feature.games.choice
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,12 +17,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.AdaptivePanes
+import org.udmurtlang.learn.core.designsystem.currentWindowClass
+import org.udmurtlang.learn.core.designsystem.isShortWindow
+import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.media.AutoPronounce
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
@@ -69,58 +75,69 @@ fun ChoiceGameScreen(
             }
             return@GameScaffold
         }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = round.promptEmoji,
-                fontSize = 44.sp,
-                modifier = Modifier.padding(bottom = 6.dp),
-            )
-            Text(
-                text = round.promptUdm,
-                style = MaterialTheme.typography.displayMedium,
-                color = onVivid(),
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp, bottom = 14.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.how_translate),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = onVividMuted(),
-                )
-                SoundButton(
-                    onClick = viewModel::speakPrompt,
-                    contentDescription = stringResource(R.string.pronunciation),
-                    container = onVividMuted(),
-                    contentColor = onVivid(),
-                    modifier = Modifier.padding(start = 10.dp),
-                )
-            }
-            round.options.forEachIndexed { index, option ->
-                val tileState = when {
-                    state.selected != null && index == round.correctIndex -> TileState.CORRECT
-                    state.selected == index -> TileState.WRONG
-                    else -> TileState.NEUTRAL
+        val compactAnswers = currentWindowClass().isWide && isShortWindow()
+        AdaptivePanes(
+            first = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = round.promptEmoji,
+                        fontSize = 44.sp,
+                        modifier = Modifier.padding(bottom = 6.dp),
+                    )
+                    Text(
+                        text = round.promptUdm,
+                        style = MaterialTheme.typography.displayMedium,
+                        textAlign = TextAlign.Center,
+                        color = onVivid(),
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 6.dp, bottom = 14.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.how_translate),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = onVividMuted(),
+                        )
+                        SoundButton(
+                            onClick = viewModel::speakPrompt,
+                            contentDescription = stringResource(R.string.pronunciation),
+                            container = onVividMuted(),
+                            contentColor = onVivid(),
+                            modifier = Modifier.padding(start = 10.dp),
+                        )
+                    }
                 }
-                ChoiceTile(
-                    label = option,
-                    state = tileState,
-                    enabled = !state.locked,
-                    onClick = { viewModel.onIntent(ChoiceIntent.Select(index)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp),
-                )
-            }
-        }
+            },
+            second = {
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    maxItemsInEachRow = if (compactAnswers) 2 else 1,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    round.options.forEachIndexed { index, option ->
+                        val tileState = when {
+                            state.selected != null && index == round.correctIndex -> TileState.CORRECT
+                            state.selected == index -> TileState.WRONG
+                            else -> TileState.NEUTRAL
+                        }
+                        ChoiceTile(
+                            label = option,
+                            state = tileState,
+                            enabled = !state.locked,
+                            onClick = { viewModel.onIntent(ChoiceIntent.Select(index)) },
+                            modifier = Modifier.weight(1f).heightIn(min = if (compactAnswers) 64.dp else 72.dp),
+                        )
+                    }
+                }
+            },
+        )
     }
 }

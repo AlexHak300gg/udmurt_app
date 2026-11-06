@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.AdaptivePanes
+import org.udmurtlang.learn.core.designsystem.ScrollableContent
+import org.udmurtlang.learn.core.designsystem.WideContentWidth
+import org.udmurtlang.learn.core.designsystem.currentWindowClass
+import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.StarPattern
 import org.udmurtlang.learn.core.designsystem.ZcTeal
@@ -48,6 +55,7 @@ fun WordCardsScreen(
         word?.let { viewModel.onIntent(CardsIntent.Speak(it)) }
     }
 
+    val wide = currentWindowClass().isWide
     val bg = vividScreen(ZcTeal)
     Box(
         modifier = Modifier
@@ -67,6 +75,7 @@ fun WordCardsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ZcHeader(
                 title = state.topic?.titleRu
@@ -74,6 +83,7 @@ fun WordCardsScreen(
                 caption = state.topic?.titleUdm ?: stringResource(R.string.pronunciation),
                 onBack = onBack,
                 tinted = true,
+                modifier = Modifier.widthIn(max = WideContentWidth),
                 trailing = {
                     Text(
                         text = "${state.knownCount}/${state.words.size}",
@@ -83,17 +93,17 @@ fun WordCardsScreen(
                     )
                 },
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+            ScrollableContent(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                maxWidth = WideContentWidth,
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                centerVertically = true,
             ) {
                 when {
                     state.finished -> {
                         Column(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(24.dp),
+                                .fillMaxWidth().padding(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
@@ -115,7 +125,7 @@ fun WordCardsScreen(
                         ConfettiOverlay(active = true)
                     }
                     word == null -> {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                             EmptyState(
                                 title = stringResource(R.string.loading),
                                 hint = stringResource(R.string.cards_hint),
@@ -123,41 +133,43 @@ fun WordCardsScreen(
                         }
                     }
                     else -> {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            WordCard(
-                                word = word,
-                                onSpeak = { viewModel.onIntent(CardsIntent.Speak(word)) },
-                                speakLabel = stringResource(R.string.pronunciation),
-                                translationLabel = stringResource(R.string.word_translation),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 6.dp),
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            ) {
-                                val chrome = chromeOnVivid()
-                                val chromeOn = chromeOnVividText()
-                                GameButton(
-                                    text = stringResource(R.string.repeat),
-                                    containerColor = chrome,
-                                    contentColor = chromeOn,
-                                    enabled = !state.answering,
-                                    onClick = { viewModel.onIntent(CardsIntent.Repeat) },
-                                    modifier = Modifier.weight(1f),
+                        AdaptivePanes(
+                            sideBySide = wide,
+                            firstWeight = 1.8f,
+                            secondWeight = 1f,
+                            first = {
+                                WordCard(
+                                    word = word,
+                                    onSpeak = { viewModel.onIntent(CardsIntent.Speak(word)) },
+                                    speakLabel = stringResource(R.string.pronunciation),
+                                    translationLabel = stringResource(R.string.word_translation),
+                                    sideBySide = wide,
                                 )
-                                GameButton(
-                                    text = stringResource(R.string.know),
-                                    enabled = !state.answering,
-                                    onClick = { viewModel.onIntent(CardsIntent.Know) },
-                                    modifier = Modifier.weight(1f),
-                                )
-                            }
-                        }
+                            },
+                            second = {
+                                FlowRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    maxItemsInEachRow = if (wide) 1 else 2,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                                ) {
+                                    GameButton(
+                                        text = stringResource(R.string.repeat),
+                                        containerColor = chromeOnVivid(),
+                                        contentColor = chromeOnVividText(),
+                                        enabled = !state.answering,
+                                        onClick = { viewModel.onIntent(CardsIntent.Repeat) },
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                    GameButton(
+                                        text = stringResource(R.string.know),
+                                        enabled = !state.answering,
+                                        onClick = { viewModel.onIntent(CardsIntent.Know) },
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                }
+                            },
+                        )
                     }
                 }
             }

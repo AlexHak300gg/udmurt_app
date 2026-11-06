@@ -5,16 +5,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -45,6 +48,10 @@ import kotlinx.coroutines.launch
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.Ornament
 import org.udmurtlang.learn.core.designsystem.UdmOrnament
+import org.udmurtlang.learn.core.designsystem.WideContentWidth
+import org.udmurtlang.learn.core.designsystem.columns
+import org.udmurtlang.learn.core.designsystem.currentWindowClass
+import org.udmurtlang.learn.core.designsystem.gridSpacing
 import org.udmurtlang.learn.core.designsystem.ZcOrange
 import org.udmurtlang.learn.core.designsystem.ZcPurple
 import org.udmurtlang.learn.core.designsystem.ZcRed
@@ -77,12 +84,14 @@ fun TopicListScreen(
     viewModel: TopicListViewModel = hiltViewModel(),
 ) {
     val topics by viewModel.state.collectAsStateWithLifecycle()
+    val window = currentWindowClass()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(
             title = stringResource(R.string.topics_title),
@@ -92,6 +101,7 @@ fun TopicListScreen(
                 topics.sumOf { it.total },
             ),
             onBack = onBack,
+            modifier = Modifier.widthIn(max = WideContentWidth),
         )
         if (topics.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -104,28 +114,28 @@ fun TopicListScreen(
         }
         val continueItem = topics.firstOrNull { !it.isComplete && it.learned > 0 }
             ?: topics.firstOrNull { it.learned == 0 && it.total > 0 }
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(window.columns()),
             modifier = Modifier
+                .widthIn(max = WideContentWidth)
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(window.gridSpacing),
+            horizontalArrangement = Arrangement.spacedBy(window.gridSpacing),
+            contentPadding = PaddingValues(bottom = 24.dp),
         ) {
             continueItem?.let { active ->
-                item(key = "continue_${active.topic.id}") {
+                item(key = "continue_${active.topic.id}", span = { GridItemSpan(maxLineSpan) }) {
                     ContinueCard(item = active, onClick = { onOpenTopic(active.topic.id) })
                 }
             }
-            items(topics, key = { it.topic.id }) { item ->
-                val isContinue = item == continueItem
-                if (!isContinue) {
-                    TopicRow(
-                        item = item,
-                        accent = topicAccents[topics.indexOf(item) % topicAccents.size],
-                        onClick = { onOpenTopic(item.topic.id) },
-                    )
-                }
+            itemsIndexed(topics.filterNot { it == continueItem }, key = { _, item -> item.topic.id }) { index, item ->
+                TopicRow(
+                    item = item,
+                    accent = topicAccents[index % topicAccents.size],
+                    onClick = { onOpenTopic(item.topic.id) },
+                )
             }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
         }
     }
 }

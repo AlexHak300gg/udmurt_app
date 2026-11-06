@@ -31,6 +31,7 @@ interface GameRepository {
     suspend fun saveResult(result: GameResult)
     fun observeResults(): Flow<List<GameResult>>
     suspend fun results(): List<GameResult>
+    suspend fun count(): Int = results().size
     suspend fun totalPlayTimeMs(): Long
 }
 

@@ -34,7 +34,7 @@ class UnlockAchievementsUseCase @Inject constructor(
         val known = progress.knownWordIds()
         val streak = activity.streak()
         val totalWords = content.allWords().size
-        val played = games.results().size
+        val played = games.count()
 
         val met = buildList {
             if (known.isNotEmpty()) add(AchievementSlugs.FIRST_WORD)

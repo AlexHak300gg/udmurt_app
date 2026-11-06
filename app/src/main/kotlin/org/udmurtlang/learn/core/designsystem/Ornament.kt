@@ -1,14 +1,17 @@
 package org.udmurtlang.learn.core.designsystem
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
@@ -209,24 +212,29 @@ fun StarPattern(
     alpha: Float = 0.07f,
     cell: Dp = 96.dp,
 ) {
-    Canvas(modifier = modifier) {
+    Spacer(modifier = modifier.drawWithCache {
         val step = cell.toPx()
         val side = step * 0.42f
+        val tint = color.copy(alpha = alpha)
         val all = UdmOrnament.entries
-        var y = step / 2f
-        var row = 0
-        while (y < this.size.height + step) {
-            var x = step / 2f + if (row % 2 == 0) 0f else step / 2f
-            var col = 0
-            while (x < this.size.width + step) {
-                drawOrnament(all[(row * 2 + col) % all.size], Offset(x, y), side, color.copy(alpha = alpha))
-                x += step
-                col++
+        val layer = obtainGraphicsLayer()
+        layer.record {
+            var y = step / 2f
+            var row = 0
+            while (y < size.height + step) {
+                var x = step / 2f + if (row % 2 == 0) 0f else step / 2f
+                var col = 0
+                while (x < size.width + step) {
+                    drawOrnament(all[(row * 2 + col) % all.size], Offset(x, y), side, tint)
+                    x += step
+                    col++
+                }
+                y += step
+                row++
             }
-            y += step
-            row++
         }
-    }
+        onDrawBehind { drawLayer(layer) }
+    })
 }
 
 /**

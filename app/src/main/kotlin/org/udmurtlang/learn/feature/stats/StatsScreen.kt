@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.ZcRedBottom
@@ -73,11 +75,13 @@ fun StatsScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(
             title = stringResource(R.string.stats_title),
             caption = stringResource(R.string.stats_subtitle),
             onBack = onBack,
+            modifier = Modifier.widthIn(max = ReadingContentWidth),
         )
         if (snapshot == null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -90,6 +94,7 @@ fun StatsScreen(
         }
         Column(
             modifier = Modifier
+                .widthIn(max = ReadingContentWidth)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),

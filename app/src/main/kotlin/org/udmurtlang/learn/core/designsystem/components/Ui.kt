@@ -1,16 +1,18 @@
 package org.udmurtlang.learn.core.designsystem.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import org.udmurtlang.learn.core.designsystem.isShortWindow
 import androidx.compose.ui.unit.sp
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.LocalBrand
@@ -83,7 +86,7 @@ fun ZcHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = if (isShortWindow()) 5.dp else 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -169,10 +172,11 @@ fun SwitchCard(
     modifier: Modifier = Modifier,
     hint: String? = null,
 ) {
+    val scheme = MaterialTheme.colorScheme
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        color = MaterialTheme.colorScheme.surface,
+        color = scheme.surface,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
@@ -186,15 +190,18 @@ fun SwitchCard(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
                 colors = SwitchDefaults.colors(
-                    checkedTrackColor = MaterialTheme.colorScheme.secondary,
-                    checkedThumbColor = Color.White,
+                    checkedTrackColor = scheme.secondary,
+                    checkedThumbColor = scheme.onSecondary,
+                    uncheckedTrackColor = scheme.surfaceVariant,
+                    uncheckedThumbColor = scheme.onSurfaceVariant,
+                    uncheckedBorderColor = scheme.onSurfaceVariant,
                 ),
             )
         }
     }
 }
 
-/** Ряд «таблеток по выбору»: Язык / Тема. Первая выбранная — тёмная. */
+/** Одно активное значение для языка или темы. */
 @Composable
 fun SectionChips(
     title: String,
@@ -203,34 +210,37 @@ fun SectionChips(
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    val scheme = MaterialTheme.colorScheme
+    Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             title,
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.width(64.dp),
+            color = scheme.onBackground,
         )
-        items.forEachIndexed { index, item ->
-            val selected = index == selectedIndex
-            Surface(
-                onClick = { onSelect(index) },
-                shape = CircleShape,
-                color = if (selected) ZcInkPill else MaterialTheme.colorScheme.surface,
-                contentColor = if (selected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
-                border = androidx.compose.foundation.BorderStroke(
-                    1.dp,
-                    if (selected) Color.Transparent else MaterialTheme.colorScheme.outline,
-                ),
-            ) {
-                Text(
-                    text = item,
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                )
+        FlowRow(
+            modifier = Modifier.selectableGroup(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            items.forEachIndexed { index, item ->
+                val selected = index == selectedIndex
+                Surface(
+                    selected = selected,
+                    onClick = { onSelect(index) },
+                    shape = CircleShape,
+                    color = if (selected) scheme.primaryContainer else scheme.surface,
+                    contentColor = if (selected) scheme.onPrimaryContainer else scheme.onSurfaceVariant,
+                    border = if (selected) BorderStroke(1.dp, scheme.primary) else null,
+                ) {
+                    Text(
+                        text = item,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                    )
+                }
             }
         }
     }

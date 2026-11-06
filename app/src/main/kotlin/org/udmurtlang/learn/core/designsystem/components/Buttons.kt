@@ -30,7 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -75,7 +75,10 @@ fun GameButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .scale(scale)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .heightIn(min = 56.dp)
             .then(bg)
             .semantics { contentDescription = text },
@@ -189,7 +192,10 @@ fun ChoiceTile(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .scale(scale)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .heightIn(min = 58.dp),
         enabled = enabled,
         shape = MaterialTheme.shapes.medium,
@@ -241,7 +247,10 @@ fun SoundButton(
         onClick = onClick,
         modifier = modifier
             .size(44.dp)
-            .scale(scale)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .semantics { this.contentDescription = contentDescription },
         shape = MaterialTheme.shapes.medium,
         color = container,

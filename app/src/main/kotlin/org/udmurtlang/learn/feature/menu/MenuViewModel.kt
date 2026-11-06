@@ -43,24 +43,21 @@ class MenuViewModel @Inject constructor(
                 _state.update { it.copy(profile = profile, loading = false) }
             }
         }
-        viewModelScope.launch {
-            unlockAchievements()
-            _state.update { it.copy(streak = activity.streak(), wordOfDay = getWordOfDay()) }
-        }
     }
 
     fun refresh() {
         viewModelScope.launch {
+            val streak = activity.streak()
+            val wordOfDay = getWordOfDay()
+            _state.update { it.copy(streak = streak, wordOfDay = wordOfDay) }
             unlockAchievements()
-            _state.update {
-                it.copy(streak = activity.streak(), wordOfDay = getWordOfDay())
-            }
         }
     }
 
     fun loadMonthActivity() {
         viewModelScope.launch {
-            _state.update { it.copy(monthActivity = activity.daily(DAYS_FETCHED)) }
+            val days = activity.daily(DAYS_FETCHED)
+            _state.update { it.copy(monthActivity = days) }
         }
     }
 

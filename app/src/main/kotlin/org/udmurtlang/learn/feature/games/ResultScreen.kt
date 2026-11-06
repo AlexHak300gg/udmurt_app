@@ -3,6 +3,7 @@ package org.udmurtlang.learn.feature.games
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.AdaptivePanes
+import org.udmurtlang.learn.core.designsystem.ScrollableContent
+import org.udmurtlang.learn.core.designsystem.WideContentWidth
+import org.udmurtlang.learn.core.designsystem.isShortWindow
 import org.udmurtlang.learn.core.designsystem.OrnamentBand
 import org.udmurtlang.learn.core.designsystem.ZcGold
 import org.udmurtlang.learn.core.designsystem.ZcOrange
@@ -33,6 +37,7 @@ import org.udmurtlang.learn.core.designsystem.components.ConfettiOverlay
 import org.udmurtlang.learn.core.designsystem.components.GameButton
 import org.udmurtlang.learn.core.designsystem.components.GhostButton
 import org.udmurtlang.learn.core.designsystem.components.StatTile
+import org.udmurtlang.learn.core.designsystem.components.ZcHeader
 import org.udmurtlang.learn.core.designsystem.onVivid
 import org.udmurtlang.learn.core.designsystem.onVividMuted
 import org.udmurtlang.learn.core.designsystem.vividScreen
@@ -56,84 +61,93 @@ fun ResultScreen(
     val starsLabel = stringResource(R.string.result_stars)
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(vividScreen(ZcOrange))
-            .statusBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp),
+        modifier = Modifier.fillMaxSize().background(vividScreen(ZcOrange)).statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(28.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            repeat(3) { index ->
-                Text(
-                    text = "★",
-                    fontSize = 34.sp,
-                    color = if (index < stars) ZcGold else onVividMuted(),
-                )
-            }
+        ZcHeader(
+            title = stringResource(R.string.game_finished),
+            onBack = onToMenu,
+            tinted = true,
+            modifier = Modifier.widthIn(max = WideContentWidth),
+        )
+        ScrollableContent(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            maxWidth = WideContentWidth,
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+            centerVertically = true,
+        ) {
+            AdaptivePanes(
+                first = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            repeat(3) { index ->
+                                Text(
+                                    text = "★",
+                                    fontSize = 34.sp,
+                                    color = if (index < stars) ZcGold else onVividMuted(),
+                                )
+                            }
+                        }
+                        Text(
+                            text = stringResource(mood),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = onVividMuted(),
+                            modifier = Modifier.padding(top = 4.dp, bottom = 22.dp),
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+                            StatTile(
+                                value = "${state.score}",
+                                caption = scoreLabel,
+                                emoji = "🏆",
+                                modifier = Modifier.weight(1f),
+                            )
+                            StatTile(
+                                value = "+${state.correct}",
+                                caption = wordsLabel,
+                                emoji = "⭐",
+                                modifier = Modifier.weight(1f),
+                            )
+                            StatTile(
+                                value = "$stars",
+                                caption = starsLabel,
+                                emoji = "🎯",
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
+                },
+                second = {
+                    Column {
+                        // Ряд фирменных орнаментов над кнопками, как в макете
+                        if (!isShortWindow()) OrnamentBand(
+                            color = onVivid(),
+                            height = 52.dp,
+                            diamondSize = 40.dp,
+                            modifier = Modifier.padding(top = 28.dp, bottom = 20.dp),
+                        )
+                        GameButton(
+                            text = stringResource(R.string.play_again),
+                            onClick = { state.slug.takeIf { it.isNotBlank() }?.let(onPlayAgain) },
+                            containerColor = MaterialTheme.colorScheme.inverseSurface,
+                            contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp),
+                        )
+                        GhostButton(
+                            text = stringResource(R.string.to_menu),
+                            onClick = onToMenu,
+                            containerColor = Color.Transparent,
+                            contentColor = onVivid(),
+                            borderColor = onVivid(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 24.dp),
+                        )
+                    }
+                },
+            )
         }
-        Text(
-            text = stringResource(R.string.game_finished),
-            style = MaterialTheme.typography.displaySmall,
-            color = onVivid(),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 10.dp),
-        )
-        Text(
-            text = stringResource(mood),
-            style = MaterialTheme.typography.bodyMedium,
-            color = onVividMuted(),
-            modifier = Modifier.padding(top = 4.dp, bottom = 22.dp),
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
-            StatTile(
-                value = "${state.score}",
-                caption = scoreLabel,
-                emoji = "🏆",
-                modifier = Modifier.weight(1f),
-            )
-            StatTile(
-                value = "+${state.correct}",
-                caption = wordsLabel,
-                emoji = "⭐",
-                modifier = Modifier.weight(1f),
-            )
-            StatTile(
-                value = "$stars",
-                caption = starsLabel,
-                emoji = "🎯",
-                modifier = Modifier.weight(1f),
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        // Ряд фирменных орнаментов над кнопками, как в макете
-        OrnamentBand(
-            color = onVivid(),
-            height = 52.dp,
-            diamondSize = 40.dp,
-            modifier = Modifier.padding(top = 28.dp, bottom = 20.dp),
-        )
-        GameButton(
-            text = stringResource(R.string.play_again),
-            onClick = { state.slug.takeIf { it.isNotBlank() }?.let(onPlayAgain) },
-            containerColor = MaterialTheme.colorScheme.inverseSurface,
-            contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 10.dp),
-        )
-        GhostButton(
-            text = stringResource(R.string.to_menu),
-            onClick = onToMenu,
-            containerColor = Color.Transparent,
-            contentColor = onVivid(),
-            borderColor = onVivid(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-        )
     }
     ConfettiOverlay(active = state.stars >= 2)
 }

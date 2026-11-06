@@ -48,9 +48,10 @@ class BuildChildReportUseCase @Inject constructor(
         val allWords = content.allWords()
         val known = progress.knownWordIds()
         val topics = content.topics()
+        val wordsByTopic = allWords.groupBy { it.topicId }
         val weakTopics: List<Topic> = topics
             .map { topic ->
-                val words = content.words(topic.id)
+                val words = wordsByTopic[topic.id].orEmpty()
                 val ratio = if (words.isEmpty()) 1f else words.count { it.id in known }.toFloat() / words.size
                 topic to ratio
             }

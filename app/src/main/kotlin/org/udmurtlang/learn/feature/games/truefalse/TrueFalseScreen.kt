@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.media.AutoPronounce
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
@@ -69,61 +72,65 @@ fun TrueFalseScreen(
             }
             return@GameScaffold
         }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(round.emoji, fontSize = MaterialTheme.typography.displayLarge.fontSize)
-            Text(
-                text = round.udm,
-                style = MaterialTheme.typography.displaySmall,
-                color = onVivid(),
-            )
-            SoundButton(
-                onClick = viewModel::speakWord,
-                contentDescription = stringResource(R.string.pronunciation),
-                container = onVividMuted(),
-                contentColor = onVivid(),
-                modifier = Modifier.padding(vertical = 10.dp),
-            )
-            Text(
-                text = "${stringResource(R.string.word_translation)}: ${round.ru}",
-                style = MaterialTheme.typography.titleMedium,
-                color = onVivid(),
-                modifier = Modifier.padding(bottom = 24.dp),
-            )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                ChoiceTile(
-                    label = stringResource(R.string.true_label),
-                    emoji = "✅",
-                    state = when {
-                        state.feedback == null -> TileState.NEUTRAL
-                        round.isTrue -> TileState.CORRECT
-                        else -> TileState.WRONG
-                    },
-                    enabled = !state.locked,
-                    onClick = { viewModel.onIntent(TrueFalseIntent.Answer(clickedTrue = true)) },
-                    modifier = Modifier.weight(1f),
-                )
-                ChoiceTile(
-                    label = stringResource(R.string.false_label),
-                    emoji = "❌",
-                    state = when {
-                        state.feedback == null -> TileState.NEUTRAL
-                        !round.isTrue -> TileState.CORRECT
-                        else -> TileState.WRONG
-                    },
-                    enabled = !state.locked,
-                    onClick = { viewModel.onIntent(TrueFalseIntent.Answer(clickedTrue = false)) },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
+        AdaptivePanes(
+            first = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(round.emoji, fontSize = MaterialTheme.typography.displayLarge.fontSize)
+                    Text(
+                        text = round.udm,
+                        style = MaterialTheme.typography.displaySmall,
+                        textAlign = TextAlign.Center,
+                        color = onVivid(),
+                    )
+                    SoundButton(
+                        onClick = viewModel::speakWord,
+                        contentDescription = stringResource(R.string.pronunciation),
+                        container = onVividMuted(),
+                        contentColor = onVivid(),
+                        modifier = Modifier.padding(vertical = 10.dp),
+                    )
+                    Text(
+                        text = "${stringResource(R.string.word_translation)}: ${round.ru}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = onVivid(),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            },
+            second = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    ChoiceTile(
+                        label = stringResource(R.string.true_label),
+                        emoji = "✅",
+                        state = when {
+                            state.feedback == null -> TileState.NEUTRAL
+                            round.isTrue -> TileState.CORRECT
+                            else -> TileState.WRONG
+                        },
+                        enabled = !state.locked,
+                        onClick = { viewModel.onIntent(TrueFalseIntent.Answer(clickedTrue = true)) },
+                        modifier = Modifier.weight(1f).heightIn(min = 80.dp),
+                    )
+                    ChoiceTile(
+                        label = stringResource(R.string.false_label),
+                        emoji = "❌",
+                        state = when {
+                            state.feedback == null -> TileState.NEUTRAL
+                            !round.isTrue -> TileState.CORRECT
+                            else -> TileState.WRONG
+                        },
+                        enabled = !state.locked,
+                        onClick = { viewModel.onIntent(TrueFalseIntent.Answer(clickedTrue = false)) },
+                        modifier = Modifier.weight(1f).heightIn(min = 80.dp),
+                    )
+                }
+            },
+        )
     }
 }

@@ -1,13 +1,30 @@
 package org.udmurtlang.learn.core.designsystem
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 enum class WindowClass { COMPACT, MEDIUM, EXPANDED }
 
-/** Адаптивность: телефон / планшет / большой планшет. */
+val WideContentWidth = 1120.dp
+val ReadingContentWidth = 720.dp
+
 @Composable
 fun currentWindowClass(): WindowClass {
     val widthDp = LocalConfiguration.current.screenWidthDp
@@ -18,10 +35,73 @@ fun currentWindowClass(): WindowClass {
     }
 }
 
-fun WindowClass.columns(default: Int = 1): Int = when (this) {
-    WindowClass.COMPACT -> default
-    WindowClass.MEDIUM -> maxOf(default, 2)
-    WindowClass.EXPANDED -> maxOf(default, 3)
+val WindowClass.isWide: Boolean get() = this != WindowClass.COMPACT
+
+@Composable
+fun isShortWindow(): Boolean = LocalConfiguration.current.screenHeightDp < 480
+
+fun WindowClass.columns(): Int = when (this) {
+    WindowClass.COMPACT -> 1
+    WindowClass.MEDIUM -> 2
+    WindowClass.EXPANDED -> 3
 }
 
 val WindowClass.gridSpacing: Dp get() = if (this == WindowClass.COMPACT) 12.dp else 16.dp
+
+@Composable
+fun AdaptivePanes(
+    modifier: Modifier = Modifier,
+    sideBySide: Boolean = currentWindowClass().isWide,
+    firstWeight: Float = 1f,
+    secondWeight: Float = 1f,
+    spacing: Dp = 16.dp,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    first: @Composable () -> Unit,
+    second: @Composable () -> Unit,
+) {
+    if (sideBySide) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(spacing),
+            verticalAlignment = verticalAlignment,
+        ) {
+            Box(Modifier.weight(firstWeight), contentAlignment = Alignment.Center) { first() }
+            Box(Modifier.weight(secondWeight), contentAlignment = Alignment.Center) { second() }
+        }
+    } else {
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(spacing),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            first()
+            second()
+        }
+    }
+}
+
+/** Keeps text and controls readable on wide windows and reachable on short ones. */
+@Composable
+fun ScrollableContent(
+    modifier: Modifier = Modifier,
+    maxWidth: Dp = ReadingContentWidth,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    centerVertically: Boolean = false,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    BoxWithConstraints(modifier = modifier, contentAlignment = Alignment.TopCenter) {
+        val minHeight = if (centerVertically && constraints.hasBoundedHeight) maxHeight else 0.dp
+        Column(
+            modifier = Modifier
+                .widthIn(max = maxWidth)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = minHeight)
+                .padding(contentPadding),
+            verticalArrangement = if (centerVertically) Arrangement.Center else Arrangement.Top,
+            horizontalAlignment = horizontalAlignment,
+            content = content,
+        )
+    }
+}

@@ -3,19 +3,22 @@ package org.udmurtlang.learn.feature.games
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -27,9 +30,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.LocalBrand
+import org.udmurtlang.learn.core.designsystem.WideContentWidth
+import org.udmurtlang.learn.core.designsystem.WindowClass
+import org.udmurtlang.learn.core.designsystem.currentWindowClass
+import org.udmurtlang.learn.core.designsystem.gridSpacing
+import org.udmurtlang.learn.core.designsystem.isShortWindow
+import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.StarGlyph
 import org.udmurtlang.learn.core.designsystem.ZcBerry
 import org.udmurtlang.learn.core.designsystem.ZcGold
@@ -66,36 +76,50 @@ fun GamesHubScreen(
     onOpenGame: (String) -> Unit,
 ) {
     val brand = LocalBrand.current
+    val window = currentWindowClass()
+    val short = isShortWindow()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ZcHeader(
             title = stringResource(R.string.games_title),
             caption = stringResource(R.string.games_hint),
             onBack = onBack,
+            modifier = Modifier.widthIn(max = WideContentWidth),
         )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 24.dp),
+        BoxWithConstraints(
+            modifier = Modifier.weight(1f).widthIn(max = WideContentWidth).fillMaxWidth().padding(horizontal = 16.dp),
         ) {
-            items(entries, key = { it.type.slug }) { entry ->
-                GameCard(
-                    ornament = UdmOrnament.entries[entries.indexOf(entry) % UdmOrnament.entries.size],
-                    title = stringResource(entry.titleRes),
-                    caption = stringResource(entry.captionRes),
-                    color = entry.color,
-                    patterned = !brand.isDark,
-                    stars = entry.stars,
-                    onClick = { onOpenGame(entry.type.slug) },
-                )
+            val columns = if (window == WindowClass.EXPANDED || short && window.isWide) 3 else 2
+            val rows = (entries.size + columns - 1) / columns
+            val spacing = window.gridSpacing
+            val bottomPadding = 16.dp
+            val rowHeight = (maxHeight - bottomPadding - spacing * (rows - 1)) / rows
+            val minHeight = rowHeight.coerceIn(if (short) 102.dp else 148.dp, 220.dp)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(columns),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(spacing),
+                horizontalArrangement = Arrangement.spacedBy(spacing),
+                contentPadding = PaddingValues(bottom = bottomPadding),
+            ) {
+                itemsIndexed(entries, key = { _, entry -> entry.type.slug }) { index, entry ->
+                    GameCard(
+                        ornament = UdmOrnament.entries[index % UdmOrnament.entries.size],
+                        title = stringResource(entry.titleRes),
+                        caption = stringResource(entry.captionRes),
+                        color = entry.color,
+                        patterned = !brand.isDark,
+                        stars = entry.stars,
+                        minHeight = minHeight,
+                        short = short,
+                        onClick = { onOpenGame(entry.type.slug) },
+                    )
+                }
             }
         }
     }
@@ -109,15 +133,15 @@ private fun GameCard(
     color: Color,
     patterned: Boolean,
     stars: Int,
+    minHeight: Dp,
+    short: Boolean,
     onClick: () -> Unit,
 ) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(30.dp),
         color = Color.Transparent,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Box(modifier = Modifier.background(color)) {
             // Макет: один крупный фирменный орнамент в правом верхнем углу
@@ -131,23 +155,22 @@ private fun GameCard(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
+                    .fillMaxWidth()
+                    .heightIn(min = minHeight)
+                    .padding(if (short) 12.dp else 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 BadgeStarCount(stars = stars)
-                Column {
+                Column(modifier = Modifier.padding(top = 8.dp)) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
-                        maxLines = 1,
                     )
                     Text(
                         text = caption,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White.copy(alpha = 0.85f),
-                        maxLines = 1,
                     )
                 }
             }

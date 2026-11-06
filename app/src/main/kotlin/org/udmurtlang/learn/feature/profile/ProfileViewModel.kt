@@ -10,18 +10,21 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.domain.model.Achievement
 import org.udmurtlang.learn.domain.model.Profile
-import org.udmurtlang.learn.domain.model.StatsSnapshot
 import org.udmurtlang.learn.domain.repository.AccountRepository
-import org.udmurtlang.learn.domain.usecase.GetStatsUseCase
+import org.udmurtlang.learn.domain.repository.ActivityRepository
+import org.udmurtlang.learn.domain.repository.GameRepository
+import org.udmurtlang.learn.domain.repository.ProgressRepository
 import org.udmurtlang.learn.domain.usecase.ObserveAchievementsUseCase
 import javax.inject.Inject
+
+data class ProfileSummary(val wordsKnown: Int, val currentStreak: Int, val gamesPlayed: Int)
 
 data class ProfileState(
     val profile: Profile? = null,
     val editingName: String = "",
     val isEditing: Boolean = false,
     val achievements: List<Achievement> = emptyList(),
-    val stats: StatsSnapshot? = null,
+    val stats: ProfileSummary? = null,
     val passwordDialog: Boolean = false,
     val oldPassword: String = "",
     val newPassword: String = "",
@@ -35,7 +38,6 @@ sealed interface ProfileIntent {
     data class NameChanged(val value: String) : ProfileIntent
     data object SaveName : ProfileIntent
     data object CancelEdit : ProfileIntent
-    data class SelectAvatar(val avatar: String) : ProfileIntent
     data object EditPassword : ProfileIntent
     data class OldPasswordChanged(val value: String) : ProfileIntent
     data class NewPasswordChanged(val value: String) : ProfileIntent
@@ -51,7 +53,9 @@ sealed interface ProfileIntent {
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val account: AccountRepository,
-    getStats: GetStatsUseCase,
+    progress: ProgressRepository,
+    activity: ActivityRepository,
+    games: GameRepository,
     observeAchievements: ObserveAchievementsUseCase,
 ) : ViewModel() {
 
@@ -70,7 +74,12 @@ class ProfileViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            _state.update { it.copy(stats = getStats()) }
+            val stats = ProfileSummary(
+                wordsKnown = progress.knownWordIds().size,
+                currentStreak = activity.streak().current,
+                gamesPlayed = games.count(),
+            )
+            _state.update { it.copy(stats = stats) }
         }
         viewModelScope.launch {
             observeAchievements().collect { unlocked ->
@@ -94,9 +103,6 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             ProfileIntent.CancelEdit -> _state.update { it.copy(isEditing = false) }
-            is ProfileIntent.SelectAvatar -> viewModelScope.launch {
-                account.updateAvatar(intent.avatar)
-            }
             ProfileIntent.EditPassword -> _state.update {
                 it.copy(passwordDialog = true, oldPassword = "", newPassword = "", passwordError = null)
             }

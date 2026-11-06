@@ -12,10 +12,10 @@ class GetTopicsUseCase @Inject constructor(
     suspend operator fun invoke(): List<TopicProgress> {
         val topics = content.topics()
         val known = progress.knownWordIds()
+        val wordsByTopic = content.allWords().groupBy { it.topicId }
         return topics.map { topic ->
-            val total = content.words(topic.id).size
-            val learned = content.words(topic.id).count { it.id in known }
-            TopicProgress(topic, learned, total)
+            val words = wordsByTopic[topic.id].orEmpty()
+            TopicProgress(topic, words.count { it.id in known }, words.size)
         }
     }
 }

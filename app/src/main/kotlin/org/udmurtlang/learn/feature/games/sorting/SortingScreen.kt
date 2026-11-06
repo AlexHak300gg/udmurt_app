@@ -22,11 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.AdaptivePanes
+import org.udmurtlang.learn.core.designsystem.currentWindowClass
+import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
 import org.udmurtlang.learn.core.designsystem.components.TileState
 import org.udmurtlang.learn.core.designsystem.onVivid
-import org.udmurtlang.learn.core.designsystem.onVividMuted
 import org.udmurtlang.learn.feature.games.GameEffect
 import org.udmurtlang.learn.feature.games.GameScaffold
 import org.udmurtlang.learn.feature.games.GameTintSorting
@@ -69,10 +71,9 @@ fun SortingScreen(
             }
             return@GameScaffold
         }
+        val wide = currentWindowClass().isWide
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -80,72 +81,83 @@ fun SortingScreen(
                 style = MaterialTheme.typography.bodyMedium,
                 color = onVivid(),
             )
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                round.items.forEachIndexed { index, item ->
-                    val placed = item.wordId in state.placedWordIds
-                    if (!placed) {
-                        ChoiceTile(
-                            label = item.label,
-                            emoji = item.emoji,
-                            state = if (state.selectedItemIndex == index) TileState.CORRECT else TileState.NEUTRAL,
-                            enabled = !state.locked,
-                            onClick = {
-                                onSpeak(item.udm)
-                                viewModel.onIntent(SortingIntent.ItemSelected(index))
-                            },
-                        )
-                    }
-                }
-            }
-            round.categoryNames.forEachIndexed { categoryIndex, name ->
-                Surface(
-                    onClick = { viewModel.onIntent(SortingIntent.CategorySelected(categoryIndex)) },
-                    enabled = !state.locked && state.selectedItemIndex != null,
-                    shape = MaterialTheme.shapes.large,
-                    color = MaterialTheme.colorScheme.surface,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+            AdaptivePanes(
+                sideBySide = wide,
+                verticalAlignment = Alignment.Top,
+                first = {
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        maxItemsInEachRow = if (wide) 2 else 1,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Text(
-                            text = name,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = onVividMuted(),
-                        )
-                        val placedHere = round.items.filter {
-                            it.wordId in state.placedWordIds && it.categoryIndex == categoryIndex
+                        round.items.forEachIndexed { index, item ->
+                            val placed = item.wordId in state.placedWordIds
+                            if (!placed) {
+                                ChoiceTile(
+                                    label = item.label,
+                                    modifier = Modifier.weight(1f),
+                                    emoji = item.emoji,
+                                    state = if (state.selectedItemIndex == index) TileState.CORRECT else TileState.NEUTRAL,
+                                    enabled = !state.locked,
+                                    onClick = {
+                                        onSpeak(item.udm)
+                                        viewModel.onIntent(SortingIntent.ItemSelected(index))
+                                    },
+                                )
+                            }
                         }
-                        if (placedHere.isNotEmpty()) {
-                            FlowRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                                modifier = Modifier.padding(top = 8.dp),
+                    }
+                },
+                second = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        round.categoryNames.forEachIndexed { categoryIndex, name ->
+                            Surface(
+                                onClick = { viewModel.onIntent(SortingIntent.CategorySelected(categoryIndex)) },
+                                enabled = !state.locked && state.selectedItemIndex != null,
+                                shape = MaterialTheme.shapes.large,
+                                color = MaterialTheme.colorScheme.surface,
+                                modifier = Modifier.fillMaxWidth(),
                             ) {
-                                placedHere.forEach { item ->
-                                    Surface(
-                                        shape = MaterialTheme.shapes.small,
-                                        color = Color.White.copy(alpha = 0.9f),
-                                        contentColor = MaterialTheme.colorScheme.onSurface,
-                                    ) {
-                                        Text(
-                                            text = "${item.emoji} ${item.label}",
-                                            style = MaterialTheme.typography.labelMedium,
-                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                        )
+                                Column(
+                                    modifier = Modifier.padding(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                ) {
+                                    Text(
+                                        text = name,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                    val placedHere = round.items.filter {
+                                        it.wordId in state.placedWordIds && it.categoryIndex == categoryIndex
+                                    }
+                                    if (placedHere.isNotEmpty()) {
+                                        FlowRow(
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                                            modifier = Modifier.padding(top = 8.dp),
+                                        ) {
+                                            placedHere.forEach { item ->
+                                                Surface(
+                                                    shape = MaterialTheme.shapes.small,
+                                                    color = Color.White.copy(alpha = 0.9f),
+                                                    contentColor = MaterialTheme.colorScheme.onSurface,
+                                                ) {
+                                                    Text(
+                                                        text = "${item.emoji} ${item.label}",
+                                                        style = MaterialTheme.typography.labelMedium,
+                                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                                    )
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            }
+                },
+            )
         }
     }
 }

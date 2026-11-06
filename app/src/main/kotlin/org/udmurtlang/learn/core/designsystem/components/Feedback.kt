@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -108,7 +109,11 @@ fun StreakBadge(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(5.dp),
         ) {
-            Text("🔥", fontSize = MaterialTheme.typography.labelLarge.fontSize)
+            Text(
+                text = "🔥",
+                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                modifier = Modifier.alpha(if (days > 0) 1f else 0.45f),
+            )
             Text(
                 text = "$days",
                 style = MaterialTheme.typography.labelMedium,

@@ -82,6 +82,9 @@ interface GameResultDao {
     @Query("SELECT * FROM game_results ORDER BY playedAt DESC")
     suspend fun all(): List<GameResultEntity>
 
+    @Query("SELECT COUNT(*) FROM game_results")
+    suspend fun count(): Int
+
     @Query("SELECT COALESCE(SUM(durationMs), 0) FROM game_results")
     suspend fun totalDuration(): Long
 }

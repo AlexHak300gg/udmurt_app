@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -27,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,8 +45,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.AdaptivePanes
+import org.udmurtlang.learn.core.designsystem.WideContentWidth
+import org.udmurtlang.learn.core.designsystem.currentWindowClass
+import org.udmurtlang.learn.core.designsystem.isShortWindow
+import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.Ornament
 import org.udmurtlang.learn.core.designsystem.UdmOrnament
@@ -58,7 +66,6 @@ import org.udmurtlang.learn.core.designsystem.ZcPurple
 import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.ZcTealDeep
 import org.udmurtlang.learn.core.designsystem.ZcOrange
-import org.udmurtlang.learn.core.designsystem.components.Gradients
 import org.udmurtlang.learn.core.designsystem.components.SoundButton
 import org.udmurtlang.learn.core.designsystem.components.StreakBadge
 import org.udmurtlang.learn.domain.model.DailyActivity
@@ -80,8 +87,10 @@ fun MenuScreen(
     viewModel: MenuViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) { viewModel.refresh() }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refresh() }
     val brand = LocalBrand.current
+    val wide = currentWindowClass().isWide
+    val short = isShortWindow()
     var showCalendar by remember { mutableStateOf(false) }
 
     if (showCalendar) {
@@ -99,6 +108,7 @@ fun MenuScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             modifier = Modifier
@@ -115,8 +125,11 @@ fun MenuScreen(
             )
             Column(
                 modifier = Modifier
+                    .align(Alignment.Center)
+                    .widthIn(max = WideContentWidth)
+                    .fillMaxWidth()
                     .statusBarsPadding()
-                    .padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 64.dp),
+                    .padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = if (wide) 18.dp else 64.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -148,185 +161,207 @@ fun MenuScreen(
         }
         ZigzagEdge(color = headerColor, tooth = 22.dp, depth = 11.dp)
 
-        // Всё ниже шапки поднято вверх, чтобы карточка слова «наезжала» на шапку
-        Column(
+        AdaptivePanes(
             modifier = Modifier
-                .offset(y = (-58).dp)
-                .padding(horizontal = 16.dp),
-        ) {
-        state.wordOfDay?.let { wod ->
-            Surface(
-                onClick = onOpenWordOfDay,
-                shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surface,
-                shadowElevation = 6.dp,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Row(
-                    modifier = Modifier.padding(14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(14.dp),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(MaterialTheme.colorScheme.tertiaryContainer),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(wod.word.emoji, fontSize = 32.sp)
+                .widthIn(max = WideContentWidth)
+                .offset(y = if (wide) 0.dp else (-58).dp)
+                .padding(horizontal = 16.dp, vertical = if (wide) 12.dp else 0.dp),
+            sideBySide = wide,
+            firstWeight = 0.85f,
+            secondWeight = 1.15f,
+            spacing = if (wide) 20.dp else 0.dp,
+            verticalAlignment = Alignment.Top,
+            first = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    state.wordOfDay?.let { wod ->
+                        Surface(
+                            onClick = onOpenWordOfDay,
+                            shape = RoundedCornerShape(28.dp),
+                            color = MaterialTheme.colorScheme.surface,
+                            shadowElevation = 6.dp,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(14.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(RoundedCornerShape(20.dp))
+                                        .background(MaterialTheme.colorScheme.tertiaryContainer),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(wod.word.emoji, fontSize = 32.sp)
+                                }
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = stringResource(R.string.word_of_day),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = if (brand.isDark) ZcRedOnDark else ZcRed,
+                                    )
+                                    Text(
+                                        text = wod.word.udm,
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                    Text(
+                                        text = wod.word.ru,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                SoundButton(
+                                    onClick = onOpenWordOfDay,
+                                    container = MaterialTheme.colorScheme.inverseSurface,
+                                    contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                                )
+                            }
+                        }
                     }
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.word_of_day),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = if (brand.isDark) ZcRedOnDark else ZcRed,
-                        )
-                        Text(
-                            text = wod.word.udm,
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Text(
-                            text = wod.word.ru,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                    if (wide) {
+                        MenuSettingsTile(onClick = onOpenSettings)
+                        FactsCarousel()
                     }
-                    SoundButton(
-                        onClick = onOpenWordOfDay,
-                        container = MaterialTheme.colorScheme.inverseSurface,
-                        contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    )
                 }
-            }
-        }
+            },
+            second = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = stringResource(R.string.menu_select),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(top = if (wide) 0.dp else 18.dp, bottom = 10.dp),
+                    )
 
-        Text(
-            text = stringResource(R.string.menu_select),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(top = 18.dp, bottom = 10.dp),
+                    // Игры — большая фиолетовая карточка
+                    Surface(
+                        onClick = onOpenGames,
+                        shape = RoundedCornerShape(28.dp),
+                        color = Color.Transparent,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                    ) {
+                        Box(
+                            modifier = Modifier.background(
+                                Brush.horizontalGradient(listOf(ZcPurple, ZcPurpleDeep)),
+                            ),
+                        ) {
+                            Ornament(
+                                kind = UdmOrnament.PINWHEEL,
+                                color = Color.White.copy(alpha = 0.16f),
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .offset(x = 28.dp)
+                                    .size(120.dp),
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 18.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column {
+                                    Text(
+                                        text = stringResource(R.string.menu_games),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontSize = 20.sp,
+                                        color = Color.White,
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.menu_tiles_games),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = Color.White.copy(alpha = 0.8f),
+                                    )
+                                }
+                                Spacer(modifier = Modifier.weight(1f))
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    tint = Color.White.copy(alpha = 0.8f),
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        MenuTile(
+                            title = stringResource(R.string.menu_learning),
+                            caption = stringResource(R.string.menu_tiles_learning),
+                            emoji = "📖",
+                            color = ZcTealDeep,
+                            onClick = onOpenLearning,
+                            modifier = Modifier.weight(1f),
+                            ornament = UdmOrnament.CROSS,
+                            short = short,
+                        )
+                        MenuTile(
+                            title = stringResource(R.string.menu_profile),
+                            caption = stringResource(R.string.menu_tiles_profile),
+                            emoji = "🏅",
+                            color = ZcOrange,
+                            onClick = onOpenProfile,
+                            modifier = Modifier.weight(1f),
+                            ornament = UdmOrnament.ARC,
+                            short = short,
+                        )
+                    }
+
+                    if (!wide) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        MenuSettingsTile(onClick = onOpenSettings)
+                        Spacer(modifier = Modifier.height(18.dp))
+                        FactsCarousel()
+                    }
+                }
+            },
         )
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
 
-        // Игры — большая фиолетовая карточка
-        Surface(
-            onClick = onOpenGames,
-            shape = RoundedCornerShape(28.dp),
-            color = Color.Transparent,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(104.dp),
+@Composable
+private fun MenuSettingsTile(onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(22.dp),
+        color = MaterialTheme.colorScheme.surface,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Box(
-                modifier = Modifier.background(
-                    Brush.horizontalGradient(listOf(ZcPurple, ZcPurpleDeep)),
-                ),
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center,
             ) {
-                Ornament(
-                    kind = UdmOrnament.PINWHEEL,
-                    color = Color.White.copy(alpha = 0.16f),
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .offset(x = 28.dp)
-                        .size(120.dp),
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 18.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.menu_games),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontSize = 20.sp,
-                            color = Color.White,
-                        )
-                        Text(
-                            text = stringResource(R.string.menu_tiles_games),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.8f),
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = null,
-                        tint = Color.White.copy(alpha = 0.8f),
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MenuTile(
-                title = stringResource(R.string.menu_learning),
-                caption = stringResource(R.string.menu_tiles_learning),
-                emoji = "📖",
-                color = ZcTealDeep,
-                onClick = onOpenLearning,
-                modifier = Modifier.weight(1f),
-                ornament = UdmOrnament.CROSS,
-            )
-            MenuTile(
-                title = stringResource(R.string.menu_profile),
-                caption = stringResource(R.string.menu_tiles_profile),
-                emoji = "🏅",
-                color = ZcOrange,
-                onClick = onOpenProfile,
-                modifier = Modifier.weight(1f),
-                ornament = UdmOrnament.ARC,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Настройки — белая строка
-        Surface(
-            onClick = onOpenSettings,
-            shape = RoundedCornerShape(22.dp),
-            color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Tune,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.menu_settings),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Spacer(modifier = Modifier.weight(1f))
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    imageVector = Icons.Filled.Tune,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(20.dp),
                 )
             }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = stringResource(R.string.menu_settings),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -340,10 +375,10 @@ private fun MenuTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     ornament: UdmOrnament = UdmOrnament.STAR,
+    short: Boolean = false,
 ) {
     Box(
         modifier = modifier
-            .height(128.dp)
             .clip(RoundedCornerShape(28.dp))
             .background(color)
             .clickable { onClick() }
@@ -357,18 +392,21 @@ private fun MenuTile(
                 .offset(x = 40.dp, y = (-36).dp)
                 .size(110.dp),
         )
-        emoji?.let { glyph ->
-            Box(
-                modifier = Modifier
-                    .size(38.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(glyph, fontSize = 18.sp)
+        Column(
+            modifier = Modifier.fillMaxWidth().heightIn(min = if (short) 72.dp else 96.dp),
+        ) {
+            emoji?.let { glyph ->
+                Box(
+                    modifier = Modifier
+                        .size(if (short) 28.dp else 38.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(glyph, fontSize = 18.sp)
+                }
             }
-        }
-        Column(modifier = Modifier.align(Alignment.BottomStart)) {
+            Spacer(Modifier.height(8.dp).weight(1f))
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
@@ -396,7 +434,7 @@ private fun StreakCalendarDialog(
             tonalElevation = 4.dp,
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 18.dp, vertical = 20.dp),
+                modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 18.dp, vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
