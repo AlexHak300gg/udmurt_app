@@ -9,7 +9,9 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.LocaleList
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
+import androidx.concurrent.futures.await
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -21,6 +23,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
@@ -30,9 +34,15 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.udmurtlang.learn.MainActivity
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.domain.model.AppSettings
+import org.udmurtlang.learn.domain.model.UiLanguage
 import org.udmurtlang.learn.domain.repository.ActivityRepository
 import org.udmurtlang.learn.domain.repository.SettingsRepository
 import org.udmurtlang.learn.domain.repository.WordOfDayRepository
@@ -40,7 +50,9 @@ import java.util.Locale
 
 class WordOfDayWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
-        requestUpdate(context)
+        if (ids.isEmpty()) return
+        installed.value = true
+        refreshFromBroadcast(context)
     }
 
     override fun onDisabled(context: Context) {
@@ -50,27 +62,54 @@ class WordOfDayWidget : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         if (intent.action == Intent.ACTION_TIME_CHANGED || intent.action == Intent.ACTION_TIMEZONE_CHANGED) {
-            requestUpdate(context)
+            if (widgetIds(context).isNotEmpty()) refreshFromBroadcast(context)
+        }
+    }
+
+    private fun refreshFromBroadcast(context: Context) {
+        val pending = goAsync()
+        val appContext = context.applicationContext
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                refreshOrRetry(appContext)
+            } finally {
+                pending.finish()
+            }
         }
     }
 
     companion object {
+        private const val TAG = "WordOfDayWidget"
         private const val WORK_NAME = "word_of_day_widget"
         private val installed = MutableStateFlow(false)
+        private val updateMutex = Mutex()
+        private var lastPublished: WidgetContent? = null
 
-        internal fun component(context: Context) = ComponentName(context, WordOfDayWidget::class.java)
+        private fun widgetIds(context: Context): IntArray =
+            AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, WordOfDayWidget::class.java))
 
-        private fun requestUpdate(context: Context) {
-            installed.value = AppWidgetManager.getInstance(context).getAppWidgetIds(component(context)).isNotEmpty()
-            if (!installed.value) return
+        private suspend fun refreshOrRetry(context: Context) {
             try {
-                WorkManager.getInstance(context).enqueueUniqueWork(
-                    WORK_NAME,
-                    ExistingWorkPolicy.REPLACE,
-                    OneTimeWorkRequestBuilder<WordOfDayWidgetWorker>().build(),
-                )
-            } catch (error: IllegalStateException) {
-                Log.w("WordOfDayWidget", "Could not schedule a widget update", error)
+                // Leave time for the broadcast to finish even if opening the database is slow.
+                if (withTimeoutOrNull(5_000L) { publish(context) } != null) return
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                Log.w(TAG, "Could not update the widget directly", error)
+            }
+
+            try {
+                withTimeoutOrNull(1_000L) {
+                    WorkManager.getInstance(context).enqueueUniqueWork(
+                        WORK_NAME,
+                        ExistingWorkPolicy.KEEP,
+                        OneTimeWorkRequestBuilder<WordOfDayWidgetWorker>().build(),
+                    ).result.await()
+                }
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                Log.w(TAG, "Could not schedule a widget update", error)
             }
         }
 
@@ -79,7 +118,9 @@ class WordOfDayWidget : AppWidgetProvider() {
             settings: Flow<AppSettings>,
             activity: Lazy<ActivityRepository>,
         ) {
-            installed.value = AppWidgetManager.getInstance(context).getAppWidgetIds(component(context)).isNotEmpty()
+            withContext(Dispatchers.Main.immediate) {
+                installed.value = widgetIds(context).isNotEmpty()
+            }
             installed.collectLatest { active ->
                 if (!active) return@collectLatest
                 combine(
@@ -87,32 +128,20 @@ class WordOfDayWidget : AppWidgetProvider() {
                     activity.get().observeStreak(),
                 ) { language, streak -> language to streak.current }
                     .distinctUntilChanged()
-                    .collect { requestUpdate(context) }
+                    .collect { refreshOrRetry(context) }
             }
         }
-    }
-}
 
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface WordOfDayWidgetEntryPoint {
-    fun widgetWordOfDay(): WordOfDayRepository
-    fun widgetActivity(): ActivityRepository
-    fun widgetSettings(): SettingsRepository
-}
-
-class WordOfDayWidgetWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
-    override suspend fun doWork(): Result {
-        val context = applicationContext
-        val manager = AppWidgetManager.getInstance(context)
-        val component = WordOfDayWidget.component(context)
-        if (manager.getAppWidgetIds(component).isEmpty()) return Result.success()
-
-        try {
+        internal suspend fun publish(context: Context) = updateMutex.withLock {
+            if (widgetIds(context).isEmpty()) return@withLock
             val entry = EntryPointAccessors.fromApplication(context, WordOfDayWidgetEntryPoint::class.java)
             val word = entry.widgetWordOfDay().wordOfDay().word
             val days = entry.widgetActivity().streak().current
             val language = entry.widgetSettings().settings.first().uiLanguage
+            val ids = widgetIds(context).sorted()
+            val content = WidgetContent(ids, "${word.emoji} ${word.udm}".trim(), word.ru, days, language)
+            if (ids.isEmpty() || content == lastPublished) return@withLock
+
             val localized = context.createConfigurationContext(Configuration(context.resources.configuration).apply {
                 setLocales(LocaleList(Locale.forLanguageTag(language.tag)))
             })
@@ -127,9 +156,10 @@ class WordOfDayWidgetWorker(context: Context, params: WorkerParameters) : Corout
             )
             val views = RemoteViews(context.packageName, R.layout.widget_word_of_day).apply {
                 setTextViewText(R.id.widget_title, localized.getString(R.string.word_of_day))
-                setTextViewText(R.id.widget_word, "${word.emoji} ${word.udm}")
-                setTextViewText(R.id.widget_translation, word.ru)
+                setTextViewText(R.id.widget_word, content.word)
+                setTextViewText(R.id.widget_translation, content.translation)
                 setTextViewText(R.id.widget_streak, "\uD83D\uDD25 $days")
+                setViewVisibility(R.id.widget_streak, View.VISIBLE)
                 setContentDescription(
                     R.id.widget_streak,
                     "${localized.getString(R.string.current_streak)}: $days ${localized.getString(R.string.streak_days)}",
@@ -137,7 +167,32 @@ class WordOfDayWidgetWorker(context: Context, params: WorkerParameters) : Corout
                 setOnClickPendingIntent(R.id.widget_root, openWord)
             }
             currentCoroutineContext().ensureActive()
-            manager.updateAppWidget(component, views)
+            AppWidgetManager.getInstance(context).updateAppWidget(ids.toIntArray(), views)
+            lastPublished = content
+        }
+    }
+
+    private data class WidgetContent(
+        val ids: List<Int>,
+        val word: String,
+        val translation: String,
+        val days: Int,
+        val language: UiLanguage,
+    )
+}
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface WordOfDayWidgetEntryPoint {
+    fun widgetWordOfDay(): WordOfDayRepository
+    fun widgetActivity(): ActivityRepository
+    fun widgetSettings(): SettingsRepository
+}
+
+class WordOfDayWidgetWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+    override suspend fun doWork(): Result {
+        try {
+            WordOfDayWidget.publish(applicationContext)
             return Result.success()
         } catch (error: CancellationException) {
             throw error

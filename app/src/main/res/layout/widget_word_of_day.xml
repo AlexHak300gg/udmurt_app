@@ -40,7 +40,8 @@
             android:singleLine="true"
             android:textColor="#27166C"
             android:textSize="13sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <TextView
@@ -57,7 +58,6 @@
         android:gravity="bottom"
         android:includeFontPadding="false"
         android:maxLines="2"
-        android:text="@string/loading"
         android:textColor="#FFFFFF"
         android:textSize="21sp"
         android:textStyle="bold" />
