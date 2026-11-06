@@ -4,11 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.core.media.WordSpeaker
@@ -30,6 +28,7 @@ data class CardsState(
     val statuses: Map<String, ProgressStatus> = emptyMap(),
     val index: Int = 0,
     val finished: Boolean = false,
+    val answering: Boolean = false,
 ) {
     val current: Word? get() = words.getOrNull(index)
     val knownCount: Int get() = words.count { statuses[it.id] == ProgressStatus.KNOWN }
@@ -39,10 +38,6 @@ sealed interface CardsIntent {
     data object Know : CardsIntent
     data object Repeat : CardsIntent
     data class Speak(val word: Word) : CardsIntent
-}
-
-sealed interface CardsEffect {
-    data object Celebrate : CardsEffect
 }
 
 @HiltViewModel
@@ -61,9 +56,6 @@ class WordCardsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(CardsState(topicId = topicId))
     val state: StateFlow<CardsState> = _state.asStateFlow()
-
-    private val _effects = Channel<CardsEffect>(Channel.BUFFERED)
-    val effects = _effects.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -89,20 +81,22 @@ class WordCardsViewModel @Inject constructor(
     }
 
     private fun answer(correct: Boolean) {
-        val current = _state.value.current ?: return
+        val state = _state.value
+        val current = state.current ?: return
+        if (state.answering || state.finished) return
+        _state.update { it.copy(answering = true) }
         viewModelScope.launch {
-            if (correct) {
-                markKnown(current.id)
-                unlockAchievements()
-            } else {
-                markAnswer(current.id, correct = false)
-            }
-            val next = _state.value.index + 1
-            if (next >= _state.value.words.size) {
-                _state.update { it.copy(finished = true) }
-                _effects.send(CardsEffect.Celebrate)
-            } else {
-                _state.update { it.copy(index = next) }
+            try {
+                if (correct) {
+                    markKnown(current.id)
+                    unlockAchievements()
+                } else {
+                    markAnswer(current.id, correct = false)
+                }
+                val next = state.index + 1
+                _state.update { it.copy(index = next, finished = next >= it.words.size) }
+            } finally {
+                _state.update { it.copy(answering = false) }
             }
         }
     }

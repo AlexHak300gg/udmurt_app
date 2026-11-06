@@ -83,6 +83,7 @@ class MemoryViewModel @Inject constructor(
         if (_state.value.locked || _state.value.finished) return
         if (side.wordId in _state.value.matchedWordIds) return
         _state.update { it.copy(selectedLeft = side) }
+        speaker.speak(side.text)
         checkPair()
     }
 
@@ -97,10 +98,10 @@ class MemoryViewModel @Inject constructor(
         val left = _state.value.selectedLeft ?: return
         val right = _state.value.selectedRight ?: return
         val isMatch = left.wordId == right.wordId
+        _state.update { it.copy(locked = true) }
         viewModelScope.launch {
             session.answer(left.wordId, isMatch)
             if (isMatch) {
-                speaker.speak(left.text.takeIf { !right.isEmoji } ?: left.text)
                 _state.update {
                     it.copy(
                         matchedWordIds = it.matchedWordIds + left.wordId,
@@ -108,7 +109,6 @@ class MemoryViewModel @Inject constructor(
                         selectedRight = null,
                         correctCount = it.correctCount + 1,
                         feedback = FeedbackKind.CORRECT,
-                        locked = true,
                     )
                 }
                 delay(FEEDBACK_MS)
@@ -125,7 +125,6 @@ class MemoryViewModel @Inject constructor(
                     it.copy(
                         wrongWordIds = setOf(left.wordId, right.wordId),
                         feedback = FeedbackKind.WRONG,
-                        locked = true,
                     )
                 }
                 delay(WRONG_MS)

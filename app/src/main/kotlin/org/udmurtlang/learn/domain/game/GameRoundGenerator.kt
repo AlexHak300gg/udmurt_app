@@ -94,8 +94,8 @@ class GameRoundGenerator(private val random: Random) {
         if (left.isEmpty() || right.isEmpty()) return null
         val takeLeft = (itemCount / 2).coerceIn(1, left.size)
         val takeRight = (itemCount - takeLeft).coerceIn(1, right.size)
-        val items = (left.take(takeLeft).map { SortItem(it.id, it.ru, it.emoji, 0) } +
-            right.take(takeRight).map { SortItem(it.id, it.ru, it.emoji, 1) }).shuffled(random)
+        val items = (left.take(takeLeft).map { SortItem(it.id, it.ru, it.emoji, 0, it.udm) } +
+            right.take(takeRight).map { SortItem(it.id, it.ru, it.emoji, 1, it.udm) }).shuffled(random)
         return GameRound.Sorting(
             wordId = items.first().wordId,
             items = items,

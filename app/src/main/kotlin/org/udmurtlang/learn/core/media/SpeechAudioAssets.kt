@@ -16,7 +16,6 @@ object SpeechAudioAssets {
 
     fun path(text: String): String {
         val digest = MessageDigest.getInstance("SHA-256").digest(key(text).toByteArray(Charsets.UTF_8))
-        val filename = digest.joinToString("") { "%02x".format(it.toInt() and 0xff) }
-        return "$DIRECTORY/$filename.wav"
+        return "$DIRECTORY/${digest.toHexString()}.wav"
     }
 }

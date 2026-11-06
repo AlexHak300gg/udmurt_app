@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
@@ -30,8 +31,14 @@ interface ContentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWords(words: List<WordEntity>)
 
-    @Query("SELECT COUNT(*) FROM topics")
-    suspend fun topicCount(): Int
+    @Query("SELECT EXISTS(SELECT 1 FROM words)")
+    suspend fun hasWords(): Boolean
+
+    @Transaction
+    suspend fun seedContent(topics: List<TopicEntity>, words: List<WordEntity>) {
+        insertTopics(topics)
+        insertWords(words)
+    }
 }
 
 @Dao

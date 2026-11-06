@@ -85,13 +85,13 @@ class OddOneOutViewModel @Inject constructor(
         val current = _state.value.current ?: return
         if (_state.value.locked) return
         val isCorrect = wordIndex == current.oddIndex
+        _state.update { it.copy(locked = true) }
         viewModelScope.launch {
             session.answer(current.oddWordId, isCorrect)
             _state.update {
                 it.copy(
                     selected = wordIndex,
                     feedback = if (isCorrect) FeedbackKind.CORRECT else FeedbackKind.WRONG,
-                    locked = true,
                     correctCount = if (isCorrect) it.correctCount + 1 else it.correctCount,
                 )
             }

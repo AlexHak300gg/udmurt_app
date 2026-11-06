@@ -14,6 +14,7 @@ fun GameRoute(
     slug: String,
     onFinished: (String, Int, Int, Int) -> Unit,
     onBack: () -> Unit,
+    onSpeak: (String) -> Unit,
 ) {
     val gameType = GameType.entries.find { it.slug == slug } ?: GameType.CHOICE
     val finish: (Int, Int, Int) -> Unit = { score, correct, total ->
@@ -21,8 +22,8 @@ fun GameRoute(
     }
     when (gameType) {
         GameType.CHOICE -> ChoiceGameScreen(onFinished = finish, onBack = onBack)
-        GameType.ODD_ONE_OUT -> OddOneOutScreen(onFinished = finish, onBack = onBack)
-        GameType.SORTING -> SortingScreen(onFinished = finish, onBack = onBack)
+        GameType.ODD_ONE_OUT -> OddOneOutScreen(onFinished = finish, onBack = onBack, onSpeak = onSpeak)
+        GameType.SORTING -> SortingScreen(onFinished = finish, onBack = onBack, onSpeak = onSpeak)
         GameType.MEMORY -> MemoryScreen(onFinished = finish, onBack = onBack)
         GameType.WORD_BUILDER -> BuilderScreen(onFinished = finish, onBack = onBack)
         GameType.TRUE_FALSE -> TrueFalseScreen(onFinished = finish, onBack = onBack)

@@ -22,6 +22,7 @@ class ContentRepositoryImpl @Inject constructor(
 ) : ContentRepository {
 
     private val seedMutex = Mutex()
+    @Volatile private var seeded = false
 
     override suspend fun topics(): List<Topic> {
         ensureSeeded()
@@ -44,28 +45,30 @@ class ContentRepositoryImpl @Inject constructor(
     }
 
     private suspend fun ensureSeeded() {
-        if (contentDao.topicCount() > 0) return
+        if (seeded) return
         seedMutex.withLock {
-            if (contentDao.topicCount() > 0) return
-            val dto = loader.load()
-            val topics = dto.toTopics()
-            val words = dto.toWords()
-            contentDao.insertTopics(topics.map {
-                TopicEntity(it.id, it.slug, it.titleUdm, it.titleRu, it.color.toHex(), it.emoji, it.sortOrder)
-            })
-            contentDao.insertWords(words.mapIndexed { index, word ->
-                WordEntity(
-                    id = word.id,
-                    topicId = word.topicId,
-                    udm = word.udm,
-                    ru = word.ru,
-                    transcription = word.transcription,
-                    emoji = word.emoji,
-                    exampleUdm = word.exampleUdm,
-                    exampleRu = word.exampleRu,
-                    sortOrder = index,
-                )
-            })
+            if (seeded) return
+            if (!contentDao.hasWords()) {
+                val dto = loader.load()
+                val topics = dto.toTopics().map {
+                    TopicEntity(it.id, it.slug, it.titleUdm, it.titleRu, it.color.toHex(), it.emoji, it.sortOrder)
+                }
+                val words = dto.toWords().mapIndexed { index, word ->
+                    WordEntity(
+                        id = word.id,
+                        topicId = word.topicId,
+                        udm = word.udm,
+                        ru = word.ru,
+                        transcription = word.transcription,
+                        emoji = word.emoji,
+                        exampleUdm = word.exampleUdm,
+                        exampleRu = word.exampleRu,
+                        sortOrder = index,
+                    )
+                }
+                contentDao.seedContent(topics, words)
+            }
+            seeded = true
         }
     }
 

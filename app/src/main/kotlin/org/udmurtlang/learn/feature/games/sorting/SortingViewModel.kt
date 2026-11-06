@@ -34,13 +34,7 @@ data class SortingState(
     val feedback: FeedbackKind? = null,
     val locked: Boolean = false,
     val finished: Boolean = false,
-) {
-    val remaining: List<Int>
-        get() {
-            val items = round?.items ?: return emptyList()
-            return items.indices.filter { items[it].wordId !in placedWordIds }
-        }
-}
+)
 
 sealed interface SortingIntent {
     data class ItemSelected(val index: Int) : SortingIntent
@@ -91,6 +85,7 @@ class SortingViewModel @Inject constructor(
         if (_state.value.locked || _state.value.finished) return
         val item = round.items.getOrNull(selectedIndex) ?: return
         val isCorrect = item.categoryIndex == categoryIndex
+        _state.update { it.copy(locked = true) }
         viewModelScope.launch {
             session.answer(item.wordId, isCorrect)
             if (isCorrect) {
@@ -100,7 +95,6 @@ class SortingViewModel @Inject constructor(
                         selectedItemIndex = null,
                         feedback = FeedbackKind.CORRECT,
                         correctCount = it.correctCount + 1,
-                        locked = true,
                     )
                 }
                 delay(FEEDBACK_MS)
@@ -112,7 +106,7 @@ class SortingViewModel @Inject constructor(
                 }
             } else {
                 _state.update {
-                    it.copy(feedback = FeedbackKind.WRONG, locked = true)
+                    it.copy(feedback = FeedbackKind.WRONG)
                 }
                 delay(FEEDBACK_MS)
                 _state.update { it.copy(feedback = null, locked = false, selectedItemIndex = null) }

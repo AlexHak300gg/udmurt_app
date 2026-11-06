@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.media.AutoPronounce
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
 import org.udmurtlang.learn.core.designsystem.components.SoundButton
@@ -38,6 +39,7 @@ fun TrueFalseScreen(
     viewModel: TrueFalseViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    AutoPronounce(state.current?.wordId, viewModel::speakWord)
 
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->

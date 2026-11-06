@@ -29,7 +29,7 @@ import kotlin.random.Random
 data class BuilderState(
     val rounds: List<GameRound.Builder> = emptyList(),
     val index: Int = 0,
-    val usedLetterIndexes: Set<Int> = emptySet(),
+    val usedLetterIndexes: List<Int> = emptyList(),
     val built: List<String> = emptyList(),
     val correctCount: Int = 0,
     val feedback: FeedbackKind? = null,
@@ -91,21 +91,18 @@ class BuilderViewModel @Inject constructor(
         val round = state.current ?: return
         if (state.locked || state.finished || letterIndex in state.usedLetterIndexes) return
         session.click()
-        val built = state.built + round.letters[letterIndex]
+        val letter = round.letters.getOrNull(letterIndex) ?: return
         _state.update {
             it.copy(
-                built = built,
+                built = it.built + letter,
                 usedLetterIndexes = it.usedLetterIndexes + letterIndex,
             )
-        }
-        if (built.size == round.letters.size) {
-            // слово собрано целиком — ждём нажатия «Проверить»
         }
     }
 
     private fun checkBuilt() {
         val state = _state.value
-        val round = state.current ?: return
+        if (state.current == null) return
         if (state.locked || state.finished || state.built.isEmpty()) return
         check(state.built.joinToString(""))
     }
@@ -113,29 +110,23 @@ class BuilderViewModel @Inject constructor(
     private fun undo() {
         val state = _state.value
         if (state.locked || state.finished || state.built.isEmpty()) return
-        val removedIndex = state.letters.indexOfLast { it == state.built.last() }
-            .takeIf { idx -> idx >= 0 && idx in state.usedLetterIndexes }
         _state.update {
             it.copy(
                 built = it.built.dropLast(1),
-                usedLetterIndexes = if (removedIndex != null) it.usedLetterIndexes - removedIndex
-                else it.usedLetterIndexes,
+                usedLetterIndexes = it.usedLetterIndexes.dropLast(1),
             )
         }
     }
 
     private fun check(answer: String) {
         val round = _state.value.current ?: return
-        val isCorrect = answer == round.udm.lowercase()
+        val isCorrect = answer == round.udm.lowercase().filter(Char::isLetter)
+        _state.update { it.copy(locked = true) }
         viewModelScope.launch {
             session.answer(round.wordId, isCorrect)
-            if (isCorrect) {
-                speaker.speak(round.udm)
-            }
             _state.update {
                 it.copy(
                     feedback = if (isCorrect) FeedbackKind.CORRECT else FeedbackKind.WRONG,
-                    locked = true,
                     correctCount = if (isCorrect) it.correctCount + 1 else it.correctCount,
                 )
             }
@@ -147,7 +138,7 @@ class BuilderViewModel @Inject constructor(
                     it.copy(
                         index = next,
                         built = emptyList(),
-                        usedLetterIndexes = emptySet(),
+                        usedLetterIndexes = emptyList(),
                         feedback = null,
                         locked = false,
                         finished = isLast,
@@ -158,7 +149,7 @@ class BuilderViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         built = emptyList(),
-                        usedLetterIndexes = emptySet(),
+                        usedLetterIndexes = emptyList(),
                         feedback = null,
                         locked = false,
                     )

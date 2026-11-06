@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                 ThemeMode.DARK -> true
             }
             ZecheburTheme(darkTheme = darkTheme) {
-                AppNavGraph()
+                AppNavGraph(wordSpeaker)
             }
         }
     }

@@ -83,12 +83,12 @@ class TrueFalseViewModel @Inject constructor(
         val current = _state.value.current ?: return
         if (_state.value.locked || _state.value.finished) return
         val isCorrect = clickedTrue == current.isTrue
+        _state.update { it.copy(locked = true) }
         viewModelScope.launch {
             session.answer(current.wordId, isCorrect)
             _state.update {
                 it.copy(
                     feedback = if (isCorrect) FeedbackKind.CORRECT else FeedbackKind.WRONG,
-                    locked = true,
                     correctCount = if (isCorrect) it.correctCount + 1 else it.correctCount,
                 )
             }

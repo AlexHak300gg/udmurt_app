@@ -3,6 +3,7 @@ package org.udmurtlang.learn.feature.games.oddoneout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.components.ChoiceTile
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
+import org.udmurtlang.learn.core.designsystem.components.SoundButton
 import org.udmurtlang.learn.core.designsystem.components.TileState
 import org.udmurtlang.learn.core.designsystem.onVivid
 import org.udmurtlang.learn.feature.games.GameEffect
@@ -30,6 +32,7 @@ import org.udmurtlang.learn.feature.games.GameTintOdd
 fun OddOneOutScreen(
     onFinished: (Int, Int, Int) -> Unit,
     onBack: () -> Unit,
+    onSpeak: (String) -> Unit,
     viewModel: OddOneOutViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -80,14 +83,27 @@ fun OddOneOutScreen(
                     state.selected == index -> TileState.WRONG
                     else -> TileState.NEUTRAL
                 }
-                ChoiceTile(
-                    label = word.udm,
-                    emoji = word.emoji,
-                    state = tileState,
-                    enabled = !state.locked,
-                    onClick = { viewModel.onIntent(OddOneOutIntent.Select(index)) },
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    ChoiceTile(
+                        label = word.udm,
+                        emoji = word.emoji,
+                        state = tileState,
+                        enabled = !state.locked,
+                        onClick = {
+                            onSpeak(word.udm)
+                            viewModel.onIntent(OddOneOutIntent.Select(index))
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                    SoundButton(
+                        onClick = { onSpeak(word.udm) },
+                        contentDescription = "${stringResource(R.string.pronunciation)} — ${word.udm}",
+                    )
+                }
             }
         }
     }

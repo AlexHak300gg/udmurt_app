@@ -36,6 +36,7 @@ import org.udmurtlang.learn.feature.games.GameTintSorting
 fun SortingScreen(
     onFinished: (Int, Int, Int) -> Unit,
     onBack: () -> Unit,
+    onSpeak: (String) -> Unit,
     viewModel: SortingViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -51,7 +52,7 @@ fun SortingScreen(
     val round = state.round
     GameScaffold(
         title = stringResource(R.string.game_sorting),
-        round = (round?.items?.size ?: 0) - state.remaining.size,
+        round = state.placedWordIds.size,
         total = round?.items?.size ?: 1,
         correct = state.correctCount,
         feedback = state.feedback,
@@ -91,7 +92,10 @@ fun SortingScreen(
                             emoji = item.emoji,
                             state = if (state.selectedItemIndex == index) TileState.CORRECT else TileState.NEUTRAL,
                             enabled = !state.locked,
-                            onClick = { viewModel.onIntent(SortingIntent.ItemSelected(index)) },
+                            onClick = {
+                                onSpeak(item.udm)
+                                viewModel.onIntent(SortingIntent.ItemSelected(index))
+                            },
                         )
                     }
                 }

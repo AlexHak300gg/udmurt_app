@@ -48,6 +48,8 @@ import org.udmurtlang.learn.core.designsystem.components.Gradients
 import org.udmurtlang.learn.core.designsystem.components.GameButton
 import org.udmurtlang.learn.core.designsystem.components.LetterTile
 import org.udmurtlang.learn.core.designsystem.components.LetterTileKind
+import org.udmurtlang.learn.core.designsystem.components.SoundButton
+import org.udmurtlang.learn.core.media.AutoPronounce
 import org.udmurtlang.learn.feature.games.GameEffect
 import org.udmurtlang.learn.feature.games.GameScaffold
 
@@ -59,6 +61,7 @@ fun BuilderScreen(
     viewModel: BuilderViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    AutoPronounce(state.current?.wordId, viewModel::speakWord)
 
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
@@ -130,6 +133,11 @@ fun BuilderScreen(
                         modifier = Modifier.padding(top = 2.dp),
                     )
                 }
+                SoundButton(
+                    onClick = viewModel::speakWord,
+                    contentDescription = stringResource(R.string.pronunciation),
+                    modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
+                )
             }
 
             Spacer(modifier = Modifier.height(18.dp))

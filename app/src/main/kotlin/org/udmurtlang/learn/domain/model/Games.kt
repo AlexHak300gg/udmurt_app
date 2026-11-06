@@ -71,6 +71,7 @@ data class SortItem(
     val label: String,
     val emoji: String,
     val categoryIndex: Int,
+    val udm: String,
 )
 
 data class MemorySide(
