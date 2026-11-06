@@ -93,7 +93,6 @@ class WordCardsViewModel @Inject constructor(
         viewModelScope.launch {
             if (correct) {
                 markKnown(current.id)
-                speaker.speak(current.udm)
                 unlockAchievements()
             } else {
                 markAnswer(current.id, correct = false)

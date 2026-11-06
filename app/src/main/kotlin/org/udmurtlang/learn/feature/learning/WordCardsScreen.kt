@@ -52,7 +52,7 @@ fun WordCardsScreen(
 
     LaunchedEffect(state.index) {
         if (state.index < state.words.size) {
-            pagerState.animateScrollToPage(state.index)
+            pagerState.scrollToPage(state.index)
         }
     }
     LaunchedEffect(Unit) {
