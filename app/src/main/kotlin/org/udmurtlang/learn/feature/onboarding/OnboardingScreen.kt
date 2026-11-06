@@ -3,12 +3,15 @@ package org.udmurtlang.learn.feature.onboarding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +43,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.core.designsystem.brandAccent
+import org.udmurtlang.learn.core.designsystem.studyCardColor
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.ScrollableContent
@@ -98,7 +103,7 @@ fun OnboardingScreen(
     val wide = currentWindowClass().isWide
 
     Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HorizontalPager(
@@ -115,6 +120,28 @@ fun OnboardingScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = if (short) 4.dp else 12.dp),
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                repeat(pages.size) { index ->
+                    val selected = pagerState.currentPage == index
+                    Box(
+                        modifier = Modifier
+                            .width(if (selected) 22.dp else 8.dp)
+                            .height(8.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (selected) brandAccent(ZcRed)
+                                else MaterialTheme.colorScheme.surfaceVariant,
+                            ),
+                    )
+                    if (index < pages.lastIndex) Spacer(modifier = Modifier.width(8.dp))
+                }
+            }
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 maxItemsInEachRow = if (short) 2 else 1,
@@ -144,27 +171,6 @@ fun OnboardingScreen(
                     )
                 }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                repeat(pages.size) { index ->
-                    val selected = pagerState.currentPage == index
-                    Box(
-                        modifier = Modifier
-                            .size(if (selected && !short) 18.dp else 10.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (selected) ZcRed
-                                else MaterialTheme.colorScheme.surfaceVariant,
-                            ),
-                    )
-                    if (index < pages.lastIndex) Spacer(modifier = Modifier.width(8.dp))
-                }
-            }
         }
     }
 }
@@ -173,7 +179,7 @@ fun OnboardingScreen(
 private fun OnboardingPage(page: Page, wide: Boolean, short: Boolean) {
     if (wide || short) {
         ScrollableContent(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().statusBarsPadding(),
             maxWidth = WideContentWidth,
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             centerVertically = true,
@@ -193,10 +199,13 @@ private fun OnboardingPage(page: Page, wide: Boolean, short: Boolean) {
             )
         }
     } else {
-        Column(modifier = Modifier.fillMaxSize()) {
-            OnboardingArtwork(page, short = false, modifier = Modifier.weight(1f))
-            ZigzagEdge(color = page.bg, tooth = 24.dp, depth = 12.dp)
-            OnboardingCopy(page)
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val artworkHeight = maxHeight * 0.69f
+            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                OnboardingArtwork(page, short = false, modifier = Modifier.height(artworkHeight))
+                ZigzagEdge(color = brandAccent(page.bg), tooth = 24.dp, depth = 12.dp)
+                OnboardingCopy(page)
+            }
         }
     }
 }
@@ -204,7 +213,7 @@ private fun OnboardingPage(page: Page, wide: Boolean, short: Boolean) {
 @Composable
 private fun OnboardingArtwork(page: Page, short: Boolean, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxWidth().background(page.bg),
+        modifier = modifier.fillMaxWidth().background(brandAccent(page.bg)),
         contentAlignment = Alignment.Center,
     ) {
         Ornament(
@@ -231,49 +240,46 @@ private fun OnboardingArtwork(page: Page, short: Boolean, modifier: Modifier = M
                 .offset(x = (-20).dp, y = (-24).dp)
                 .size(90.dp),
         )
-        Box(
-            modifier = Modifier
-                .widthIn(min = if (short) 124.dp else 180.dp)
-                .heightIn(min = if (short) 124.dp else 180.dp)
-                .clip(RoundedCornerShape(36.dp))
-                .background(ZcWhite)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                if (page.bigEmojiAndWord) {
-                    Text(page.emoji, fontSize = if (short) 48.sp else 80.sp)
-                    if (page.emoji == "🔥") {
-                        Surface(shape = CircleShape, color = ZcInk) {
-                            Text(
-                                text = stringResource(R.string.onboarding_streak),
-                                fontSize = 13.sp,
-                                color = Color.White,
-                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = "Гондыр",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = ZcInk,
-                        )
-                        Text(
-                            text = "(медведь)",
-                            fontSize = 14.sp,
-                            color = Color(0xFF6E6A66),
-                        )
+        when {
+            !page.bigEmojiAndWord -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    MiniStarTile(UdmOrnament.STAR, ZcRed, short)
+                    MiniStarTile(UdmOrnament.CROSS, ZcOrange, short)
+                    MiniStarTile(UdmOrnament.HEX, ZcTeal, short)
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    MiniStarTile(UdmOrnament.PINWHEEL, ZcPurpleDeep, short)
+                    MiniStarTile(UdmOrnament.ARC, ZcRed, short)
+                    MiniStarTile(UdmOrnament.ARROWS, ZcOrange, short)
+                }
+            }
+            page.emoji == "🔥" -> Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Surface(shape = CircleShape, color = studyCardColor()) {
+                    Box(Modifier.size(if (short) 100.dp else 170.dp), contentAlignment = Alignment.Center) {
+                        Text(page.emoji, fontSize = if (short) 48.sp else 68.sp)
                     }
-                } else {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MiniStarTile(kind = UdmOrnament.STAR, star = ZcRed, short = short)
-                        MiniStarTile(kind = UdmOrnament.CROSS, star = ZcOrange, short = short)
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MiniStarTile(kind = UdmOrnament.HEX, star = ZcPurpleDeep, short = short)
-                        MiniStarTile(kind = UdmOrnament.PINWHEEL, star = ZcTeal, short = short)
-                    }
+                }
+                Surface(shape = CircleShape, color = ZcInk) {
+                    Text(
+                        stringResource(R.string.onboarding_streak),
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp),
+                    )
+                }
+            }
+            else -> Surface(shape = RoundedCornerShape(32.dp), color = studyCardColor()) {
+                Column(
+                    modifier = Modifier.widthIn(min = if (short) 132.dp else 196.dp)
+                        .padding(horizontal = 14.dp, vertical = if (short) 6.dp else 18.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(page.emoji, fontSize = if (short) 46.sp else 72.sp)
+                    Text("Гондыр", style = MaterialTheme.typography.titleLarge)
+                    Text("медведь", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -289,7 +295,7 @@ private fun OnboardingCopy(page: Page) {
     ) {
         Text(
             text = stringResource(page.titleRes),
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onBackground,
         )
         Text(
@@ -304,11 +310,11 @@ private fun OnboardingCopy(page: Page) {
 private fun MiniStarTile(kind: UdmOrnament, star: Color, short: Boolean) {
     Box(
         modifier = Modifier
-            .size(if (short) 40.dp else 54.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(star.copy(alpha = 0.12f)),
+            .size(if (short) 48.dp else 74.dp)
+            .clip(RoundedCornerShape(25.dp))
+            .background(studyCardColor()),
         contentAlignment = Alignment.Center,
     ) {
-        Ornament(kind = kind, color = star, modifier = Modifier.size(30.dp))
+        Ornament(kind = kind, color = star, modifier = Modifier.size(if (short) 24.dp else 37.dp))
     }
 }

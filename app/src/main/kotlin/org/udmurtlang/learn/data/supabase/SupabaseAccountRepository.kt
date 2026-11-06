@@ -10,6 +10,7 @@ import org.udmurtlang.learn.data.local.db.ProgressDao
 import org.udmurtlang.learn.data.local.db.ProgressEntity
 import org.udmurtlang.learn.data.repository.LocalAccountRepository
 import org.udmurtlang.learn.domain.model.Profile
+import org.udmurtlang.learn.domain.model.limitDisplayName
 import org.udmurtlang.learn.domain.repository.AccountRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,7 +49,7 @@ class SupabaseAccountRepository @Inject constructor(
                 val uid = provider.client.auth.currentUserOrNull()?.id
                     ?: return Result.failure(Exception("Письмо с подтверждением отправлено. Проверьте почту."))
                 provider.client.from("profiles").upsert(
-                    RemoteProfile(id = uid, display_name = name.trim().ifBlank { "Юный лингвист" }),
+                    RemoteProfile(id = uid, display_name = name.trim().limitDisplayName().ifBlank { "Юный лингвист" }),
                 ) { onConflict = "id" }
                 mergeWithCloud(uid)
                 local.attachCloudAccount(uid, email.trim().lowercase(), name)
@@ -82,7 +83,7 @@ class SupabaseAccountRepository @Inject constructor(
         local.updateName(name)
         val uid = provider.client.auth.currentUserOrNull()?.id ?: return
         provider.client.from("profiles").update(
-            ProfilePatch(display_name = name.trim(), updated_at = time.nowMillis()),
+            ProfilePatch(display_name = name.trim().limitDisplayName(), updated_at = time.nowMillis()),
         ) { filter { eq("id", uid) } }
     }
 

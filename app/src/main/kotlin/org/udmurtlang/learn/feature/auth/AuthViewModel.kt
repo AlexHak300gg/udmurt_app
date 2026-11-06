@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.udmurtlang.learn.domain.model.limitDisplayName
 import org.udmurtlang.learn.domain.usecase.ContinueAsGuestUseCase
 import org.udmurtlang.learn.domain.usecase.LoginUseCase
 import org.udmurtlang.learn.domain.usecase.RegisterUseCase
@@ -58,7 +59,7 @@ class AuthViewModel @Inject constructor(
         when (intent) {
             is AuthIntent.EmailChanged -> _state.update { it.copy(email = intent.value, error = null) }
             is AuthIntent.PasswordChanged -> _state.update { it.copy(password = intent.value, error = null) }
-            is AuthIntent.NameChanged -> _state.update { it.copy(name = intent.value, error = null) }
+            is AuthIntent.NameChanged -> _state.update { it.copy(name = intent.value.limitDisplayName(), error = null) }
             AuthIntent.ToggleMode -> _state.update {
                 it.copy(isRegisterMode = !it.isRegisterMode, error = null)
             }

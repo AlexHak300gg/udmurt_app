@@ -95,6 +95,8 @@
     <string name="how_translate">Как переводится?</string>
     <string name="check_word">Проверить</string>
     <string name="memory_pairs">Пар: %1$d из %2$d</string>
+    <string name="memory_moves">Ходов: %1$d</string>
+    <string name="memory_card">Закрытая карточка %1$d</string>
     <string name="game_finished">Игра окончена!</string>
     <string name="result_mood_3">Абсолютно точно!</string>
     <string name="result_mood_2">Отлично, почти без ошибок!</string>
@@ -201,6 +203,8 @@
     <!-- Слово дня -->
     <string name="wod_unknown">Ещё не знал(а) такое слово</string>
     <string name="wod_listen">Прослушать</string>
+    <string name="wod_study_topic">Учить тему</string>
+    <string name="wod_related">Ещё из этой темы</string>
     <string name="wod_every_day">Новое слово каждый день в 9:00</string>
 
     <!-- Профиль: статы -->

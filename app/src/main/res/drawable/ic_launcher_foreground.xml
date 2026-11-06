@@ -11,19 +11,19 @@
         android:translateX="21"
         android:translateY="21">
         <path
-            android:fillColor="#FFFFFF"
+            android:fillColor="@color/ic_launcher_star"
             android:pathData="M75.5,11L88.6471,34.0373L112.824,23.1274L109.92,49.4927L135.892,54.8774L118.045,74.5L135.892,94.1226L109.92,99.5073L112.824,125.873L88.6471,114.963L75.5,138L62.3529,114.963L38.1756,125.873L41.0804,99.5073L15.1079,94.1226L32.955,74.5L15.1079,54.8774L41.0804,49.4927L38.1756,23.1274L62.3529,34.0373L75.5,11Z" />
         <path
-            android:fillColor="#FF4647"
+            android:fillColor="@color/ic_launcher_mark"
             android:pathData="M89.7933,56.1867L75.5,70.48L61.2067,56.1867V41L75.5,55.2933L89.7933,41V56.1867Z" />
         <path
-            android:fillColor="#FF4647"
+            android:fillColor="@color/ic_launcher_mark"
             android:pathData="M61.2067,92.8133L75.5,78.52L89.7933,92.8133L89.7933,108L75.5,93.7067L61.2067,108L61.2067,92.8133Z" />
         <path
-            android:fillColor="#FF4647"
+            android:fillColor="@color/ic_launcher_mark"
             android:pathData="M93.8133,88.7933L79.52,74.5L93.8133,60.2067L109,60.2067L94.7067,74.5L109,88.7933L93.8133,88.7933Z" />
         <path
-            android:fillColor="#FF4647"
+            android:fillColor="@color/ic_launcher_mark"
             android:pathData="M57.1867,60.2067L71.48,74.5L57.1867,88.7933L42,88.7933L56.2933,74.5L42,60.2067L57.1867,60.2067Z" />
     </group>
 </vector>

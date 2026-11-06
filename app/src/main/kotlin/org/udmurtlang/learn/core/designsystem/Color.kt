@@ -6,14 +6,15 @@ import androidx.compose.ui.graphics.Color
 val ZcCream = Color(0xFFFFF7EC)          // светлый фон страницы
 val ZcCard = Color(0xFFFFFFFF)           // карточка на светлом
 val ZcSubtle = Color(0xFFF8ECDD)         // вложенные плитки, chips
-val ZcInk = Color(0xFF141414)            // основной тёмный текст
+val ZcInk = Color(0xFF111111)            // основной тёмный текст
 val ZcMuted = Color(0xFF6E6A66)          // вторичный текст на кремовом
 val ZcHairline = Color(0xFFEADFD0)       // тонкие линии/бордеры
-val ZcInkPill = Color(0xFF141414)        // чёрная кнопка-таблетка
+val ZcInkPill = Color(0xFF111111)        // чёрная кнопка-таблетка
 
 // Тёмная тема
 val ZcDarkBg = Color(0xFF15131B)
 val ZcDarkCard = Color(0xFF24212C)
+val ZcDarkElevated = Color(0xFF2A2633)
 val ZcDarkSubtle = Color(0xFF2F2B38)
 val ZcDarkInk = Color(0xFFF4F1F8)
 val ZcDarkMuted = Color(0xFFA8A3B3)
@@ -52,7 +53,7 @@ val LightSurface = ZcCard
 val LightSurfaceVariant = ZcSubtle
 val LightOnSurface = ZcInk
 val LightOutline = ZcMuted
-val LightPrimaryContainer = Color(0xFFFFD9D9)
+val LightPrimaryContainer = Color(0xFFFFD0D0)
 val LightOnPrimaryContainer = Color(0xFF5A1A14)
 val LightSecondaryContainer = Color(0xFFCFF1ED)
 val LightOnSecondaryContainer = Color(0xFF0B5148)

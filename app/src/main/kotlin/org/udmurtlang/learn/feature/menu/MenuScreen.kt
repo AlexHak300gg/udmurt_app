@@ -22,6 +22,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.PersonOutline
+import androidx.compose.material.icons.outlined.SportsEsports
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
@@ -38,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +59,7 @@ import org.udmurtlang.learn.core.designsystem.currentWindowClass
 import org.udmurtlang.learn.core.designsystem.isShortWindow
 import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.LocalBrand
+import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.Ornament
 import org.udmurtlang.learn.core.designsystem.UdmOrnament
 import org.udmurtlang.learn.core.designsystem.ZcInk
@@ -64,7 +69,7 @@ import org.udmurtlang.learn.core.designsystem.ZcRedOnDark
 import org.udmurtlang.learn.core.designsystem.ZcPurpleDeep
 import org.udmurtlang.learn.core.designsystem.ZcPurple
 import org.udmurtlang.learn.core.designsystem.ZcRed
-import org.udmurtlang.learn.core.designsystem.ZcTealDeep
+import org.udmurtlang.learn.core.designsystem.ZcTeal
 import org.udmurtlang.learn.core.designsystem.ZcOrange
 import org.udmurtlang.learn.core.designsystem.components.SoundButton
 import org.udmurtlang.learn.core.designsystem.components.StreakBadge
@@ -143,8 +148,8 @@ fun MenuScreen(
                     )
                     StreakBadge(
                         days = state.streak.current,
-                        container = Color.White,
-                        contentColor = ZcInk,
+                        container = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                         onClick = {
                             showCalendar = true
                             viewModel.loadMonthActivity()
@@ -246,7 +251,7 @@ fun MenuScreen(
                     ) {
                         Box(
                             modifier = Modifier.background(
-                                Brush.horizontalGradient(listOf(ZcPurple, ZcPurpleDeep)),
+                                brandAccent(ZcPurple),
                             ),
                         ) {
                             Ornament(
@@ -263,7 +268,9 @@ fun MenuScreen(
                                     .padding(horizontal = 18.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Column {
+                                MenuGlyph(Icons.Outlined.SportsEsports)
+                                Spacer(Modifier.size(12.dp))
+                                Column(modifier = Modifier.weight(1f)) {
                                     Text(
                                         text = stringResource(R.string.menu_games),
                                         style = MaterialTheme.typography.titleMedium,
@@ -276,7 +283,7 @@ fun MenuScreen(
                                         color = Color.White.copy(alpha = 0.8f),
                                     )
                                 }
-                                Spacer(modifier = Modifier.weight(1f))
+                                Spacer(modifier = Modifier.size(8.dp))
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = null,
@@ -292,8 +299,8 @@ fun MenuScreen(
                         MenuTile(
                             title = stringResource(R.string.menu_learning),
                             caption = stringResource(R.string.menu_tiles_learning),
-                            emoji = "📖",
-                            color = ZcTealDeep,
+                            icon = Icons.Outlined.Book,
+                            color = ZcTeal,
                             onClick = onOpenLearning,
                             modifier = Modifier.weight(1f),
                             ornament = UdmOrnament.CROSS,
@@ -302,7 +309,7 @@ fun MenuScreen(
                         MenuTile(
                             title = stringResource(R.string.menu_profile),
                             caption = stringResource(R.string.menu_tiles_profile),
-                            emoji = "🏅",
+                            icon = Icons.Outlined.PersonOutline,
                             color = ZcOrange,
                             onClick = onOpenProfile,
                             modifier = Modifier.weight(1f),
@@ -370,7 +377,7 @@ private fun MenuSettingsTile(onClick: () -> Unit) {
 private fun MenuTile(
     title: String,
     caption: String,
-    emoji: String?,
+    icon: ImageVector,
     color: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -380,7 +387,7 @@ private fun MenuTile(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(28.dp))
-            .background(color)
+            .background(brandAccent(color))
             .clickable { onClick() }
             .padding(16.dp),
     ) {
@@ -395,17 +402,7 @@ private fun MenuTile(
         Column(
             modifier = Modifier.fillMaxWidth().heightIn(min = if (short) 72.dp else 96.dp),
         ) {
-            emoji?.let { glyph ->
-                Box(
-                    modifier = Modifier
-                        .size(if (short) 28.dp else 38.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White.copy(alpha = 0.2f)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(glyph, fontSize = 18.sp)
-                }
-            }
+            MenuGlyph(icon, short)
             Spacer(Modifier.height(8.dp).weight(1f))
             Text(
                 text = title,
@@ -418,6 +415,17 @@ private fun MenuTile(
                 color = Color.White.copy(alpha = 0.8f),
             )
         }
+    }
+}
+
+@Composable
+private fun MenuGlyph(icon: ImageVector, short: Boolean = false) {
+    Box(
+        modifier = Modifier.size(if (short) 34.dp else 46.dp)
+            .clip(RoundedCornerShape(14.dp)).background(Color.White.copy(alpha = 0.20f)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(23.dp))
     }
 }
 

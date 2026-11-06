@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectableGroup
@@ -17,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -77,6 +81,8 @@ fun ZcHeader(
     modifier: Modifier = Modifier,
     caption: String? = null,
     tinted: Boolean = false,
+    compact: Boolean = false,
+    close: Boolean = false,
     trailing: (@Composable RowScope.() -> Unit)? = null,
 ) {
     val on = if (tinted) onVivid() else MaterialTheme.colorScheme.onBackground
@@ -86,28 +92,47 @@ fun ZcHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = if (isShortWindow()) 5.dp else 10.dp),
+            .padding(horizontal = 16.dp, vertical = if (isShortWindow() || compact) 4.dp else 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Surface(
             onClick = onBack,
-            shape = CircleShape,
+            shape = RoundedCornerShape(14.dp),
             color = chip,
             contentColor = chipOn,
-            modifier = Modifier.size(42.dp),
+            modifier = Modifier.size(if (compact) 36.dp else 40.dp),
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = if (close) Icons.Filled.Close else Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.back),
                     modifier = Modifier.size(22.dp),
                 )
             }
         }
-        Column(modifier = Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.headlineSmall, color = on)
-            caption?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = onMuted) }
+        if (compact) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                caption?.let {
+                    Text(it, style = MaterialTheme.typography.labelSmall, color = onMuted)
+                }
+                Text(
+                    title,
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = on,
+                    textAlign = if (caption == null) TextAlign.Center else TextAlign.End,
+                )
+            }
+        } else {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.titleLarge, color = on)
+                caption?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = onMuted) }
+            }
         }
         trailing?.invoke(this)
     }
@@ -173,35 +198,29 @@ fun SwitchCard(
     hint: String? = null,
 ) {
     val scheme = MaterialTheme.colorScheme
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        color = scheme.surface,
+    Row(
+        modifier = modifier.fillMaxWidth().heightIn(min = 52.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
-                hint?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-            }
-            Switch(
-                checked = checked,
-                onCheckedChange = onCheckedChange,
-                colors = SwitchDefaults.colors(
-                    checkedTrackColor = scheme.secondary,
-                    checkedThumbColor = scheme.onSecondary,
-                    uncheckedTrackColor = scheme.surfaceVariant,
-                    uncheckedThumbColor = scheme.onSurfaceVariant,
-                    uncheckedBorderColor = scheme.onSurfaceVariant,
-                ),
-            )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.bodyMedium, color = scheme.onSurface)
+            hint?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = scheme.onSurfaceVariant) }
         }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = scheme.secondary,
+                checkedThumbColor = Color.White,
+                uncheckedTrackColor = if (LocalBrand.current.isDark) scheme.outline else Color(0xFFE6E6E6),
+                uncheckedThumbColor = Color.White,
+                uncheckedBorderColor = scheme.outline,
+            ),
+        )
     }
 }
 
-/** Одно активное значение для языка или темы. */
+/** Выбор языка или темы в общей плашке, с контрастным активным сегментом. */
 @Composable
 fun SectionChips(
     title: String,
@@ -211,35 +230,38 @@ fun SectionChips(
     modifier: Modifier = Modifier,
 ) {
     val scheme = MaterialTheme.colorScheme
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+    Row(
+        modifier = modifier.fillMaxWidth().heightIn(min = 58.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            title,
-            style = MaterialTheme.typography.titleSmall,
-            color = scheme.onBackground,
-        )
-        FlowRow(
-            modifier = Modifier.selectableGroup(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+        Text(title, style = MaterialTheme.typography.bodyMedium, color = scheme.onBackground, modifier = Modifier.weight(1f))
+        Surface(
+            modifier = Modifier.weight(3.2f, fill = false).widthIn(max = 254.dp),
+            shape = CircleShape,
+            color = scheme.surfaceVariant,
         ) {
-            items.forEachIndexed { index, item ->
-                val selected = index == selectedIndex
-                Surface(
-                    selected = selected,
-                    onClick = { onSelect(index) },
-                    shape = CircleShape,
-                    color = if (selected) scheme.primaryContainer else scheme.surface,
-                    contentColor = if (selected) scheme.onPrimaryContainer else scheme.onSurfaceVariant,
-                    border = if (selected) BorderStroke(1.dp, scheme.primary) else null,
-                ) {
-                    Text(
-                        text = item,
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-                    )
+            FlowRow(
+                modifier = Modifier.selectableGroup().padding(3.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                items.forEachIndexed { index, item ->
+                    val selected = index == selectedIndex
+                    Surface(
+                        selected = selected,
+                        onClick = { onSelect(index) },
+                        shape = CircleShape,
+                        color = if (selected) scheme.inverseSurface else Color.Transparent,
+                        contentColor = if (selected) scheme.inverseOnSurface else scheme.onSurfaceVariant,
+                        border = if (selected) BorderStroke(1.dp, scheme.inverseSurface) else null,
+                    ) {
+                        Text(
+                            item,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+                        )
+                    }
                 }
             }
         }
@@ -282,31 +304,42 @@ fun StatTile(
     modifier: Modifier = Modifier,
     emoji: String? = null,
     iconTint: Color? = null,
+    icon: ImageVector? = null,
+    container: Color = MaterialTheme.colorScheme.surface,
 ) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(18.dp),
-        color = MaterialTheme.colorScheme.surface,
+        color = container,
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = if (icon == null) 6.dp else 12.dp, vertical = 12.dp),
+            horizontalAlignment = if (icon == null) Alignment.CenterHorizontally else Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            if (emoji != null) {
+            if (icon != null) {
+                val tint = iconTint ?: MaterialTheme.colorScheme.primary
+                Box(
+                    modifier = Modifier.size(34.dp).clip(RoundedCornerShape(12.dp))
+                        .background(tint.copy(alpha = 0.16f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(19.dp))
+                }
+            } else if (emoji != null) {
                 Text(emoji, fontSize = 22.sp)
             }
             Text(
                 value,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
+                textAlign = if (icon == null) TextAlign.Center else TextAlign.Start,
             )
             Text(
                 caption,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
+                textAlign = if (icon == null) TextAlign.Center else TextAlign.Start,
             )
         }
     }
@@ -321,8 +354,8 @@ fun WeekBarChart(
 ) {
     val brand = LocalBrand.current
     val max = (values.maxOrNull() ?: 0).coerceAtLeast(1)
-    val accent = if (brand.isDark) MaterialTheme.colorScheme.primary else ZcTeal
-    val bar = if (brand.isDark) MaterialTheme.colorScheme.surfaceVariant else Color(0xFFFBE3D6)
+    val accent = MaterialTheme.colorScheme.primary
+    val bar = MaterialTheme.colorScheme.primaryContainer
     Row(
         modifier = modifier
             .fillMaxWidth()

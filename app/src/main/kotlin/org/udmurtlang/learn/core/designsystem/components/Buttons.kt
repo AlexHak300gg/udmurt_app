@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.udmurtlang.learn.core.designsystem.LocalBrand
+import org.udmurtlang.learn.core.designsystem.studyCardColor
 import org.udmurtlang.learn.core.designsystem.ZcRed
 
 /** Крупная «жвачная» кнопка с пружинным нажатием — основной вызов к действию. */
@@ -169,6 +170,7 @@ fun ChoiceTile(
     emoji: String? = null,
     state: TileState = TileState.NEUTRAL,
     enabled: Boolean = true,
+    leadingAligned: Boolean = false,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -179,7 +181,7 @@ fun ChoiceTile(
     )
     val scheme = MaterialTheme.colorScheme
     val background = when (state) {
-        TileState.NEUTRAL -> scheme.surface
+        TileState.NEUTRAL -> if (leadingAligned) studyCardColor() else scheme.surface
         TileState.CORRECT -> scheme.secondary
         TileState.WRONG -> if (LocalBrand.current.isDark) scheme.surfaceVariant else scheme.surface
     }
@@ -196,24 +198,29 @@ fun ChoiceTile(
                 scaleX = scale
                 scaleY = scale
             }
-            .heightIn(min = 58.dp),
+            .heightIn(min = if (leadingAligned) 54.dp else 58.dp),
         enabled = enabled,
         shape = MaterialTheme.shapes.medium,
         color = background,
         contentColor = content,
-        shadowElevation = if (state == TileState.NEUTRAL) 3.dp else 0.dp,
+        shadowElevation = if (!leadingAligned && state == TileState.NEUTRAL) 3.dp else 0.dp,
         border = if (state == TileState.WRONG) BorderStroke(2.dp, scheme.error) else null,
         interactionSource = interactionSource,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = if (leadingAligned) Arrangement.Start else Arrangement.Center,
         ) {
             if (emoji != null) {
                 Text(emoji, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(end = 10.dp))
             }
-            Text(label, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+            Text(
+                label,
+                modifier = if (leadingAligned) Modifier.weight(1f) else Modifier,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = if (leadingAligned) TextAlign.Start else TextAlign.Center,
+            )
             if (state == TileState.CORRECT) {
                 Icon(
                     imageVector = Icons.Filled.Check,

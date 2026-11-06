@@ -1,26 +1,20 @@
 package org.udmurtlang.learn.feature.splash
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,18 +42,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.LocalBrand
+import org.udmurtlang.learn.core.designsystem.isShortWindow
+import org.udmurtlang.learn.core.designsystem.ZcRedDark
 import org.udmurtlang.learn.core.designsystem.OrnamentBand
-import org.udmurtlang.learn.core.designsystem.StarGlyph
 import org.udmurtlang.learn.core.designsystem.StarMark
-import org.udmurtlang.learn.core.designsystem.StarPattern
-import org.udmurtlang.learn.core.designsystem.ZcInk
 import org.udmurtlang.learn.core.designsystem.ZcOrangeOnDark
-import org.udmurtlang.learn.core.designsystem.ZcPurple
 import org.udmurtlang.learn.core.designsystem.ZcPurpleOnDark
 import org.udmurtlang.learn.core.designsystem.ZcRed
-import org.udmurtlang.learn.core.designsystem.ZcRedDark
 import org.udmurtlang.learn.core.designsystem.ZcRedOnDark
-import org.udmurtlang.learn.core.designsystem.ZcTeal
 import org.udmurtlang.learn.core.designsystem.ZcTealOnDark
 import org.udmurtlang.learn.core.designsystem.ZcWhite
 import org.udmurtlang.learn.data.local.AppDataStore
@@ -99,6 +88,7 @@ fun SplashScreen(
     val destination by viewModel.destination.collectAsStateWithLifecycle()
     var visible by remember { mutableStateOf(false) }
     val brand = LocalBrand.current
+    val short = isShortWindow()
 
     val contentAlpha by animateFloatAsState(
         targetValue = if (visible) 1f else 0f,
@@ -127,9 +117,9 @@ fun SplashScreen(
     val on = if (brand.isDark) MaterialTheme.colorScheme.onBackground else ZcWhite
     val onMuted = if (brand.isDark) MaterialTheme.colorScheme.onSurfaceVariant else ZcWhite.copy(alpha = 0.85f)
     val ornamentColors = if (brand.isDark) {
-        listOf(ZcRedOnDark, ZcTealOnDark, ZcPurpleOnDark, ZcOrangeOnDark, ZcWhite, ZcRedOnDark)
+        listOf(ZcRedOnDark, ZcTealOnDark, ZcPurpleOnDark, ZcOrangeOnDark, ZcTealOnDark, ZcRedOnDark)
     } else {
-        listOf(ZcWhite, ZcTeal, ZcPurple, ZcWhite, ZcInk, ZcTeal)
+        listOf(ZcWhite)
     }
 
     Box(
@@ -138,13 +128,6 @@ fun SplashScreen(
             .background(bg)
             .alpha(contentAlpha),
     ) {
-        StarPattern(
-            modifier = Modifier.fillMaxSize(),
-            color = on,
-            alpha = 0.05f,
-            cell = 110.dp,
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -153,16 +136,16 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             StarMark(
-                color = if (brand.isDark) ZcRedDark else ZcWhite,
-                markColor = bg,
-                size = 132.dp,
+                color = ZcWhite,
+                markColor = if (brand.isDark) ZcRedDark else bg,
+                size = if (short) 96.dp else 174.dp,
                 modifier = Modifier.graphicsLayer {
                     scaleX = starScale.value
                     scaleY = starScale.value
                     rotationZ = starRotation.value * 180f
                 },
             )
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(if (short) 8.dp else 18.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.graphicsLayer {
@@ -172,7 +155,8 @@ fun SplashScreen(
             ) {
                 Text(
                     text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier.widthIn(max = 255.dp),
                     fontWeight = FontWeight.ExtraBold,
                     color = on,
                     textAlign = TextAlign.Center,
@@ -184,43 +168,16 @@ fun SplashScreen(
                     color = onMuted,
                     textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.height(30.dp))
-                LoadingStars(color = on)
             }
         }
 
         OrnamentBand(
             colors = ornamentColors,
-            height = 40.dp,
-            diamondSize = 30.dp,
+            height = if (short) 24.dp else 64.dp,
+            diamondSize = if (short) 20.dp else 52.dp,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
+                .padding(bottom = if (short) 8.dp else 24.dp),
         )
-    }
-}
-
-@Composable
-private fun LoadingStars(color: androidx.compose.ui.graphics.Color = ZcRed) {
-    val transition = rememberInfiniteTransition(label = "splashLoading")
-    val phase by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 3f,
-        animationSpec = infiniteRepeatable(tween(1100, easing = LinearEasing)),
-        label = "splashPhase",
-    )
-    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        repeat(3) { index ->
-            val delta = (phase - index + 3f) % 3f
-            val brightness = when {
-                delta < 1f -> delta
-                delta > 2f -> 3f - delta
-                else -> 1f
-            }
-            StarGlyph(
-                size = 12.dp,
-                color = color.copy(alpha = 0.3f + 0.7f * brightness),
-            )
-        }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -41,11 +42,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.designsystem.isShortWindow
-import org.udmurtlang.learn.core.designsystem.LocalBrand
-import org.udmurtlang.learn.core.designsystem.StarPattern
+import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
+import org.udmurtlang.learn.core.designsystem.Ornament
+import org.udmurtlang.learn.core.designsystem.UdmOrnament
+import org.udmurtlang.learn.core.designsystem.ZcOrange
+import org.udmurtlang.learn.core.designsystem.brandAccent
+import org.udmurtlang.learn.core.designsystem.studyCardColor
 import org.udmurtlang.learn.core.designsystem.ZcWhite
 import org.udmurtlang.learn.core.designsystem.components.EmptyState
-import org.udmurtlang.learn.core.designsystem.components.Gradients
 import org.udmurtlang.learn.core.designsystem.components.GameButton
 import org.udmurtlang.learn.core.designsystem.components.LetterTile
 import org.udmurtlang.learn.core.designsystem.components.LetterTileKind
@@ -80,6 +84,39 @@ fun BuilderScreen(
         feedback = state.feedback,
         finished = state.finished,
         onBack = onBack,
+        compactHeader = true,
+        footer = {
+            Row(
+                modifier = Modifier
+                    .widthIn(max = ReadingContentWidth).fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Surface(
+                    onClick = { viewModel.onIntent(BuilderIntent.Undo) },
+                    enabled = state.built.isNotEmpty() && !state.locked,
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(54.dp),
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Undo,
+                            contentDescription = stringResource(R.string.back),
+                            modifier = Modifier.size(22.dp),
+                        )
+                    }
+                }
+                GameButton(
+                    text = stringResource(R.string.check_word),
+                    enabled = state.built.isNotEmpty() && !state.locked,
+                    onClick = { viewModel.onIntent(BuilderIntent.Check) },
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        },
     ) {
         val round = state.current
         if (round == null) {
@@ -102,32 +139,33 @@ fun BuilderScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(Gradients.orange),
+                        .clip(RoundedCornerShape(36.dp))
+                        .background(brandAccent(ZcOrange)),
                 ) {
-                    if (!LocalBrand.current.isDark) {
-                        StarPattern(
-                            modifier = Modifier.matchParentSize(),
-                            color = ZcWhite,
-                            alpha = 0.10f,
-                            cell = 52.dp,
-                        )
-                    }
+                    Ornament(
+                        kind = UdmOrnament.STAR,
+                        color = ZcWhite.copy(alpha = 0.19f),
+                        modifier = Modifier.align(Alignment.TopEnd).size(72.dp),
+                    )
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 18.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(round.emoji, fontSize = 48.sp)
+                        Surface(shape = CircleShape, color = studyCardColor()) {
+                            Box(Modifier.size(if (short) 58.dp else 82.dp), contentAlignment = Alignment.Center) {
+                                Text(round.emoji, fontSize = if (short) 36.sp else 46.sp)
+                            }
+                        }
                         Text(
                             text = stringResource(R.string.game_builder_sub),
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.White.copy(alpha = 0.85f),
                         )
                         Text(
-                            text = round.ru.uppercase(),
-                            style = MaterialTheme.typography.displaySmall,
+                            text = round.ru,
+                            style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Black,
                             color = Color.White,
                             textAlign = TextAlign.Center,
@@ -180,38 +218,6 @@ fun BuilderScreen(
                                 } else null,
                             )
                         }
-                    }
-
-                    // Нижняя панель: отмена + Проверить
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Surface(
-                            onClick = { viewModel.onIntent(BuilderIntent.Undo) },
-                            enabled = state.built.isNotEmpty() && !state.locked,
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.surface,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(54.dp),
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.Undo,
-                                    contentDescription = stringResource(R.string.back),
-                                    modifier = Modifier.size(22.dp),
-                                )
-                            }
-                        }
-                        GameButton(
-                            text = stringResource(R.string.check_word),
-                            enabled = state.built.isNotEmpty() && !state.locked,
-                            onClick = { viewModel.onIntent(BuilderIntent.Check) },
-                            modifier = Modifier.weight(1f),
-                        )
                     }
                 }
             },

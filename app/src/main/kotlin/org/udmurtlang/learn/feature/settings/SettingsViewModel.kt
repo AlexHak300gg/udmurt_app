@@ -61,8 +61,8 @@ class SettingsViewModel @Inject constructor(
                 _uiState.update { it.copy(geoDenied = !intent.enabled) }
             }
             is SettingsIntent.ThemeSelected -> update { it.copy(themeMode = intent.mode) }
-            is SettingsIntent.LanguageSelected -> {
-                update { it.copy(uiLanguage = intent.language) }
+            is SettingsIntent.LanguageSelected -> viewModelScope.launch {
+                updateSettings { it.copy(uiLanguage = intent.language) }
                 uiLanguageController.apply(intent.language)
             }
         }

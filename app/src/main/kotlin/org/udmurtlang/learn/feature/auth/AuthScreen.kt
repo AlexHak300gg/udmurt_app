@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -53,6 +52,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.domain.model.MAX_DISPLAY_NAME_LENGTH
+import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
 import org.udmurtlang.learn.core.designsystem.ScrollableContent
 import org.udmurtlang.learn.core.designsystem.WideContentWidth
@@ -66,9 +67,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.offset
 import org.udmurtlang.learn.core.designsystem.LocalBrand
 import org.udmurtlang.learn.core.designsystem.StarPattern
-import org.udmurtlang.learn.core.designsystem.ZcInkPill
-import org.udmurtlang.learn.core.designsystem.ZcRedBottom
-import org.udmurtlang.learn.core.designsystem.ZcRedTop
 import org.udmurtlang.learn.core.designsystem.ZcWhite
 import org.udmurtlang.learn.core.designsystem.components.GameButton
 import org.udmurtlang.learn.core.designsystem.components.GhostButton
@@ -117,7 +115,7 @@ fun AuthScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(if (wide) 28.dp else 0.dp))
-                            .background(Brush.verticalGradient(listOf(ZcRedTop, ZcRedBottom))),
+                            .background(brandAccent(ZcRed)),
                     ) {
                         Ornament(
                             kind = UdmOrnament.STAR,
@@ -147,7 +145,7 @@ fun AuthScreen(
                         }
                     }
                     // Рваный край шапки, как в макете
-                    if (!wide) ZigzagEdge(color = ZcRed, tooth = 22.dp, depth = 11.dp)
+                    if (!wide) ZigzagEdge(color = brandAccent(ZcRed), tooth = 22.dp, depth = 11.dp)
                 }
             },
             second = {
@@ -188,6 +186,9 @@ fun AuthScreen(
                             onValueChange = { viewModel.onIntent(AuthIntent.NameChanged(it)) },
                             placeholder = stringResource(R.string.auth_name),
                             icon = Icons.Filled.Person,
+                            supportingText = {
+                                Text("${state.name.codePointCount(0, state.name.length)} / $MAX_DISPLAY_NAME_LENGTH")
+                            },
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                     }
@@ -243,13 +244,15 @@ fun AuthScreen(
                         text = stringResource(if (state.isRegisterMode) R.string.auth_register else R.string.auth_login),
                         onClick = { viewModel.onIntent(AuthIntent.Submit) },
                         enabled = !state.isLoading,
-                        containerColor = ZcInkPill,
-                        contentColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.inverseSurface,
+                        contentColor = MaterialTheme.colorScheme.inverseOnSurface,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     GhostButton(
                         text = stringResource(R.string.auth_guest),
                         onClick = { viewModel.onIntent(AuthIntent.ContinueAsGuest) },
+                        containerColor = Color.Transparent,
+                        borderColor = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp),
@@ -291,16 +294,16 @@ private fun AuthTab(
         modifier = modifier
             .padding(5.dp)
             .clip(RoundedCornerShape(999.dp))
-            .background(if (selected) ZcInkPill else Color.Transparent)
+            .background(if (selected) MaterialTheme.colorScheme.inverseSurface else Color.Transparent)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelLarge,
-            color = if (selected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+            color = if (selected) MaterialTheme.colorScheme.inverseOnSurface else MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
+            modifier = Modifier.padding(vertical = 9.dp, horizontal = 10.dp),
         )
     }
 }
@@ -316,6 +319,7 @@ private fun AuthField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     trailing: (@Composable () -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    supportingText: (@Composable () -> Unit)? = null,
 ) {
     OutlinedTextField(
         value = value,
@@ -329,8 +333,8 @@ private fun AuthField(
             unfocusedBorderColor = MaterialTheme.colorScheme.outline,
             cursorColor = MaterialTheme.colorScheme.primary,
             errorBorderColor = MaterialTheme.colorScheme.error,
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
         ),
         shape = RoundedCornerShape(16.dp),
         isError = error,
@@ -338,12 +342,13 @@ private fun AuthField(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(20.dp),
             )
         },
         trailingIcon = trailing,
         label = { Text(placeholder) },
+        supportingText = supportingText,
         modifier = modifier.fillMaxWidth(),
     )
 }

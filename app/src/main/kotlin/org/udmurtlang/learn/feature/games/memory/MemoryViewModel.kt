@@ -15,34 +15,23 @@ import org.udmurtlang.learn.core.common.TimeProvider
 import org.udmurtlang.learn.core.media.FeedbackPort
 import org.udmurtlang.learn.core.media.WordSpeaker
 import org.udmurtlang.learn.domain.game.GameRoundGenerator
-import org.udmurtlang.learn.domain.model.GameRound
 import org.udmurtlang.learn.domain.model.GameType
 import org.udmurtlang.learn.domain.model.MemorySide
 import org.udmurtlang.learn.domain.usecase.GetGameWordsUseCase
 import org.udmurtlang.learn.domain.usecase.MarkAnswerUseCase
 import org.udmurtlang.learn.domain.usecase.SubmitGameResultUseCase
-import org.udmurtlang.learn.feature.games.FeedbackKind
 import org.udmurtlang.learn.feature.games.GameEffect
 import org.udmurtlang.learn.feature.games.GameSession
 import javax.inject.Inject
 import kotlin.random.Random
 
 data class MemoryState(
-    val round: GameRound.MemoryCard? = null,
+    val cards: List<MemorySide> = emptyList(),
     val matchedWordIds: Set<String> = emptySet(),
-    val selectedLeft: MemorySide? = null,
-    val selectedRight: MemorySide? = null,
-    val wrongWordIds: Set<String> = emptySet(),
-    val correctCount: Int = 0,
-    val feedback: FeedbackKind? = null,
-    val locked: Boolean = false,
+    val revealed: List<Int> = emptyList(),
+    val moves: Int = 0,
     val finished: Boolean = false,
 )
-
-sealed interface MemoryIntent {
-    data class SelectLeft(val side: MemorySide) : MemoryIntent
-    data class SelectRight(val side: MemorySide) : MemoryIntent
-}
 
 @HiltViewModel
 class MemoryViewModel @Inject constructor(
@@ -67,84 +56,39 @@ class MemoryViewModel @Inject constructor(
         viewModelScope.launch {
             val words = getWords(GameType.MEMORY, PAIR_COUNT)
             val round = generator.memory(words, PAIR_COUNT)
-            _state.update { it.copy(round = round, finished = round == null) }
-            if (round == null) finish()
+            val cards = round?.let { (it.left + it.right).shuffled() }.orEmpty()
+            _state.update { it.copy(cards = cards, finished = cards.isEmpty()) }
+            if (cards.isEmpty()) finish()
         }
     }
 
-    fun onIntent(intent: MemoryIntent) {
-        when (intent) {
-            is MemoryIntent.SelectLeft -> selectLeft(intent.side)
-            is MemoryIntent.SelectRight -> selectRight(intent.side)
-        }
-    }
+    fun reveal(index: Int) {
+        val state = _state.value
+        val card = state.cards.getOrNull(index) ?: return
+        if (state.finished || state.revealed.size >= 2 ||
+            index in state.revealed || card.wordId in state.matchedWordIds
+        ) return
 
-    private fun selectLeft(side: MemorySide) {
-        if (_state.value.locked || _state.value.finished) return
-        if (side.wordId in _state.value.matchedWordIds) return
-        _state.update { it.copy(selectedLeft = side) }
-        speaker.speak(side.text)
-        checkPair()
-    }
+        val first = state.revealed.firstOrNull()?.let(state.cards::get)
+        _state.update { it.copy(revealed = it.revealed + index, moves = it.moves + if (first == null) 0 else 1) }
+        if (!card.isEmoji) speaker.speak(card.text)
+        if (first == null) return
 
-    private fun selectRight(side: MemorySide) {
-        if (_state.value.locked || _state.value.finished) return
-        if (side.wordId in _state.value.matchedWordIds) return
-        _state.update { it.copy(selectedRight = side) }
-        checkPair()
-    }
-
-    private fun checkPair() {
-        val left = _state.value.selectedLeft ?: return
-        val right = _state.value.selectedRight ?: return
-        val isMatch = left.wordId == right.wordId
-        _state.update { it.copy(locked = true) }
+        val matched = first.wordId == card.wordId
         viewModelScope.launch {
-            session.answer(left.wordId, isMatch)
-            if (isMatch) {
-                _state.update {
-                    it.copy(
-                        matchedWordIds = it.matchedWordIds + left.wordId,
-                        selectedLeft = null,
-                        selectedRight = null,
-                        correctCount = it.correctCount + 1,
-                        feedback = FeedbackKind.CORRECT,
-                    )
-                }
-                delay(FEEDBACK_MS)
-                val round = _state.value.round
-                val allMatched = round != null &&
-                    round.left.all { side -> side.wordId in _state.value.matchedWordIds }
-                _state.update { it.copy(feedback = null, locked = false) }
-                if (allMatched) {
-                    _state.update { it.copy(finished = true) }
-                    finish()
-                }
-            } else {
-                _state.update {
-                    it.copy(
-                        wrongWordIds = setOf(left.wordId, right.wordId),
-                        feedback = FeedbackKind.WRONG,
-                    )
-                }
-                delay(WRONG_MS)
-                _state.update {
-                    it.copy(
-                        wrongWordIds = emptySet(),
-                        selectedLeft = null,
-                        selectedRight = null,
-                        feedback = null,
-                        locked = false,
-                    )
-                }
-            }
+            session.answer(if (first.isEmoji) card.wordId else first.wordId, matched)
+            delay(if (matched) FEEDBACK_MS else WRONG_MS)
+            val matchedIds = if (matched) state.matchedWordIds + card.wordId else state.matchedWordIds
+            val finished = matchedIds.size * 2 == state.cards.size
+            _state.update { it.copy(matchedWordIds = matchedIds, revealed = emptyList(), finished = finished) }
+            if (finished) finish()
         }
     }
 
     private fun finish() {
         viewModelScope.launch {
             session.victory()
-            val total = _state.value.round?.left?.size ?: 0
+            val total = _state.value.cards.size / 2
             val result = session.finish(total)
             _effects.send(
                 GameEffect.Finished(
@@ -158,7 +102,7 @@ class MemoryViewModel @Inject constructor(
     }
 
     companion object {
-        const val PAIR_COUNT = 4
+        const val PAIR_COUNT = 6
         private const val FEEDBACK_MS = 450L
         private const val WRONG_MS = 700L
     }

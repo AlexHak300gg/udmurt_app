@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +28,6 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MenuBook
-import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material3.AlertDialog
@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.udmurtlang.learn.R
+import org.udmurtlang.learn.domain.model.MAX_DISPLAY_NAME_LENGTH
 import org.udmurtlang.learn.core.designsystem.ReadingContentWidth
 import org.udmurtlang.learn.core.designsystem.ScrollableContent
 import org.udmurtlang.learn.core.designsystem.ZcTeal
@@ -64,10 +65,8 @@ import org.udmurtlang.learn.core.designsystem.ZcOrange
 import org.udmurtlang.learn.core.designsystem.ZcRed
 import org.udmurtlang.learn.core.designsystem.ZcWhite
 import org.udmurtlang.learn.core.designsystem.components.CircleAvatar
-import org.udmurtlang.learn.core.designsystem.components.Gradients
+import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.components.ZcHeader
-import org.udmurtlang.learn.core.designsystem.onVivid
-import org.udmurtlang.learn.core.designsystem.onVividMuted
 import org.udmurtlang.learn.domain.model.AchievementSlugs
 
 /** Цвета медалей по кругу, как в макете. */
@@ -91,7 +90,6 @@ private val achievementCatalog = listOf(
 fun ProfileScreen(
     onBack: () -> Unit,
     onOpenStats: () -> Unit,
-    onOpenReport: () -> Unit,
     onLoggedOut: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
@@ -171,6 +169,10 @@ fun ProfileScreen(
                     value = state.editingName,
                     onValueChange = { viewModel.onIntent(ProfileIntent.NameChanged(it)) },
                     label = { Text(stringResource(R.string.profile_name)) },
+                    supportingText = {
+                        val name = state.editingName
+                        Text("${name.codePointCount(0, name.length)} / $MAX_DISPLAY_NAME_LENGTH")
+                    },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -199,82 +201,38 @@ fun ProfileScreen(
             modifier = Modifier.widthIn(max = ReadingContentWidth),
         )
         ScrollableContent(modifier = Modifier.weight(1f).fillMaxWidth()) {
-            // Оранжевая hero-карта
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                shape = RoundedCornerShape(28.dp),
-                color = Color.Transparent,
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Box(modifier = Modifier.background(Gradients.orange)) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 22.dp),
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            val name = state.profile?.displayName ?: stringResource(R.string.guest_label)
-                            CircleAvatar(
-                                initial = name.ifBlank { "?" },
-                                size = 76.dp,
-                            )
-                            Spacer(modifier = Modifier.size(14.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = name,
-                                        style = MaterialTheme.typography.titleLarge,
-                                        color = onVivid(),
-                                        modifier = Modifier.weight(1f, fill = false),
-                                    )
-                                    if (state.profile != null) {
-                                        IconButton(onClick = { viewModel.onIntent(ProfileIntent.EditName) }) {
-                                            Icon(
-                                                imageVector = Icons.Filled.Edit,
-                                                contentDescription = stringResource(R.string.profile_name),
-                                                tint = onVivid(),
-                                                modifier = Modifier.size(20.dp),
-                                            )
-                                        }
-                                    }
-                                }
-                                state.profile?.takeIf { !it.isGuest }?.let {
-                                    Text(
-                                        text = it.email,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = onVividMuted(),
-                                    )
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        val stats = state.stats
-                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            ProfileStatChip(
-                                value = stats?.wordsKnown ?: 0,
-                                label = stringResource(R.string.profile_stat_words),
-                                modifier = Modifier.weight(1f),
-                            )
-                            ProfileStatChip(
-                                value = stats?.currentStreak ?: 0,
-                                label = stringResource(R.string.profile_stat_days),
-                                modifier = Modifier.weight(1f),
-                            )
-                            ProfileStatChip(
-                                value = stats?.gamesPlayed ?: 0,
-                                label = stringResource(R.string.profile_stat_games),
-                                modifier = Modifier.weight(1f),
-                            )
+                val name = state.profile?.displayName ?: stringResource(R.string.guest_label)
+                CircleAvatar(initial = name.ifBlank { "?" }, size = 88.dp, container = brandAccent(ZcRed))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.weight(1f, fill = false),
+                    )
+                    if (state.profile != null) {
+                        IconButton(onClick = { viewModel.onIntent(ProfileIntent.EditName) }) {
+                            Icon(Icons.Filled.Edit, stringResource(R.string.profile_name), modifier = Modifier.size(18.dp))
                         }
                     }
+                }
+                state.profile?.takeIf { !it.isGuest }?.let {
+                    Text(it.email, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Spacer(Modifier.height(16.dp))
+                val stats = state.stats
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ProfileStatChip(stats?.wordsKnown ?: 0, stringResource(R.string.profile_stat_words), ZcPurple, Modifier.weight(1f))
+                    ProfileStatChip(stats?.gamesPlayed ?: 0, stringResource(R.string.profile_stat_games), ZcTeal, Modifier.weight(1f))
+                    ProfileStatChip(stats?.currentStreak ?: 0, stringResource(R.string.profile_stat_days), ZcOrange, Modifier.weight(1f))
                 }
             }
 
             ProfileActionGroup {
                 ProfileAction(stringResource(R.string.stats_title), Icons.Filled.BarChart, onClick = onOpenStats)
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                ProfileAction(stringResource(R.string.report_title), Icons.Filled.People, onClick = onOpenReport)
             }
             Spacer(Modifier.height(18.dp))
             val unlockedSlugs = remember(state.achievements) { state.achievements.map { it.slug }.toSet() }
@@ -298,21 +256,19 @@ fun ProfileScreen(
                         textAlign = TextAlign.Center,
                     )
                 }
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    achievementCatalog.chunked(3).forEach { rowItems ->
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            rowItems.forEach { badge ->
-                                MedalTile(
-                                    icon = badge.icon,
-                                    title = stringResource(badge.titleRes),
-                                    unlocked = badge.slug in unlockedSlugs,
-                                    accent = medalAccents[achievementCatalog.indexOf(badge) % medalAccents.size],
-                                )
-                            }
-                        }
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    maxItemsInEachRow = 4,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    achievementCatalog.forEachIndexed { index, badge ->
+                        MedalTile(
+                            icon = badge.icon,
+                            title = stringResource(badge.titleRes),
+                            unlocked = badge.slug in unlockedSlugs,
+                            accent = medalAccents[index % medalAccents.size],
+                        )
                     }
                 }
             }
@@ -388,11 +344,11 @@ private fun ProfileAction(
 }
 
 @Composable
-private fun ProfileStatChip(value: Int, label: String, modifier: Modifier = Modifier) {
+private fun ProfileStatChip(value: Int, label: String, accent: Color, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(18.dp),
-        color = ZcWhite.copy(alpha = 0.18f),
+        color = brandAccent(accent),
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
@@ -429,20 +385,20 @@ private fun MedalTile(
     val scheme = MaterialTheme.colorScheme
     Surface(
         shape = RoundedCornerShape(20.dp),
-        color = if (unlocked) scheme.surface else scheme.surface.copy(alpha = 0.6f),
-        modifier = Modifier.size(width = 100.dp, height = 116.dp),
+        color = Color.Transparent,
+        modifier = Modifier.size(width = 72.dp, height = 100.dp),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp),
         ) {
             // Макет: плоская цветная плашка с белой иконкой, закрытая — бежевая с замком
             Box(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(if (unlocked) accent else scheme.surfaceVariant),
+                    .background(if (unlocked) brandAccent(accent) else scheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
                 if (unlocked) {

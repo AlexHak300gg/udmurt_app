@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.lifecycle.compose.dropUnlessResumed
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -32,12 +36,12 @@ import org.udmurtlang.learn.feature.auth.AuthScreen
 import org.udmurtlang.learn.feature.learning.TopicListScreen
 import org.udmurtlang.learn.feature.learning.WordCardsScreen
 import org.udmurtlang.learn.feature.games.GamesHubScreen
+import org.udmurtlang.learn.feature.games.GamesHubViewModel
 import org.udmurtlang.learn.feature.games.GameRoute
 import org.udmurtlang.learn.feature.games.ResultScreen
 import org.udmurtlang.learn.feature.menu.MenuScreen
 import org.udmurtlang.learn.feature.onboarding.OnboardingScreen
 import org.udmurtlang.learn.feature.profile.ProfileScreen
-import org.udmurtlang.learn.feature.report.ReportScreen
 import org.udmurtlang.learn.feature.settings.SettingsScreen
 import org.udmurtlang.learn.feature.splash.SplashScreen
 import org.udmurtlang.learn.feature.stats.StatsScreen
@@ -110,9 +114,12 @@ fun AppNavGraph(
             WordCardsScreen(onBack = dropUnlessResumed { navController.popBackStack() })
         }
         composable(Routes.GAMES) {
+            val games: GamesHubViewModel = hiltViewModel()
+            val stars by games.starsByGame.collectAsStateWithLifecycle()
             GamesHubScreen(
                 onBack = dropUnlessResumed { navController.popBackStack() },
                 onOpenGame = { navController.navigate(Routes.game(it)) },
+                starsByGame = stars,
             )
         }
         composable(
@@ -145,23 +152,26 @@ fun AppNavGraph(
                 onPlayAgain = { slug ->
                     navController.navigate(Routes.game(slug)) { popUpTo(Routes.GAMES) }
                 },
-                onToMenu = dropUnlessResumed { navController.popBackStack(Routes.GAMES, inclusive = false) },
+                onBack = dropUnlessResumed { navController.popBackStack(Routes.GAMES, inclusive = false) },
+                onToMenu = dropUnlessResumed { navController.popBackStack(Routes.MENU, inclusive = false) },
             )
         }
         composable(Routes.STATS) {
-            StatsScreen(
-                onBack = dropUnlessResumed { navController.popBackStack() },
-                onOpenReport = { navController.navigate(Routes.REPORT) },
-            )
+            StatsScreen(onBack = dropUnlessResumed { navController.popBackStack() })
         }
         composable(Routes.REPORT) {
-            ReportScreen(onBack = dropUnlessResumed { navController.popBackStack() })
+            // Route retained for navigation state saved by older versions.
+            LaunchedEffect(Unit) {
+                navController.navigate(Routes.STATS) {
+                    popUpTo(Routes.REPORT) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
         }
         composable(Routes.PROFILE) {
             ProfileScreen(
                 onBack = dropUnlessResumed { navController.popBackStack() },
                 onOpenStats = { navController.navigate(Routes.STATS) },
-                onOpenReport = { navController.navigate(Routes.REPORT) },
                 onLoggedOut = {
                     navController.navigate(Routes.AUTH) { popUpTo(0) { inclusive = true } }
                 },
@@ -171,7 +181,10 @@ fun AppNavGraph(
             SettingsScreen(onBack = dropUnlessResumed { navController.popBackStack() })
         }
         composable(Routes.WORD_OF_DAY) {
-            WordOfDayScreen(onBack = dropUnlessResumed { navController.popBackStack() })
+            WordOfDayScreen(
+                onBack = dropUnlessResumed { navController.popBackStack() },
+                onOpenTopic = { navController.navigate(Routes.cards(it)) { launchSingleTop = true } },
+            )
         }
     }
 }

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.domain.model.Achievement
 import org.udmurtlang.learn.domain.model.Profile
+import org.udmurtlang.learn.domain.model.limitDisplayName
 import org.udmurtlang.learn.domain.repository.AccountRepository
 import org.udmurtlang.learn.domain.repository.ActivityRepository
 import org.udmurtlang.learn.domain.repository.GameRepository
@@ -93,7 +94,7 @@ class ProfileViewModel @Inject constructor(
             ProfileIntent.EditName -> _state.update {
                 it.copy(isEditing = true, editingName = it.profile?.displayName.orEmpty())
             }
-            is ProfileIntent.NameChanged -> _state.update { it.copy(editingName = intent.value) }
+            is ProfileIntent.NameChanged -> _state.update { it.copy(editingName = intent.value.limitDisplayName()) }
             ProfileIntent.SaveName -> {
                 val name = _state.value.editingName.trim()
                 if (name.isBlank()) return

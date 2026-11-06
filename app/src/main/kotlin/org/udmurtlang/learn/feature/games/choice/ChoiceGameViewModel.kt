@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,6 +39,7 @@ data class ChoiceState(
 
 sealed interface ChoiceIntent {
     data class Select(val optionIndex: Int) : ChoiceIntent
+    data object Next : ChoiceIntent
 }
 
 @HiltViewModel
@@ -66,12 +66,14 @@ class ChoiceGameViewModel @Inject constructor(
             val words = getWords(GameType.CHOICE, ROUNDS)
             val rounds = words.map { generator.choice(it, words) }
             _state.update { it.copy(rounds = rounds) }
+            if (rounds.isEmpty()) finish()
         }
     }
 
     fun onIntent(intent: ChoiceIntent) {
         when (intent) {
             is ChoiceIntent.Select -> select(intent.optionIndex)
+            ChoiceIntent.Next -> next()
         }
     }
 
@@ -81,7 +83,7 @@ class ChoiceGameViewModel @Inject constructor(
 
     private fun select(optionIndex: Int) {
         val current = _state.value.current ?: return
-        if (_state.value.locked) return
+        if (_state.value.locked || optionIndex !in current.options.indices) return
         val isCorrect = optionIndex == current.correctIndex
         _state.update { it.copy(locked = true) }
         viewModelScope.launch {
@@ -93,11 +95,14 @@ class ChoiceGameViewModel @Inject constructor(
                     correctCount = if (isCorrect) it.correctCount + 1 else it.correctCount,
                 )
             }
-            delay(FEEDBACK_MS)
-            val next = _state.value.index + 1
-            _state.update { it.copy(index = next, selected = null, feedback = null, locked = false) }
-            if (_state.value.finished) finish()
         }
+    }
+
+    private fun next() {
+        val current = _state.value
+        if (current.feedback == null) return
+        _state.update { it.copy(index = current.index + 1, selected = null, feedback = null, locked = false) }
+        if (_state.value.finished) finish()
     }
 
     private fun finish() {
@@ -117,7 +122,6 @@ class ChoiceGameViewModel @Inject constructor(
     }
 
     companion object {
-        const val ROUNDS = 8
-        private const val FEEDBACK_MS = 650L
+        const val ROUNDS = 10
     }
 }

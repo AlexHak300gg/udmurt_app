@@ -87,11 +87,12 @@ fun ScrollableContent(
     maxWidth: Dp = ReadingContentWidth,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     centerVertically: Boolean = false,
+    fillViewport: Boolean = centerVertically,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     BoxWithConstraints(modifier = modifier, contentAlignment = Alignment.TopCenter) {
-        val minHeight = if (centerVertically && constraints.hasBoundedHeight) maxHeight else 0.dp
+        val minHeight = if (fillViewport && constraints.hasBoundedHeight) maxHeight else 0.dp
         Column(
             modifier = Modifier
                 .widthIn(max = maxWidth)

@@ -47,6 +47,22 @@ val LocalBrand = staticCompositionLocalOf { LightBrand }
 fun vividScreen(vivid: Color): Color =
     if (LocalBrand.current.isDark) MaterialTheme.colorScheme.background else vivid
 
+@Composable
+fun brandAccent(color: Color): Color = if (LocalBrand.current.isDark) {
+    when (color) {
+        ZcRed -> ZcRedDark
+        ZcTeal, ZcTealDeep -> ZcTealDark
+        ZcPurple, ZcPurpleTile -> ZcPurpleDark
+        ZcOrange -> ZcOrangeDark
+        else -> color
+    }
+} else {
+    color
+}
+
+@Composable
+fun studyCardColor(): Color = if (LocalBrand.current.isDark) ZcDarkElevated else ZcCard
+
 /** Текст поверх цветного экрана (светлая тема — белый, тёмная — светлый). */
 @Composable
 fun onVivid(): Color = if (LocalBrand.current.isDark) MaterialTheme.colorScheme.onBackground else Color.White

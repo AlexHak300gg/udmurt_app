@@ -40,15 +40,5 @@ data class StatsSnapshot(
     val topMistakes: List<Word>,
     val weeklyActivity: List<DailyActivity>,
     val totalPlayTimeMs: Long,
-)
-
-data class ChildReport(
-    val childName: String,
-    val wordsKnown: Int,
-    val wordsTotal: Int,
-    val gamesPlayed: Int,
-    val accuracy: Float,
     val weakTopics: List<Topic>,
-    val weekly: List<DailyActivity>,
-    val currentStreak: Int,
 )

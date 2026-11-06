@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +41,7 @@ import org.udmurtlang.learn.core.designsystem.gridSpacing
 import org.udmurtlang.learn.core.designsystem.isShortWindow
 import org.udmurtlang.learn.core.designsystem.isWide
 import org.udmurtlang.learn.core.designsystem.StarGlyph
-import org.udmurtlang.learn.core.designsystem.ZcBerry
+import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.ZcGold
 import org.udmurtlang.learn.core.designsystem.Ornament
 import org.udmurtlang.learn.core.designsystem.UdmOrnament
@@ -58,22 +58,23 @@ private data class GameEntry(
     val titleRes: Int,
     val captionRes: Int,
     val color: Color,
-    val stars: Int,
+    val ornament: UdmOrnament,
 )
 
 private val entries = listOf(
-    GameEntry(GameType.CHOICE, R.string.game_choice, R.string.game_choice_sub, ZcRed, 2),
-    GameEntry(GameType.ODD_ONE_OUT, R.string.game_odd, R.string.game_odd_sub, ZcPurple, 9),
-    GameEntry(GameType.SORTING, R.string.game_sorting, R.string.game_sorting_sub, ZcTeal, 2),
-    GameEntry(GameType.MEMORY, R.string.game_memory, R.string.game_memory_sub, ZcOrange, 15),
-    GameEntry(GameType.WORD_BUILDER, R.string.game_builder, R.string.game_builder_sub, ZcPurpleTile, 9),
-    GameEntry(GameType.TRUE_FALSE, R.string.game_truefalse, R.string.game_tf_sub, ZcBerry, 3),
+    GameEntry(GameType.CHOICE, R.string.game_choice, R.string.game_choice_sub, ZcRed, UdmOrnament.HEX),
+    GameEntry(GameType.ODD_ONE_OUT, R.string.game_odd, R.string.game_odd_sub, ZcPurple, UdmOrnament.STAR),
+    GameEntry(GameType.SORTING, R.string.game_sorting, R.string.game_sorting_sub, ZcTeal, UdmOrnament.ARC),
+    GameEntry(GameType.MEMORY, R.string.game_memory, R.string.game_memory_sub, ZcOrange, UdmOrnament.PINWHEEL),
+    GameEntry(GameType.WORD_BUILDER, R.string.game_builder, R.string.game_builder_sub, ZcPurple, UdmOrnament.CROSS),
+    GameEntry(GameType.TRUE_FALSE, R.string.game_truefalse, R.string.game_tf_sub, ZcRed, UdmOrnament.ARROWS),
 )
 
 @Composable
 fun GamesHubScreen(
     onBack: () -> Unit,
     onOpenGame: (String) -> Unit,
+    starsByGame: Map<GameType, Int> = emptyMap(),
 ) {
     val brand = LocalBrand.current
     val window = currentWindowClass()
@@ -99,7 +100,7 @@ fun GamesHubScreen(
             val spacing = window.gridSpacing
             val bottomPadding = 16.dp
             val rowHeight = (maxHeight - bottomPadding - spacing * (rows - 1)) / rows
-            val minHeight = rowHeight.coerceIn(if (short) 102.dp else 148.dp, 220.dp)
+            val minHeight = rowHeight.coerceIn(if (short) 102.dp else 148.dp, if (window.isWide) 210.dp else 158.dp)
             LazyVerticalGrid(
                 columns = GridCells.Fixed(columns),
                 modifier = Modifier.fillMaxSize(),
@@ -107,14 +108,14 @@ fun GamesHubScreen(
                 horizontalArrangement = Arrangement.spacedBy(spacing),
                 contentPadding = PaddingValues(bottom = bottomPadding),
             ) {
-                itemsIndexed(entries, key = { _, entry -> entry.type.slug }) { index, entry ->
+                items(entries, key = { it.type.slug }) { entry ->
                     GameCard(
-                        ornament = UdmOrnament.entries[index % UdmOrnament.entries.size],
+                        ornament = entry.ornament,
                         title = stringResource(entry.titleRes),
                         caption = stringResource(entry.captionRes),
-                        color = entry.color,
+                        color = brandAccent(entry.color),
                         patterned = !brand.isDark,
-                        stars = entry.stars,
+                        stars = starsByGame[entry.type] ?: 0,
                         minHeight = minHeight,
                         short = short,
                         onClick = { onOpenGame(entry.type.slug) },

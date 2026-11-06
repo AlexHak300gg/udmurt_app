@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
@@ -120,9 +121,10 @@ fun SettingsScreen(
         )
         ScrollableContent(
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+            fillViewport = true,
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column {
                 SwitchCard(
                     title = stringResource(R.string.setting_sound),
                     checked = settings.soundEnabled,
@@ -161,6 +163,7 @@ fun SettingsScreen(
                         }
                     }
                 }
+                HorizontalDivider(color = scheme.outlineVariant)
                 SwitchCard(
                     title = stringResource(R.string.setting_word_notify),
                     checked = settings.notificationsEnabled,
@@ -184,6 +187,7 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.error,
                     )
                 }
+                HorizontalDivider(color = scheme.outlineVariant)
                 SwitchCard(
                     title = stringResource(R.string.setting_geolocation),
                     checked = settings.geolocationEnabled,
@@ -204,7 +208,7 @@ fun SettingsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            HorizontalDivider(color = scheme.outlineVariant)
 
             val langItems = listOf(
                 stringResource(R.string.lang_russian),
@@ -215,7 +219,7 @@ fun SettingsScreen(
                 stringResource(R.string.theme_light),
                 stringResource(R.string.theme_dark),
             )
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column {
                 SectionChips(
                     title = stringResource(R.string.setting_language),
                     items = langItems,
@@ -224,6 +228,7 @@ fun SettingsScreen(
                         viewModel.onIntent(SettingsIntent.LanguageSelected(UiLanguage.entries[index]))
                     },
                 )
+                HorizontalDivider(color = scheme.outlineVariant)
                 SectionChips(
                     title = stringResource(R.string.setting_theme),
                     items = themeItems,
@@ -234,28 +239,27 @@ fun SettingsScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                color = scheme.surfaceVariant,
-                contentColor = scheme.onSurfaceVariant,
+            HorizontalDivider(color = scheme.outlineVariant)
+            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.weight(1f))
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    Text(
-                        text = stringResource(
-                            if (BuildConfig.SUPABASE_ENABLED) R.string.sync_cloud else R.string.sync_local,
-                        ),
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    Text(
-                        text = stringResource(R.string.setting_version, BuildConfig.VERSION_NAME),
-                        style = MaterialTheme.typography.labelSmall,
-                    )
-                }
+                Text(
+                    text = stringResource(
+                        if (BuildConfig.SUPABASE_ENABLED) R.string.sync_cloud else R.string.sync_local,
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = scheme.onSurfaceVariant,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
+                Text(
+                    text = stringResource(R.string.setting_version, BuildConfig.VERSION_NAME),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = scheme.onSurfaceVariant,
+                )
             }
         }
     }

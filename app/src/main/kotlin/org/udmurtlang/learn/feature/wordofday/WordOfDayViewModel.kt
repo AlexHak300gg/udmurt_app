@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.core.media.WordSpeaker
 import org.udmurtlang.learn.domain.model.WordOfDay
+import org.udmurtlang.learn.domain.model.Word
+import org.udmurtlang.learn.domain.usecase.GetTopicWordsUseCase
 import org.udmurtlang.learn.domain.usecase.GetWordOfDayUseCase
 import org.udmurtlang.learn.domain.usecase.MarkWordKnownUseCase
 import javax.inject.Inject
@@ -17,11 +19,13 @@ import javax.inject.Inject
 data class WordOfDayState(
     val wod: WordOfDay? = null,
     val marked: Boolean = false,
+    val related: List<Word> = emptyList(),
 )
 
 @HiltViewModel
 class WordOfDayViewModel @Inject constructor(
     getWordOfDay: GetWordOfDayUseCase,
+    getTopicWords: GetTopicWordsUseCase,
     private val markKnown: MarkWordKnownUseCase,
     private val speaker: WordSpeaker,
 ) : ViewModel() {
@@ -31,13 +35,18 @@ class WordOfDayViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _state.update { it.copy(wod = getWordOfDay()) }
+            val day = getWordOfDay()
+            _state.update { it.copy(wod = day) }
+            val related = getTopicWords(day.word.topicId).filterNot { it.id == day.word.id }.take(3)
+            _state.update { it.copy(related = related) }
         }
     }
 
     fun speak() {
         _state.value.wod?.let { speaker.speak(it.word.udm) }
     }
+
+    fun speakRelated(word: Word) = speaker.speak(word.udm)
 
     fun markKnown() {
         val wod = _state.value.wod ?: return

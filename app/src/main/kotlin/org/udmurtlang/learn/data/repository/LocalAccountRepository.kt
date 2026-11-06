@@ -11,6 +11,7 @@ import org.udmurtlang.learn.data.local.AppDataStore
 import org.udmurtlang.learn.data.local.db.AccountDao
 import org.udmurtlang.learn.data.local.db.AccountEntity
 import org.udmurtlang.learn.domain.model.Profile
+import org.udmurtlang.learn.domain.model.limitDisplayName
 import org.udmurtlang.learn.domain.repository.AccountRepository
 import java.util.UUID
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class LocalAccountRepository @Inject constructor(
         val entity = AccountEntity(
             id = UUID.randomUUID().toString(),
             email = normalized,
-            displayName = name.trim().ifBlank { "Юный лингвист" },
+            displayName = name.trim().limitDisplayName().ifBlank { "Юный лингвист" },
             avatar = DEFAULT_AVATAR,
             isGuest = false,
             passwordHash = hasher.hash(password),
@@ -88,7 +89,7 @@ class LocalAccountRepository @Inject constructor(
     }
 
     override suspend fun updateName(name: String) {
-        currentOrNull()?.let { dao.upsert(it.copy(displayName = name.trim())) }
+        currentOrNull()?.let { dao.upsert(it.copy(displayName = name.trim().limitDisplayName())) }
     }
 
     override suspend fun updateAvatar(avatar: String) {
@@ -118,7 +119,7 @@ class LocalAccountRepository @Inject constructor(
         val entity = AccountEntity(
             id = userId,
             email = email,
-            displayName = name.trim().ifBlank { "Юный лингвист" },
+            displayName = name.trim().limitDisplayName().ifBlank { "Юный лингвист" },
             avatar = DEFAULT_AVATAR,
             isGuest = false,
             passwordHash = null,
@@ -138,7 +139,7 @@ class LocalAccountRepository @Inject constructor(
     private fun AccountEntity.toProfile() = Profile(
         id = id,
         email = email,
-        displayName = displayName,
+        displayName = displayName.limitDisplayName(),
         avatar = avatar,
         isGuest = isGuest,
     )

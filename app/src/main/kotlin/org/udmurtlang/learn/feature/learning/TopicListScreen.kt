@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.udmurtlang.learn.R
 import org.udmurtlang.learn.core.designsystem.Ornament
+import org.udmurtlang.learn.core.designsystem.brandAccent
 import org.udmurtlang.learn.core.designsystem.UdmOrnament
 import org.udmurtlang.learn.core.designsystem.WideContentWidth
 import org.udmurtlang.learn.core.designsystem.columns
@@ -132,7 +133,7 @@ fun TopicListScreen(
             itemsIndexed(topics.filterNot { it == continueItem }, key = { _, item -> item.topic.id }) { index, item ->
                 TopicRow(
                     item = item,
-                    accent = topicAccents[index % topicAccents.size],
+                    accent = brandAccent(topicAccents[index % topicAccents.size]),
                     onClick = { onOpenTopic(item.topic.id) },
                 )
             }
@@ -150,7 +151,7 @@ private fun ContinueCard(item: TopicProgress, onClick: () -> Unit) {
         color = Color.Transparent,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Box(modifier = Modifier.background(Brush.linearGradient(listOf(ZcPurple, ZcPurpleDeep)))) {
+        Box(modifier = Modifier.background(brandAccent(ZcPurple))) {
         Ornament(
             kind = UdmOrnament.PINWHEEL,
             color = Color.White.copy(alpha = 0.14f),
@@ -180,12 +181,12 @@ private fun ContinueCard(item: TopicProgress, onClick: () -> Unit) {
                         color = Color.White.copy(alpha = 0.75f),
                     )
                     Text(
-                        text = item.topic.titleRu,
+                        text = item.topic.titleUdm,
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                     )
                     Text(
-                        text = item.topic.titleUdm,
+                        text = item.topic.titleRu,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White.copy(alpha = 0.75f),
                     )
@@ -243,7 +244,7 @@ private fun TopicRow(item: TopicProgress, accent: Color, onClick: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    text = item.topic.titleUdm,
+                    text = item.topic.titleRu,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

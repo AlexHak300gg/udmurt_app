@@ -4,6 +4,12 @@ enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 enum class UiLanguage(val tag: String) { RUSSIAN("ru"), UDMURT("udm") }
 
+const val MAX_DISPLAY_NAME_LENGTH = 32
+
+fun String.limitDisplayName(): String =
+    if (codePointCount(0, length) <= MAX_DISPLAY_NAME_LENGTH) this
+    else substring(0, offsetByCodePoints(0, MAX_DISPLAY_NAME_LENGTH))
+
 data class Profile(
     val id: String,
     val email: String,

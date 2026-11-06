@@ -57,6 +57,10 @@ fun GameScaffold(
     finished: Boolean,
     onBack: () -> Unit,
     tint: Color? = null,
+    compactHeader: Boolean = false,
+    showProgress: Boolean = true,
+    patterned: Boolean = true,
+    footer: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val brand = LocalBrand.current
@@ -70,7 +74,7 @@ fun GameScaffold(
             .fillMaxSize()
             .background(bg),
     ) {
-        if (!brand.isDark && tint != null) {
+        if (patterned && !brand.isDark && tint != null) {
             StarPattern(modifier = Modifier.fillMaxSize(), color = Color.White, alpha = 0.07f)
         }
         Column(
@@ -86,17 +90,19 @@ fun GameScaffold(
                 onBack = onBack,
                 modifier = Modifier.widthIn(max = maxWidth),
                 tinted = tint != null,
+                compact = compactHeader,
+                close = compactHeader,
                 trailing = { StarChip(count = correct, tinted = tint != null) },
             )
-            if (total > 0) {
+            if (showProgress && total > 0) {
                 ProgressLine(
                     progress = round.coerceIn(0, total).toFloat() / total,
-                    fill = if (brand.isDark) MaterialTheme.colorScheme.primary else Color.White,
-                    track = if (brand.isDark) MaterialTheme.colorScheme.surfaceVariant else Color.White.copy(alpha = 0.3f),
+                    fill = if (tint == null || brand.isDark) MaterialTheme.colorScheme.primary else Color.White,
+                    track = if (tint == null || brand.isDark) MaterialTheme.colorScheme.surfaceVariant else Color.White.copy(alpha = 0.3f),
                     modifier = Modifier.widthIn(max = maxWidth).padding(horizontal = 16.dp),
                 )
             }
-            when (feedback) {
+            when (feedback.takeIf { footer == null }) {
                 FeedbackKind.CORRECT -> FeedbackBanner(
                     text = stringResource(R.string.correct_answer),
                     tinted = tint != null,
@@ -117,6 +123,7 @@ fun GameScaffold(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = content,
             )
+            footer?.invoke(this)
         }
     }
     ConfettiOverlay(active = finished)

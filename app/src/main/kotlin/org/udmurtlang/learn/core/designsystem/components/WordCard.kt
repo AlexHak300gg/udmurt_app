@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,9 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.udmurtlang.learn.core.designsystem.AdaptivePanes
+import org.udmurtlang.learn.core.designsystem.Ornament
+import org.udmurtlang.learn.core.designsystem.UdmOrnament
+import org.udmurtlang.learn.core.designsystem.studyCardColor
 import org.udmurtlang.learn.domain.model.Word
 
 /**
@@ -43,16 +48,17 @@ fun WordCard(
     pronunciationLabel: String = "Произношение",
     exampleLabel: String = "Пример",
     sideBySide: Boolean = false,
+    minHeight: Dp = 0.dp,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(36.dp),
+        colors = CardDefaults.cardColors(containerColor = studyCardColor()),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .heightIn(min = minHeight)
                 .then(
                     if (onSpeak != null) {
                         Modifier.clickable(onClick = onSpeak)
@@ -67,6 +73,7 @@ fun WordCard(
                 secondWeight = 1.45f,
                 spacing = if (sideBySide) 12.dp else 4.dp,
                 modifier = Modifier
+                    .align(Alignment.Center)
                     .padding(start = 20.dp, end = 20.dp, top = if (onSpeak != null) 48.dp else 20.dp, bottom = 20.dp),
                 first = { Text(word.emoji, fontSize = if (sideBySide) 62.sp else 84.sp) },
                 second = {
@@ -86,9 +93,9 @@ fun WordCard(
                             modifier = Modifier.padding(top = 6.dp),
                         )
                         Text(
-                            text = "($translationLabel)",
+                            text = translationLabel,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.secondary,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(top = 14.dp),
                         )
@@ -102,6 +109,13 @@ fun WordCard(
                     }
                 },
             )
+            if (minHeight >= 320.dp) {
+                Ornament(
+                    UdmOrnament.STAR,
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(end = 24.dp, bottom = 30.dp).size(50.dp),
+                    color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.18f),
+                )
+            }
             if (onSpeak != null) {
                 IconButton(
                     onClick = onSpeak,
